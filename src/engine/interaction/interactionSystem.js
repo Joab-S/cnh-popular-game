@@ -1,0 +1,127 @@
+import DialogBubble from '../ui/DialogBubble.js';
+
+/**
+ * ======================
+ * SISTEMA DE INTERAÇÃO GENÉRICO
+ * ======================
+ * Responsável por todos os objetos interativos (NPCs, PCs, placas etc).
+ */
+export function setupInteractiveObject(scene, config) {
+  const {
+    key,
+    object,
+    dialogs = [],
+    onInteract = null,
+    proximity = { x: 60, y: 40 },
+    hintText = 'Aproxime-se e aperte E'
+  } = config;
+
+  // cria texto de dica
+  const hint = scene.add.text(
+    object.x,
+    object.y * 0.75,
+    hintText,
+    { fontFamily: 'sans-serif', fontSize: '15px', color: '#ffffffff' }
+  ).setOrigin(0.5).setAlpha(0);
+
+  if (!scene.interactiveObjects) scene.interactiveObjects = [];
+
+  scene.interactiveObjects.push({
+    key,
+    object,
+    hint,
+    dialogs,
+    onInteract,
+    dialog: null,
+    dialogIndex: 0,
+    proximity
+  });
+}
+
+/**
+ * Atualiza todos os objetos interativos do cenário.
+ * Deve ser chamado no update() da cena.
+ */
+export function updateGenericInteractions(scene) {
+  const { player, keys, interactiveObjects } = scene;
+  if (!player || !interactiveObjects) return;
+
+  interactiveObjects.forEach(entry => {
+    const dx = Math.abs(player.x - entry.object.x);
+    const dy = Math.abs(player.y - entry.object.y);
+    const near = dx < entry.proximity.x && dy < entry.proximity.y;
+
+    toggleHint(scene, entry.hint, near);
+
+    if (near && Phaser.Input.Keyboard.JustDown(keys.E)) {
+      progressDialog(scene, entry);
+    }
+  });
+}
+
+/**
+ * Exibe e avança falas
+ */
+function progressDialog(scene, entry) {
+  // Garante que playerState exista
+  if (!scene.playerState) {
+    scene.playerState = { canMove: true, inDialog: false };
+  }
+
+  // 1️⃣ Já existe diálogo ativo → avança fala
+  if (scene.playerState.inDialog && entry.dialog) {
+    entry.dialogIndex++;
+    if (entry.dialogIndex < entry.dialogs.length) {
+      entry.dialog.updateText(entry.dialogs[entry.dialogIndex]);
+      return;
+    }
+
+    // Diálogo terminou
+    entry.dialog.destroy();
+    entry.dialog = null;
+    scene.playerState.canMove = true;
+    scene.playerState.inDialog = false;
+
+    // Chama callback específico do objeto (ex: NPC, PC etc)
+    if (entry.onInteract) entry.onInteract(scene);
+
+    return;
+  }
+
+  // 2️⃣ Sem diálogo — inicia a primeira fala (se houver)
+  if (entry.dialogs && entry.dialogs.length > 0) {
+    try {
+      entry.dialogIndex = 0;
+      entry.dialog = new DialogBubble(scene, entry.dialogs[0]);
+      scene.playerState.canMove = false;
+      scene.playerState.inDialog = true;
+      toggleHint(scene, entry.hint, false);
+    } catch (err) {
+      console.error('Erro ao criar DialogBubble:', err);
+      scene.playerState.canMove = true;
+      scene.playerState.inDialog = false;
+    }
+  }
+
+  // 3️⃣ Caso não haja falas, executa ação direta
+  else if (entry.onInteract) {
+    entry.onInteract(scene);
+  }
+}
+
+/**
+ * Mostra ou oculta o texto de “Aproxime-se e aperte E”
+ */
+function toggleHint(scene, hint, visible) {
+  if (!hint || !scene.tweens) return;
+  const targetAlpha = visible ? 1 : 0;
+  if (hint.alpha !== targetAlpha) {
+    scene.tweens.killTweensOf(hint);
+    scene.tweens.add({
+      targets: hint,
+      alpha: targetAlpha,
+      duration: 200,
+      ease: 'Linear'
+    });
+  }
+}
