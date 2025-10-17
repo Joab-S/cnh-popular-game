@@ -27,8 +27,8 @@ export default class Ground {
     const groundY = yStart + sidewalkH/2;
     const groundRect = this.scene.add.rectangle(width/2, groundY, width, sidewalkH);
     groundRect.setVisible(false);
-    this.scene.physics.add.existing(groundRect, true); // estático
-    // (Opcional) garante que o corpo bate "por cima"
+    this.scene.physics.add.existing(groundRect, true);
+    
     groundRect.body.checkCollision.down  = false;
     groundRect.body.checkCollision.left  = true;
     groundRect.body.checkCollision.right = true;

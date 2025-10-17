@@ -9,6 +9,7 @@ import { setupDocuments, updateDocuments } from "../phases/phase1_home/documentS
 import { updatePhase2 } from "../phases/phase2_city/SelectionSystem.js";
 import InteractiveObject from "../engine/interaction/InteractiveObject.js";
 import { updateGenericInteractions } from '../engine/interaction/interactionSystem.js';
+import { WORLD_SIZE_FACTOR } from "./config.js";
 
 /**
  * CENA PRINCIPAL DO JOGO
@@ -82,7 +83,7 @@ export default class GameScene extends Phaser.Scene {
     this.playerState.currentArea = "home";
 
     // Câmera e mundo
-    CameraSystem.initCamera(this, this.player, width * 2, height);
+    CameraSystem.initCamera(this, this.player, width * WORLD_SIZE_FACTOR, height);
 
     // Controles globais
     this.keys = this.input.keyboard.addKeys({
@@ -105,7 +106,7 @@ export default class GameScene extends Phaser.Scene {
 
   update() {
     if (this.playerState.transitioning) return;
-
+    
     try {
       updatePlayerMovement(this);
       updateDocuments(this);

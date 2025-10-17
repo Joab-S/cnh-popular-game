@@ -1,9 +1,9 @@
 import { setupObstacles, updateObstacles } from '../../engine/physics/obstacleSystem.js';
 import { clearScene } from '../../engine/utils/sceneUtils.js';
 import * as CameraSystem from '../../engine/camera/cameraSystem.js';
-import { returnToHome } from '../../engine/transition/transitionSystem.js';
 import { updateGenericInteractions } from '../../engine/interaction/interactionSystem.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
+import { WORLD_SIZE_FACTOR } from '../../core/config.js';
 
 /**
  * FASE 2 — Corrida até o DETRAN + Interação com NPC
@@ -15,10 +15,10 @@ export function startPhase2(scene) {
   scene.time.removeAllEvents();
 
   // === MUNDO VISUAL ===
-  CameraSystem.initCamera(scene, scene.player, width * 2, height);
-  scene.physics.world.setBounds(0, 0, width * 2, height);
+  CameraSystem.initCamera(scene, scene.player, width * WORLD_SIZE_FACTOR, height);
+  scene.physics.world.setBounds(0, 0, width * WORLD_SIZE_FACTOR, height);
 
-  scene.add.rectangle(width, height / 2, width * 2, height, 0x87ceeb).setDepth(-5);
+  scene.add.rectangle(width, height / WORLD_SIZE_FACTOR, width * WORLD_SIZE_FACTOR, height, 0x87ceeb).setDepth(-5);
   const groundRect = scene.add.rectangle(width, height - 30, width * 2, 60, 0x444444);
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
@@ -70,35 +70,32 @@ export function startPhase2(scene) {
   });
 
   // === NPC DO DETRAN ===
-  const dialogMission = [
-    'Olá! Parabéns por chegar até aqui.',
-    'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
-  ];
-
-  // Cria NPC usando o novo sistema unificado
   new InteractiveObject(scene, {
     key: 'npc_detran',
-    x: width * 2 - 200,
+    x: width ,
     y: height - 120,
     width: 60,
     height: 120,
     color: 0x5dadec,
-    dialogs: dialogMission,
-    onInteract: () => startQuiz(scene), // chamado após terminar o diálogo
+    dialogs:  [
+      'Olá! Parabéns por chegar até aqui.',
+      'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
+    ],
+    onInteract: () => startQuiz(scene),
     label: 'Agente DETRAN'
   });
 
-  // === PORTA DE VOLTA ===
-  const homeZone = scene.add.rectangle(10, height - 90, 60, 120, 0x333333, 0.25);
-  scene.physics.add.existing(homeZone, true);
-  scene.homeZone = homeZone;
+  // // === PORTA DE VOLTA ===
+  // const homeZone = scene.add.rectangle(10, height - 90, 60, 120, 0x333333, 0.25);
+  // scene.physics.add.existing(homeZone, true);
+  // scene.homeZone = homeZone;
 
-  scene.physics.add.overlap(scene.player, homeZone, () => {
-    if (scene.playerState.transitioning || scene.playerState.transitionCooldown) return;
-    scene.ui.showMessage('Voltando para casa...');
-    scene.playerState.transitioning = true;
-    scene.time.delayedCall(600, () => returnToHome(scene));
-  });
+  // scene.physics.add.overlap(scene.player, homeZone, () => {
+  //   if (scene.playerState.transitioning || scene.playerState.transitionCooldown) return;
+  //   scene.ui.showMessage('Voltando para casa...');
+  //   scene.playerState.transitioning = true;
+  //   scene.time.delayedCall(600, () => returnToHome(scene));
+  // });
 }
 
 /**
@@ -129,7 +126,8 @@ function failPhase(scene) {
  */
 function startQuiz(scene) {
   const { width, height } = scene.scale;
-
+  
+  // if (scene.phase2?.timerText) scene.phase2.timerText.destroy();
   // pausa o movimento
   scene.playerState.canMove = false;
   scene.playerState.inDialog = true;
