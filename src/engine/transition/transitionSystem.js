@@ -27,7 +27,7 @@ export function checkTransitions(scene) {
   }
   if (playerState.currentArea === AREAS.city && player.x >= transition.sceneEndX) {
     if (playerState.phase2Completed) {
-      goToArea(scene, 'driving-school');
+      goToArea(scene, AREAS.drivingSchool);
     }
   } 
 }

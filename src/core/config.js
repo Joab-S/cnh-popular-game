@@ -5,7 +5,7 @@ export const AREAS = {
   home: 'home', 
   city: 'city',
   drivingSchool: 'driving-school',
-  clinic: 'clinic', 
+  clinic: 'clinic',
 };
 
 export const GAME_CONFIG = {
