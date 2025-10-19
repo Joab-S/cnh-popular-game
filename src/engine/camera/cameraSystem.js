@@ -73,9 +73,16 @@ export function shake(scene, duration = 200, intensity = 0.01) {
 /**
  * Transição simples entre áreas (fade-out -> callback -> fade-in).
  */
-export function transition(scene, callback, duration = 600) {
-  fadeOut(scene, duration, 0x000000, () => {
+export function transition(scene, callback, duration = 800) {
+  const cam = scene.cameras.main;
+
+  cam.fadeOut(duration, 0, 0, 0);
+  
+  cam.once('camerafadeoutcomplete', () => {
     if (callback) callback();
-    fadeIn(scene, duration);
+
+    scene.time.delayedCall(100, () => {
+      fadeIn(scene, duration);
+    });
   });
 }

@@ -13,7 +13,7 @@ export default class DialogBubble {
     const boxW = Math.min(520, width - 40);
     const boxH = 110;
 
-    const container = this.scene.add.container(width / 2, height - 160);
+    const container = this.scene.add.container(width / 2, height - 160).setScrollFactor(0);
     const bg = this.scene.add.rectangle(0, 0, boxW, boxH, 0x000000, 0.75)
       .setStrokeStyle(2, 0xffffff, 0.9)
       .setOrigin(0.5);

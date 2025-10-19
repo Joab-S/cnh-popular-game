@@ -3,13 +3,12 @@ import * as CameraSystem from "../engine/camera/cameraSystem.js";
 import { createPlayerState } from "../engine/player/playerState.js";
 import { setupPlayer, updatePlayerMovement } from "../engine/player/playerController.js";
 import { setupUI, updateUI } from "../engine/ui/uiSystem.js";
-// import { setupInteractions, updateInteractions } from "../engine/interaction/interactionSystem.js";
 import { setupTransitions, checkTransitions } from "../engine/transition/transitionSystem.js";
 import { setupDocuments, updateDocuments } from "../phases/phase1_home/documentSystem.js";
 import { updatePhase2 } from "../phases/phase2_city/SelectionSystem.js";
 import InteractiveObject from "../engine/interaction/InteractiveObject.js";
 import { updateGenericInteractions } from '../engine/interaction/interactionSystem.js';
-import { WORLD_SIZE_FACTOR } from "./config.js";
+import { AREAS, WORLD_SIZE } from "./config.js";
 
 /**
  * CENA PRINCIPAL DO JOGO
@@ -46,8 +45,8 @@ export default class GameScene extends Phaser.Scene {
 
     // Fundo
     this.add
-      .image(width / 2, height / 2, 'background')
-      .setDisplaySize(width, height)
+      .image(WORLD_SIZE / 2, height / 2, 'background')
+      .setDisplaySize(WORLD_SIZE, height)
       .setDepth(-1);
     this.ground = new Ground(this);
 
@@ -76,14 +75,14 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.pc, this.ground.ground);
 
     // Player
-    this.player = setupPlayer(this, 60, height - 150);
+    this.player = setupPlayer(this, 60, height - 105);
 
     // Estado global do jogador
     this.playerState = createPlayerState();
-    this.playerState.currentArea = "home";
+    this.playerState.currentArea = AREAS.home;
 
     // Câmera e mundo
-    CameraSystem.initCamera(this, this.player, width * WORLD_SIZE_FACTOR, height);
+    CameraSystem.initCamera(this, this.player, WORLD_SIZE, height);
 
     // Controles globais
     this.keys = this.input.keyboard.addKeys({
@@ -109,8 +108,12 @@ export default class GameScene extends Phaser.Scene {
     
     try {
       updatePlayerMovement(this);
-      updateDocuments(this);
-      updatePhase2(this);
+      if (this.playerState?.currentArea === AREAS.home && this.documents) {
+        updateDocuments(this);
+      }
+      if (this.playerState?.currentArea === AREAS.city) {
+        updatePhase2(this);
+      }
       updateGenericInteractions(this);
       checkTransitions(this);
       updateUI(this);

@@ -6,7 +6,7 @@ export function setupUI(scene) {
     backgroundColor: 'rgba(0,0,0,0.6)',
     padding: { x: 10, y: 5 },
     align: 'center'
-  }).setOrigin(0.5).setAlpha(0).setDepth(10);
+  }).setOrigin(0.5).setAlpha(0).setDepth(10).setScrollFactor(0);
 
   return {
     inventory,

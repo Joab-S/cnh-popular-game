@@ -45,6 +45,7 @@ export function setupInteractiveObject(scene, config) {
 export function updateGenericInteractions(scene) {
   const { player, keys, interactiveObjects } = scene;
   if (!player || !interactiveObjects) return;
+  if (scene.playerState?.quizActive) return; 
 
   interactiveObjects.forEach(entry => {
     const dx = Math.abs(player.x - entry.object.x);

@@ -48,12 +48,10 @@ export function clearScene(scene, keepObjects = []) {
   }
 
   // === 4. Limpa referências comuns de cenário ===
-  scene.ground = null;
+  // scene.ground = null;
   scene.obstacles = null;
   scene.detran = null;
   scene.pc = null;
-  scene.homeZone = null;
-  scene.phase2 = null;
 
   // Player e UI permanecem, pois estão em "keepObjects"
 }
