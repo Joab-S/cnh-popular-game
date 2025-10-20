@@ -7,11 +7,20 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.isWaitingToStart = true;
     this.signs = [];
     this.spawnTimer = null;
-    this.activeGoSign = null;
+    this.targetSign = null;
+    this.targetSignType = null;
     this.spaceKey = null;
     this.enterKey = null;
     this.startScreenTexts = [];
     this.spaceKeyCooldown = false;
+    this.allSignTypes = [
+      { key: 'sign_go', name: 'Siga Adiante' },
+      { key: 'sign_stop', name: 'Pare' },
+      { key: 'sign_pedestrian', name: 'Pedestre' },
+      { key: 'sign_prohibited', name: 'Proibido' },
+      { key: 'sign_roundabout', name: 'Rotatória' },
+      { key: 'sign_curvy', name: 'Via Sinuosa' }
+    ];
   }
 
   preload() {
@@ -36,7 +45,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.spaceKey.on('down', this.handleSpacePress, this);
-    
+
     this.input.on('gameobjectdown', this.handleSignClick, this);
   }
 
@@ -55,7 +64,10 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   setupStartScreen() {
     const { width, height } = this.scale;
 
-    const titleText = this.add.text(width / 2, height / 2 - 80, 'EXAME TEÓRICO', {
+    const randomIndex = Phaser.Math.Between(0, this.allSignTypes.length - 1);
+    this.targetSignType = this.allSignTypes[randomIndex];
+
+    const titleText = this.add.text(width / 2, height / 2 - 120, 'EXAME TEÓRICO', {
       fontSize: '32px',
       fill: '#4cc9f0',
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
@@ -63,20 +75,29 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     }).setOrigin(0.5);
     this.startScreenTexts.push(titleText);
 
-    const instructionText = this.add.text(width / 2, height / 2 - 20, 'Pressione BARRA DE ESPAÇO ou CLIQUE NA PLACA sempre que a placa "Siga Adiante" aparecer', {
+    // CORREÇÃO: Esta é a imagem GRANDE da tela inicial
+    const targetSignImage = this.add.image(width / 2, height / 2 - 40, this.targetSignType.key)
+      .setScale(0.08);
+    this.startScreenTexts.push(targetSignImage);
+
+    const instructionText = this.add.text(width / 2, height / 2 + 20, `Pressione a BARRA DE ESPAÇO ou clique na placa "${this.targetSignType.name}" quando ela aparecer`, {
       fontSize: '18px',
       fill: '#e2e2e2',
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-      fontWeight: '300'
+      fontWeight: '300',
+      wordWrap: { width: width * 0.8 },
+      align: 'center'
     }).setOrigin(0.5).setAlpha(0.9);
+    
     this.startScreenTexts.push(instructionText);
 
-    this.startText = this.add.text(width / 2, height / 2 + 60, 'Clique em qualquer lugar para começar', {
+    this.startText = this.add.text(width / 2, height / 2 + 80, 'Clique em qualquer lugar para começar', {
       fontSize: '24px',
       fill: '#4ade80',
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
       fontWeight: 'bold'
     }).setOrigin(0.5);
+    
     this.startScreenTexts.push(this.startText);
 
     this.tweens.add({
@@ -90,21 +111,6 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.input.once('pointerdown', this.startGame, this);
   }
 
-  create() {
-    const { width, height } = this.scale;
-
-    this.add.rectangle(width / 2, height / 2, width, height, 0x1b2838);
-    
-    this.createGridPattern();
-    
-    this.setupStartScreen();
-    
-    this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    this.spaceKey.on('down', this.handleSpacePress, this);
-
-    this.input.on('gameobjectdown', this.handleSignClick, this);
-  }
-
   setupGameUI() {
     const { width } = this.scale;
 
@@ -114,13 +120,6 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
       fontWeight: '300'
     }).setOrigin(0.5);
-
-    this.instructionText = this.add.text(width / 2, 70, 'Pressione BARRA DE ESPAÇO quando a placa "Siga Adiante" aparecer', {
-      fontSize: '16px',
-      fill: '#e2e2e2',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-      fontWeight: '300'
-    }).setOrigin(0.5).setAlpha(0.8);
   }
 
   startGame() {
@@ -135,12 +134,16 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   }
 
   removeStartScreen() {
-    this.startScreenTexts.forEach(text => {
-      if (text && typeof text.destroy === 'function') {
-        text.destroy();
+    this.startScreenTexts.forEach(element => {
+      if (element && typeof element.destroy === 'function') {
+        element.destroy();
       }
     });
     this.startScreenTexts = [];
+    
+    if (this.startText && typeof this.startText.destroy === 'function') {
+      this.startText.destroy();
+    }
     
     this.tweens.killTweensOf(this.startText);
   }
@@ -164,31 +167,25 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     const { width, height } = this.scale;
     
     const random = Phaser.Math.Between(1, 100);
-    let texture, isGoodSign;
+    let texture, isTargetSign;
 
-    if (random <= 40 && !this.activeGoSign) {
-      texture = 'sign_go';
-      isGoodSign = true;
-    } else if (random <= 60) {
-      texture = 'sign_stop';
-      isGoodSign = false;
-    } else if (random <= 75) {
-      texture = 'sign_prohibited';
-      isGoodSign = false;
-    } else if (random <= 85) {
-      texture = 'sign_pedestrian';
-      isGoodSign = false;
-    } else if (random <= 95) {
-      texture = 'sign_roundabout';
-      isGoodSign = false;
+    if (random <= 40 && !this.targetSign) {
+      texture = this.targetSignType.key;
+      isTargetSign = true;
     } else {
-      texture = 'sign_curvy';
-      isGoodSign = false;
+      const nonTargetSigns = this.allSignTypes.filter(sign => sign.key !== this.targetSignType.key);
+      const randomIndex = Phaser.Math.Between(0, nonTargetSigns.length - 1);
+      const randomSign = nonTargetSigns[randomIndex];
+      texture = randomSign.key;
+      isTargetSign = false;
     }
 
-    if (!this.activeGoSign && !isGoodSign && Phaser.Math.Between(1, 100) <= 30) {
-      texture = 'sign_go';
-      isGoodSign = true;
+    if (this.targetSign && isTargetSign) {
+      const nonTargetSigns = this.allSignTypes.filter(sign => sign.key !== this.targetSignType.key);
+      const randomIndex = Phaser.Math.Between(0, nonTargetSigns.length - 1);
+      const randomSign = nonTargetSigns[randomIndex];
+      texture = randomSign.key;
+      isTargetSign = false;
     }
     
     const position = this.findNonOverlappingPosition();
@@ -201,7 +198,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     
     const sign = this.add.image(x, y, texture)
       .setInteractive({ useHandCursor: true })
-      .setData('isGoodSign', isGoodSign)
+      .setData('isTargetSign', isTargetSign)
       .setData('type', texture)
       .setData('alreadyScored', false);
     
@@ -223,8 +220,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     
     this.signs.push(sign);
 
-    if (isGoodSign) {
-      this.activeGoSign = sign;
+    if (isTargetSign) {
+      this.targetSign = sign;
     }
 
     const lifeTime = Phaser.Math.Between(1200, 2000);
@@ -264,7 +261,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   handleSpacePress() {
     if (!this.isGameActive || this.isWaitingToStart || this.spaceKeyCooldown) return;
     
-    if (this.activeGoSign) {
+    if (this.targetSign) {
       this.handleCorrectSpacePress();
     } else {
       this.handleWrongSpacePress();
@@ -272,16 +269,16 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   }
 
   handleCorrectSpacePress() {
-    const sign = this.activeGoSign;
+    const sign = this.targetSign;
     this.scoreForSign(sign);
   }
 
   handleSignClick(pointer, gameObject) {
     if (!this.isGameActive || this.isWaitingToStart) return;
     
-    const isGoodSign = gameObject.getData('isGoodSign');
+    const isTargetSign = gameObject.getData('isTargetSign');
     
-    if (isGoodSign) {
+    if (isTargetSign) {
       this.scoreForSign(gameObject);
     } else {
       this.handleWrongClick(gameObject);
@@ -374,8 +371,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   removeSign(sign) {
     if (!sign.active) return;
 
-    if (this.activeGoSign === sign) {
-      this.activeGoSign = null;
+    if (this.targetSign === sign) {
+      this.targetSign = null;
     }
     
     this.tweens.add({
@@ -401,7 +398,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     
     this.signs.forEach(sign => sign.destroy());
     this.signs = [];
-    this.activeGoSign = null;
+    this.targetSign = null;
     
     const { width, height } = this.scale;
     
