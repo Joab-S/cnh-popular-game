@@ -65,8 +65,8 @@ export default class GameScene extends Phaser.Scene {
     // PC
     new InteractiveObject(this, {
       key: 'pc',
-      x: width - 305,
-      y: height - 100,
+      x: width - 235,
+      y: height - 160,
       texture: 'pc',
       label: "Computador",
       dialogs: [
@@ -87,7 +87,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.pc, this.ground.ground);
 
     // Player
-    this.player = setupPlayer(this, 60, height - 105);
+    this.player = setupPlayer(this, 60, height - 305);
 
     // Estado global do jogador
     this.playerState = createPlayerState();
