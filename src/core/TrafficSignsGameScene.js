@@ -11,6 +11,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.spaceKey = null;
     this.enterKey = null;
     this.startScreenTexts = [];
+    this.spaceKeyCooldown = false;
   }
 
   preload() {
@@ -66,7 +67,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     }).setOrigin(0.5);
     this.startScreenTexts.push(titleText);
 
-    const instructionText = this.add.text(width / 2, height / 2 - 20, 'Pressione BARRA DE ESPAÇO sempre que a placa "Siga Adiante" aparecer', {
+    const instructionText = this.add.text(width / 2, height / 2 - 20, 'Pressione BARRA DE ESPAÇO ou CLIQUE NA PLACA sempre que a placa "Siga Adiante" aparecer', {
       fontSize: '18px',
       fill: '#e2e2e2',
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
@@ -143,7 +144,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     }
     
     this.spawnTimer = this.time.addEvent({
-      delay: 400,
+      delay: 600,
       callback: this.spawnSign,
       callbackScope: this,
       loop: true
@@ -183,25 +184,33 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       isGoodSign = true;
     }
     
-    const x = Phaser.Math.Between(100, width - 100);
-    const y = Phaser.Math.Between(150, height - 100);
+    const position = this.findNonOverlappingPosition();
+    if (!position) {
+      console.log('Não foi possível encontrar posição livre para nova placa');
+      return;
+    }
+    
+    const { x, y } = position;
     
     const sign = this.add.image(x, y, texture)
       .setInteractive({ useHandCursor: true })
       .setData('isGoodSign', isGoodSign)
-      .setData('type', texture);
+      .setData('type', texture)
+      .setData('alreadyScored', false);
     
     const baseScale = 0.12;
     const scaleVariation = Phaser.Math.FloatBetween(0.9, 1.1);
     const finalScale = baseScale * scaleVariation;
     
     sign.setScale(0);
+    
+    sign.radius = Math.max(sign.width, sign.height) * finalScale * 0.6;
 
     this.tweens.add({
       targets: sign,
       scaleX: finalScale,
       scaleY: finalScale,
-      duration: 100,
+      duration: 150,
       ease: 'Back.out'
     });
     
@@ -211,15 +220,42 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       this.activeGoSign = sign;
     }
 
-    const lifeTime = Phaser.Math.Between(800, 1500);
+    const lifeTime = Phaser.Math.Between(1200, 2000);
 
     this.time.delayedCall(lifeTime, () => {
       this.removeSign(sign);
     });
   }
 
+  findNonOverlappingPosition() {
+    const { width, height } = this.scale;
+    const maxAttempts = 50;
+    const minDistance = 120;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      const x = Phaser.Math.Between(100, width - 100);
+      const y = Phaser.Math.Between(150, height - 100);
+      
+      let overlaps = false;
+      
+      for (const existingSign of this.signs) {
+        const distance = Phaser.Math.Distance.Between(x, y, existingSign.x, existingSign.y);
+        if (distance < minDistance) {
+          overlaps = true;
+          break;
+        }
+      }
+      
+      if (!overlaps) {
+        return { x, y };
+      }
+    }
+    
+    return null;
+  }
+
   handleSpacePress() {
-    if (!this.isGameActive || this.isWaitingToStart) return;
+    if (!this.isGameActive || this.isWaitingToStart || this.spaceKeyCooldown) return;
     
     if (this.activeGoSign) {
       this.handleCorrectSpacePress();
@@ -229,16 +265,42 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   }
 
   handleCorrectSpacePress() {
+    const sign = this.activeGoSign;
+    this.scoreForSign(sign);
+  }
+
+  handleSignClick(pointer, gameObject) {
+    if (!this.isGameActive || this.isWaitingToStart) return;
+    
+    const isGoodSign = gameObject.getData('isGoodSign');
+    
+    if (isGoodSign) {
+      this.scoreForSign(gameObject);
+    } else {
+      this.handleWrongClick(gameObject);
+    }
+  }
+
+  scoreForSign(sign) {
+    if (sign.getData('alreadyScored')) {
+      return;
+    }
+    
+    sign.setData('alreadyScored', true);
+    
+    this.spaceKeyCooldown = true;
+    this.time.delayedCall(300, () => {
+      this.spaceKeyCooldown = false;
+    });
+    
     this.score++;
     this.scoreText.setText(`${this.score}/${this.maxScore}`);
-    
-    const sign = this.activeGoSign;
     
     this.tweens.add({
       targets: sign,
       scaleX: sign.scaleX * 1.3,
       scaleY: sign.scaleY * 1.3,
-      duration: 150,
+      duration: 200,
       yoyo: true,
       onComplete: () => {
         this.removeSign(sign);
@@ -253,22 +315,19 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   }
 
   handleWrongSpacePress() {
+    if (this.spaceKeyCooldown) return;
+    
+    this.spaceKeyCooldown = true;
+    this.time.delayedCall(300, () => {
+      this.spaceKeyCooldown = false;
+    });
+    
     this.score = Math.max(0, this.score - 1);
     this.scoreText.setText(`${this.score}/${this.maxScore}`);
 
     this.cameras.main.shake(200, 0.005);
 
     this.showFeedback(this.scale.width / 2, this.scale.height - 50, '-1', 0xf72585);
-  }
-
-  handleSignClick(pointer, gameObject) {
-    if (!this.isGameActive || this.isWaitingToStart) return;
-    
-    const isGoodSign = gameObject.getData('isGoodSign');
-    
-    if (!isGoodSign) {
-      this.handleWrongClick(gameObject);
-    }
   }
 
   handleWrongClick(sign) {
@@ -279,7 +338,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       targets: sign,
       scaleX: sign.scaleX * 0.7,
       scaleY: sign.scaleY * 0.7,
-      duration: 200,
+      duration: 250,
       yoyo: true
     });
 
@@ -300,7 +359,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       targets: feedback,
       y: y - 80,
       alpha: 0,
-      duration: 800,
+      duration: 1000,
       onComplete: () => feedback.destroy()
     });
   }
@@ -317,7 +376,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       scaleX: 0,
       scaleY: 0,
       alpha: 0,
-      duration: 80,
+      duration: 120,
       onComplete: () => {
         const index = this.signs.indexOf(sign);
         if (index > -1) {
