@@ -55,18 +55,18 @@ export default class GameScene extends Phaser.Scene {
     this.homeBg1 = this.add
       .image(width / 2, height / 2, "home_bg")
       .setDepth(-2)
-      .setScale(0.5);
+      .setScale(0.48);
 
     this.homeBg2 = this.add
       .image(width / 2 + 600, height / 2, "home_bg_2")
       .setDepth(-2)
-      .setScale(0.5);
+      .setScale(0.48);
 
     // PC
     new InteractiveObject(this, {
       key: 'pc',
-      x: width - 260,
-      y: height - 190,
+      x: width - 305,
+      y: height - 100,
       texture: 'pc',
       label: "Computador",
       dialogs: [
@@ -87,7 +87,7 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.pc, this.ground.ground);
 
     // Player
-    this.player = setupPlayer(this, 60, height - 300);
+    this.player = setupPlayer(this, 60, height - 105);
 
     // Estado global do jogador
     this.playerState = createPlayerState();
