@@ -34,12 +34,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     
     this.setupStartScreen();
     
-    // Configurar as teclas
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.spaceKey.on('down', this.handleSpacePress, this);
-    
-    this.enterKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
-    this.enterKey.on('down', this.handleEnterPress, this);
     
     this.input.on('gameobjectdown', this.handleSignClick, this);
   }
@@ -75,7 +71,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     }).setOrigin(0.5).setAlpha(0.9);
     this.startScreenTexts.push(instructionText);
 
-    this.startText = this.add.text(width / 2, height / 2 + 60, 'Pressione ENTER para começar', {
+    this.startText = this.add.text(width / 2, height / 2 + 60, 'Clique em qualquer lugar para começar', {
       fontSize: '24px',
       fill: '#4ade80',
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
@@ -90,6 +86,23 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       yoyo: true,
       repeat: -1
     });
+
+    this.input.once('pointerdown', this.startGame, this);
+  }
+
+  create() {
+    const { width, height } = this.scale;
+
+    this.add.rectangle(width / 2, height / 2, width, height, 0x1b2838);
+    
+    this.createGridPattern();
+    
+    this.setupStartScreen();
+    
+    this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.spaceKey.on('down', this.handleSpacePress, this);
+
+    this.input.on('gameobjectdown', this.handleSignClick, this);
   }
 
   setupGameUI() {
@@ -108,12 +121,6 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
       fontWeight: '300'
     }).setOrigin(0.5).setAlpha(0.8);
-  }
-
-  handleEnterPress() {
-    if (this.isWaitingToStart) {
-      this.startGame();
-    }
   }
 
   startGame() {
