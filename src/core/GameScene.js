@@ -35,6 +35,8 @@ export default class GameScene extends Phaser.Scene {
     // === ITENS ===
     this.load.image("doc_rg", "./assets/images/rg.png");
     this.load.image("doc_cpf", "./assets/images/cpf.png");
+    this.load.image("home_bg", "./assets/images/home_bg.png");
+    this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
 
     // === TEXTURAS DO MAPA ===
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
@@ -43,18 +45,28 @@ export default class GameScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
 
-    // Fundo
     this.add
       .image(WORLD_SIZE / 2, height / 2, 'background')
       .setDisplaySize(WORLD_SIZE, height)
-      .setDepth(-1);
+      .setDepth(-3);
+
     this.ground = new Ground(this);
+    
+    this.homeBg1 = this.add
+      .image(width / 2, height / 2, "home_bg")
+      .setDepth(-2)
+      .setScale(0.5);
+
+    this.homeBg2 = this.add
+      .image(width / 2 + 600, height / 2, "home_bg_2")
+      .setDepth(-2)
+      .setScale(0.5);
 
     // PC
     new InteractiveObject(this, {
       key: 'pc',
-      x: width - 320,
-      y: height - 100,
+      x: width - 260,
+      y: height - 190,
       texture: 'pc',
       label: "Computador",
       dialogs: [
@@ -71,11 +83,11 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    this.pc.setScale(0.3);
+    this.pc.setScale(0.35);
     this.physics.add.collider(this.pc, this.ground.ground);
 
     // Player
-    this.player = setupPlayer(this, 60, height - 105);
+    this.player = setupPlayer(this, 60, height - 300);
 
     // Estado global do jogador
     this.playerState = createPlayerState();

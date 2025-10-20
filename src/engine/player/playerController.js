@@ -2,7 +2,7 @@ export function setupPlayer(scene, x, y) {
   const player = scene.physics.add.sprite(x, y, 'player', 0);
   player.setCollideWorldBounds(true);
   player.setBounce(0);
-  player.setScale(0.3);
+  player.setScale(0.6);
   scene.physics.add.collider(player, scene.ground.ground);
 
   // animações
