@@ -35,6 +35,7 @@ export default class GameScene extends Phaser.Scene {
     // === ITENS ===
     this.load.image("doc_rg", "./assets/images/rg.png");
     this.load.image("doc_cpf", "./assets/images/cpf.png");
+    this.load.image("doc_comprovante", "./assets/images/comprovante.png");
     this.load.image("home_bg", "./assets/images/home_bg.png");
     this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
 
@@ -71,17 +72,22 @@ export default class GameScene extends Phaser.Scene {
       texture: 'pc',
       label: "Computador",
       dialogs: [
-        '“CNH Popular Ceará” — inscrições abertas!',
-        'Clique para saber como participar.'
+        'CNH Popular Ceará - Inscrições Abertas!',
+        'O programa oferece a 1ª via da Carteira Nacional de Habilitação de forma gratuita para pessoas de baixa renda.',
+        'Para se inscrever, você precisa: Ter entre 18 e 65 anos, ser de família de baixa renda e morar no Ceará há pelo menos 2 anos.',
+        'O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exames médicos e provas teórica e prática.',
+        'Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF e comprovante de residência.',
+        'Encontre seus documentos para começar o processo!'
       ],
       onInteract: () => {
         if (!this.playerState.docsMissionCompleted) {
           this.playerState.hasMission = true;
-          this.ui.showMessage('Missão: encontre seus documentos!');
+          this.ui.showMessage('Missão: Encontre RG, CPF e comprovante na sua casa!');
         } else {
-          this.ui.showMessage('Você já concluiu esta etapa!');
+          this.ui.showMessage('Documentos encontrados! Agora você pode se inscrever.');
         }
-      }
+      },
+      hintText: 'Clique E para ver informações sobre a CNH Popular'
     });
 
     this.pc.setScale(0.35);
@@ -114,6 +120,15 @@ export default class GameScene extends Phaser.Scene {
     this.ui = setupUI(this);
     this.transition = setupTransitions(this);
     this.documents = setupDocuments(this);
+
+    this.ui = setupUI(this);
+    this.transition = setupTransitions(this);
+    this.documents = setupDocuments(this);
+
+    // === NOVO: Mensagem inicial de orientação ===
+    this.time.delayedCall(1000, () => {
+      this.ui.showMessage('Aproxime-se do computador e aperte a TECLA E para começar sua jornada!');
+    });
   }
 
   update() {

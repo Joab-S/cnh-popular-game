@@ -11,7 +11,7 @@ export default class DialogBubble {
     const { width, height } = this.scene.scale;
     const padding = 8;
     const border = 2;
-    const boxW = Math.min(520, width - 40);
+    const boxW = Math.min(650, width - 40);
     const boxH = 80;
     const scale = 1;
 
