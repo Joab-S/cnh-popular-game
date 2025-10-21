@@ -40,6 +40,7 @@ export default class GameScene extends Phaser.Scene {
 
     // === TEXTURAS DO MAPA ===
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
+    
   }
 
   create() {
