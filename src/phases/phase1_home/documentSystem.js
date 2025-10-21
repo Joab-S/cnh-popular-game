@@ -37,6 +37,13 @@ export function setupDocuments(scene) {
       x: 800,
       y: scene.scale.height - 150,
       desc: 'Cadastro de Pessoa Física, usado em cadastros e registros.'
+    },
+    {
+      id: 'Comprovante de Residência',
+      key: 'doc_comprovante',
+      x: 200,
+      y: scene.scale.height - 150,
+      desc: 'Comprovante de residência, usado para confirmar seu endereço.'
     }
   ];
 
@@ -128,8 +135,8 @@ function checkMissionProgress(scene) {
     playerState.hasMission = false;
 
     // Feedback e encerramento
-    scene.time.delayedCall(1000, () => {
-      scene.ui.showMessage("Você foi inscrito na CNH Popular!");
+    scene.time.delayedCall(2000, () => {
+      scene.ui.showMessage("Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!");
     });
   }
 }

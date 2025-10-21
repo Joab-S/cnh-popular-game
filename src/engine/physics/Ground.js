@@ -3,7 +3,7 @@ import { WORLD_SIZE } from "../../core/config";
 export default class Ground {
   constructor(scene) {
     this.scene = scene;
-    this.ground = null; // objeto visual invisível com corpo estático
+    this.ground = null;
     this.create();
   }
 
@@ -20,10 +20,12 @@ export default class Ground {
     const asphaltH  = 30;
     const yStart = height - (sidewalkH + dividerH + asphaltH);
 
-    // Camadas VISUAIS
+    // REMOVER as camadas visuais ou comentá-las:
+    /*
     this.scene.add.rectangle(WORLD_SIZE/2, yStart + sidewalkH/2, WORLD_SIZE, sidewalkH, 0xaaaaaa).setDepth(1);
     this.scene.add.rectangle(WORLD_SIZE/2, yStart + sidewalkH + dividerH/2, WORLD_SIZE, dividerH, 0xffffff).setDepth(1);
     this.scene.add.rectangle(WORLD_SIZE/2, yStart + sidewalkH + dividerH + asphaltH/2, WORLD_SIZE, asphaltH, 0x222222).setDepth(0);
+    */
 
     // Piso FÍSICO (usa a faixa da calçada)
     const groundY = yStart + sidewalkH/2;

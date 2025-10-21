@@ -35,47 +35,66 @@ export default class GameScene extends Phaser.Scene {
     // === ITENS ===
     this.load.image("doc_rg", "./assets/images/rg.png");
     this.load.image("doc_cpf", "./assets/images/cpf.png");
+    this.load.image("doc_comprovante", "./assets/images/comprovante.png");
+    this.load.image("home_bg", "./assets/images/home_bg.png");
+    this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
 
     // === TEXTURAS DO MAPA ===
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
+    
   }
 
   create() {
     const { width, height } = this.scale;
 
-    // Fundo
     this.add
       .image(WORLD_SIZE / 2, height / 2, 'background')
       .setDisplaySize(WORLD_SIZE, height)
-      .setDepth(-1);
+      .setDepth(-3);
+
     this.ground = new Ground(this);
+    
+    this.homeBg1 = this.add
+      .image(width / 2, height / 2, "home_bg")
+      .setDepth(-2)
+      .setScale(0.48);
+
+    this.homeBg2 = this.add
+      .image(width / 2 + 600, height / 2, "home_bg_2")
+      .setDepth(-2)
+      .setScale(0.48);
 
     // PC
     new InteractiveObject(this, {
       key: 'pc',
-      x: width - 320,
-      y: height - 100,
+      x: width - 235,
+      y: height - 160,
       texture: 'pc',
       label: "Computador",
       dialogs: [
-        '“CNH Popular Ceará” — inscrições abertas!',
-        'Clique para saber como participar.'
+        'CNH Popular Ceará - Inscrições Abertas!',
+        'O programa oferece a 1ª via da Carteira Nacional de Habilitação de forma gratuita para pessoas de baixa renda.',
+        'Para se inscrever, você precisa: Ter entre 18 e 65 anos, ser de família de baixa renda e morar no Ceará há pelo menos 2 anos.',
+        'O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exames médicos e provas teórica e prática.',
+        'Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF e comprovante de residência.',
+        'Encontre seus documentos para começar o processo!'
       ],
       onInteract: () => {
         if (!this.playerState.docsMissionCompleted) {
           this.playerState.hasMission = true;
-          this.ui.showMessage('Missão: encontre seus documentos!');
+          this.ui.showMessage('Missão: Encontre RG, CPF e comprovante na sua casa!');
         } else {
-          this.ui.showMessage('Você já concluiu esta etapa!');
+          this.ui.showMessage('Documentos encontrados! Agora você pode se inscrever.');
         }
-      }
+      },
+      hintText: 'Clique E para ver informações sobre a CNH Popular'
     });
 
-    this.pc.setScale(0.3);
+    this.pc.setScale(0.35);
     this.physics.add.collider(this.pc, this.ground.ground);
 
     // Player
-    this.player = setupPlayer(this, 60, height - 105);
+    this.player = setupPlayer(this, 60, height - 305);
 
     // Estado global do jogador
     this.playerState = createPlayerState();
@@ -101,6 +120,15 @@ export default class GameScene extends Phaser.Scene {
     this.ui = setupUI(this);
     this.transition = setupTransitions(this);
     this.documents = setupDocuments(this);
+
+    this.ui = setupUI(this);
+    this.transition = setupTransitions(this);
+    this.documents = setupDocuments(this);
+
+    // === NOVO: Mensagem inicial de orientação ===
+    this.time.delayedCall(1000, () => {
+      this.ui.showMessage('Aproxime-se do computador e aperte a TECLA E para começar sua jornada!');
+    });
   }
 
   update() {
