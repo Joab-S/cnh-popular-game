@@ -51,7 +51,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("home_bg", "./assets/images/home_bg.png");
     this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
 
-    this.load.image("bg_intro", "./assets/images/bg_intro.png");
+    this.load.image("bg_intro", "./assets/images/bg_intro_3.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }

@@ -12,8 +12,7 @@ export function setupCharacterSelection(scene, onCharacterSelected) {
     const sceneBackground = scene.add.image(width / 2, height / 2, 'bg_intro')
         .setDisplaySize(width, height);
 
-    // Overlay escuro para melhor contraste
-    const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.3);
+    const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.2);
 
     const mainContainer = scene.add.container(width / 2, height / 2);
     
@@ -110,13 +109,13 @@ function createCharacterOption(scene, x, y, textureKey, keyInstruction, onClick)
     const optionHeight = 240;
     
 const background = scene.add.graphics();
-    background.fillStyle(0xffffff, 0.15); // Branco com apenas 15% de opacidade
+    background.fillStyle(0xffffff, 0.15);
     background.fillRoundedRect(-optionWidth/2, -optionHeight/2, optionWidth, optionHeight, 12);
-    background.lineStyle(1, 0xffffff, 0.3); // Borda branca bem suave
+    background.lineStyle(1, 0xffffff, 0.3);
     background.strokeRoundedRect(-optionWidth/2, -optionHeight/2, optionWidth, optionHeight, 12);
     
     const sprite = scene.add.sprite(0, -10, textureKey)
-        .setDisplaySize(120, 160)
+        .setDisplaySize(100, 160)
         .setInteractive({ useHandCursor: true });
 
     // === INSTRUÇÃO DA TECLA ===
