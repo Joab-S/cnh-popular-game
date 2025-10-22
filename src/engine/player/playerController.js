@@ -1,21 +1,21 @@
-export function setupPlayer(scene, x, y) {
-  const player = scene.physics.add.sprite(x, y, 'player', 0);
+export function setupPlayer(scene, x, y, textureKey = 'player_boy') {
+  const player = scene.physics.add.sprite(x, y, textureKey, 0);
   player.setCollideWorldBounds(true);
   player.setBounce(0);
   player.setScale(0.45);
   scene.physics.add.collider(player, scene.ground.ground);
 
-  // animações
+  // animações - usa a textureKey fornecida
   if (!scene.anims.exists('walk')) {
     scene.anims.create({
       key: 'walk',
-      frames: scene.anims.generateFrameNumbers('player', { start: 0, end: 3 }),
+      frames: scene.anims.generateFrameNumbers(textureKey, { start: 0, end: 3 }),
       frameRate: 6,
       repeat: -1
     });
     scene.anims.create({
       key: 'idle',
-      frames: [{ key: 'player', frame: 0 }],
+      frames: [{ key: textureKey, frame: 0 }],
       frameRate: 1
     });
   }
