@@ -8,7 +8,7 @@ export function setupUI(scene) {
 
   const background = scene.add.graphics();
   const textWidth = 600;
-  const textHeight = 50;
+  const textHeight = 80;
 
   background.fillStyle(0x000000, 0.4);
   background.fillRect(-textWidth/2 + 2, -textHeight/2 + 2, textWidth, textHeight);
@@ -20,7 +20,7 @@ export function setupUI(scene) {
   background.strokeRect(-textWidth/2, -textHeight/2, textWidth, textHeight);
   
   const messageText = scene.add.text(0, 0, '', {
-    fontFamily: 'monospace',
+    fontFamily: '"Silkscreen", monospace',
     fontSize: '14px',
     color: '#ffffff',
     align: 'center',
