@@ -2,9 +2,15 @@ import Phaser from "phaser";
 
 const MAX_FORCE = 0.02;
 const ROTATION_SPEED = 0.0025;
-const DRIFT_THRESHOLD = 0.005;
+const DRIFT_THRESHOLD = 0.01;
 const DRIFT_COOLDOWN = 10;
-const THROTTLE_RATE = 0.001;
+const THROTTLE_RATE = 0.00001;
+
+const OBSTACLE_WIDTH = 134;
+const OBSTACLE_HEIGHT = 134;
+
+const WORLD_WIDTH = 1536;
+const WORLD_HEIGHT = 1024;
 
 class Racecar extends Phaser.Physics.Matter.Image {
   throttle = 0;
@@ -48,7 +54,7 @@ class Racecar extends Phaser.Physics.Matter.Image {
         MAX_FORCE
       );
     } else {
-      this.throttle *= 0.1;
+      this.throttle *= 0.2;
     }
 
     const forceX = Math.cos(rotation) * this.throttle;
@@ -108,7 +114,7 @@ export default class CarGameScene extends Phaser.Scene {
   preload() {
     this.load.image("soil", "./assets/images/solo.png");
     this.load.image("car", "./assets/images/carro.png");
-    this.load.image("barricade", "./assets/images/barricada.png"); // caixa de colisão
+    this.load.image("barricade", "./assets/images/obstacle.png"); // caixa de colisão
     this.load.image("tire-mark", "./assets/images/tire_mark.png");
   }
 
@@ -127,23 +133,12 @@ export default class CarGameScene extends Phaser.Scene {
 
     this.cameras.main.startFollow(this.car, true, 0.9, 0.9);
 
-    this.matter.world.setBounds(0, 0, 1536, 1024, 100, { isStatic: true });
-    this.cameras.main.setBounds(0, 0, 1536, 1024);
-
-    this.obstacles = [];
-    const positions = [
-      { x: 400, y: 300 },
-      { x: 700, y: 500 },
-      { x: 1200, y: 400 },
-    ];
-
-    positions.forEach((pos) => {
-      const obs = this.matter.add.image(pos.x, pos.y, "barricade", null, {
-        isStatic: true,
-      });
-      obs.setScale(0.3);
-      this.obstacles.push(obs);
+    this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 100, {
+      isStatic: true,
     });
+    this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
+
+    this.generateObstacles();
 
     // Detecta colisão entre carro e obstáculos
     this.matter.world.on("collisionstart", (event) => {
@@ -173,11 +168,74 @@ export default class CarGameScene extends Phaser.Scene {
     const soilWidth = texture.getSourceImage().width;
     const soilHeight = texture.getSourceImage().height;
 
-    this.car.setPosition(soilWidth / 2, soilHeight / 2);
-    this.car.setVelocity(0, 0);
-    this.car.setAngularVelocity(0);
+    // this.car.setPosition(soilWidth / 2, soilHeight / 2);
+    // this.car.setVelocity(0, 0);
+    // this.car.setAngularVelocity(0);
 
     // Também pode exibir mensagem de game over
     console.log("Game Over! O carro colidiu com um obstáculo!");
+  }
+
+  generateObstacles() {
+    this.obstacles = [];
+
+    for (let y = OBSTACLE_HEIGHT / 2; y < WORLD_HEIGHT; y += OBSTACLE_HEIGHT) {
+      const obs = this.matter.add.image(
+        OBSTACLE_WIDTH / 2,
+        y,
+        "barricade",
+        null,
+        {
+          isStatic: true,
+        }
+      );
+
+      const obs2 = this.matter.add.image(
+        WORLD_WIDTH - OBSTACLE_WIDTH / 2,
+        y,
+        "barricade",
+        null,
+        {
+          isStatic: true,
+        }
+      );
+
+      obs.setScale(0.2);
+      obs2.setScale(0.2);
+
+      this.obstacles.push(obs);
+      this.obstacles.push(obs2);
+    }
+
+    for (
+      let x = (OBSTACLE_WIDTH * 3) / 2;
+      x < WORLD_WIDTH;
+      x += OBSTACLE_WIDTH
+    ) {
+      const obs = this.matter.add.image(
+        x,
+        OBSTACLE_HEIGHT / 2,
+        "barricade",
+        null,
+        {
+          isStatic: true,
+        }
+      );
+
+      const obs2 = this.matter.add.image(
+        x,
+        WORLD_HEIGHT,
+        "barricade",
+        null,
+        {
+          isStatic: true,
+        }
+      );
+
+      obs.setScale(0.2);
+      obs2.setScale(0.2);
+      this.obstacles.push(obs);
+      this.obstacles.push(obs2);
+    }
   }
 }
