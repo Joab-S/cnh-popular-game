@@ -61,25 +61,51 @@ export function setupCharacterSelection(scene, onCharacterSelected) {
     // === CONTAINER DOS PERSONAGENS ===
     const charactersContainer = scene.add.container(0, 0);
 
-    const boyOption = createCharacterOption(scene, -120, 0, 'select_player_boy', () => {
+    const boyOption = createCharacterOption(scene, -120, 0, 'select_player_boy', 'TECLA A', () => {
         selectCharacter(scene, 'boy', onCharacterSelected);
     });
 
-    const girlOption = createCharacterOption(scene, 120, 0, 'select_player_girl', () => {
+    const girlOption = createCharacterOption(scene, 120, 0, 'select_player_girl', 'TECLA D', () => {
         selectCharacter(scene, 'girl', onCharacterSelected);
     });
     
     charactersContainer.add([girlOption, boyOption]);
     
-    // === INSTRUÇÃO ===
-    const instruction = scene.add.text(0, boxHeight/2 - 40, 'Clique no personagem para selecionar', {
+    // === INSTRUÇÃO ATUALIZADA ===
+    const instruction = scene.add.text(0, boxHeight/2 - 40, 'Clique no personagem ou use as teclas para selecionar', {
         fontFamily: '"Silkscreen", "Courier New", monospace',
         fontSize: '14px',
-        color: '#000000',
+        color: '#2c3e50',
         align: 'center'
     }).setOrigin(0.5);
 
     mainContainer.add([background, title, charactersContainer, instruction]);
+    
+    // === CONFIGURAR CONTROLES DE TECLADO ===
+    scene.keys = scene.input.keyboard.addKeys({
+        A: Phaser.Input.Keyboard.KeyCodes.A,
+        D: Phaser.Input.Keyboard.KeyCodes.D
+    });
+
+    let characterSelected = false;
+
+    const checkKeys = () => {
+        if (characterSelected) return;
+        
+        if (scene.keys.A.isDown) {
+            characterSelected = true;
+            selectCharacter(scene, 'boy', onCharacterSelected);
+        } else if (scene.keys.D.isDown) {
+            characterSelected = true;
+            selectCharacter(scene, 'girl', onCharacterSelected);
+        }
+    };
+
+    scene.events.on('update', checkKeys);
+
+    scene.events.once('shutdown', () => {
+        scene.events.off('update', checkKeys);
+    });
     
     // === ANIMAÇÃO DE ENTRADA ===
     mainContainer.setAlpha(0);
@@ -97,12 +123,12 @@ export function setupCharacterSelection(scene, onCharacterSelected) {
 /**
  * Cria uma opção de personagem individual com imagem estática
  */
-function createCharacterOption(scene, x, y, textureKey, onClick) {
+function createCharacterOption(scene, x, y, textureKey, keyInstruction, onClick) {
     const container = scene.add.container(x, y);
     
     // === CAIXA DO PERSONAGEM ===
     const optionWidth = 220;
-    const optionHeight = 220;
+    const optionHeight = 240;
     
     const background = scene.add.graphics();
     background.fillStyle(0xecf0f1, 1);
@@ -110,19 +136,30 @@ function createCharacterOption(scene, x, y, textureKey, onClick) {
     background.lineStyle(2, 0xbdc3c7, 1);
     background.strokeRoundedRect(-optionWidth/2, -optionHeight/2, optionWidth, optionHeight, 12);
     
-    const sprite = scene.add.sprite(0, 0, textureKey)
-        .setDisplaySize(120, 170)
+    const sprite = scene.add.sprite(0, -10, textureKey)
+        .setDisplaySize(120, 160)
         .setInteractive({ useHandCursor: true });
 
+    // === INSTRUÇÃO DA TECLA ===
+    const keyText = scene.add.text(0, 90, keyInstruction, {
+        fontFamily: '"Silkscreen", "Courier New", monospace',
+        fontSize: '16px',
+        color: '#ffffff',
+        fontWeight: 'bold',
+        align: 'center',
+        backgroundColor: '#000000',
+        padding: { left: 8, right: 8, top: 4, bottom: 4 }
+    }).setOrigin(0.5);
+
     const border = scene.add.graphics();
-    border.lineStyle(4, 0x3498db, 0);
+    border.lineStyle(4, 0x000000, 0);
     border.strokeRoundedRect(-optionWidth/2, -optionHeight/2, optionWidth, optionHeight, 12);
 
     const hoverOverlay = scene.add.graphics();
-    hoverOverlay.fillStyle(0x3498db, 0);
+    hoverOverlay.fillStyle(0x000000, 0);
     hoverOverlay.fillRoundedRect(-optionWidth/2, -optionHeight/2, optionWidth, optionHeight, 12);
     
-    container.add([background, sprite, border, hoverOverlay]);
+    container.add([background, sprite, keyText, border, hoverOverlay]);
     
     // === EFEITOS DE HOVER E CLIQUE ===
     sprite.on('pointerover', () => {
@@ -172,7 +209,7 @@ function createCharacterOption(scene, x, y, textureKey, onClick) {
  */
 function selectCharacter(scene, character, callback) {
     console.log('Personagem selecionado:', character);
-
+    
     scene.cameras.main.flash(200, 255, 255, 255);
     scene.cameras.main.shake(200, 0.01);
     
