@@ -1,48 +1,105 @@
-const VelocityFromRotation =
-  Phaser.Physics.Arcade.ArcadePhysics.prototype.velocityFromRotation;
+import Phaser from "phaser";
 
-class Racecar extends Phaser.Physics.Arcade.Image {
+const MAX_FORCE = 0.02; 
+const ROTATION_SPEED = 0.002; 
+const DRIFT_THRESHOLD = 0.005; 
+const DRIFT_COOLDOWN = 50; 
+
+class Racecar extends Phaser.Physics.Matter.Image {
   throttle = 0;
+  lastDriftTime = 0;
 
-  configure() {
-    this.angle = -90;
-
-    this.body.angularDrag = 120;
-    this.body.maxSpeed = 1024;
-
-    this.setScale(0.2);
-
-    this.body.setSize(this.width, this.height, true);
-    this.angle = 180;
-    this.body.angle = 180;
+  constructor(scene, x, y, texture) {
+    super(scene.matter.world, x, y, texture);
+    scene.add.existing(this);
+    this.scene = scene;
+    this.configure();
   }
 
-  update(delta, cursorKeys) {
+  configure() {
+    this.setScale(0.2);
+    this.setOrigin(0.5);
+
+    const w = this.width * this.scaleX;
+    const h = this.height * this.scaleY;
+    this.setBody({ type: "rectangle", width: w, height: h });
+
+    this.setFrictionAir(0.06);
+    this.body.angularDamping = 0.6;
+    this.setFixedRotation(false);
+    this.setAngle(-90);
+  }
+
+  update(delta, cursorKeys, time) {
     const { left, right, up, down } = cursorKeys;
+    const rotation = this.rotation;
 
     if (up.isDown) {
-      this.throttle += 0.5 * delta;
+      this.throttle = Phaser.Math.Clamp(
+        this.throttle + 0.1 * delta,
+        -MAX_FORCE,
+        MAX_FORCE
+      );
     } else if (down.isDown) {
-      this.throttle -= 0.5 * delta;
+      this.throttle = Phaser.Math.Clamp(
+        this.throttle - 0.1 * delta,
+        -MAX_FORCE * 0.1,
+        MAX_FORCE
+      );
+    } else {
+      this.throttle *= 0.1;
     }
 
-    this.throttle = Phaser.Math.Clamp(this.throttle, -64, 1024);
+    const forceX = Math.cos(rotation) * this.throttle;
+    const forceY = Math.sin(rotation) * this.throttle;
+    this.applyForce({ x: forceX, y: forceY });
 
     if (left.isDown) {
-      this.body.setAngularAcceleration(-360);
+      this.setAngularVelocity(-ROTATION_SPEED * delta);
     } else if (right.isDown) {
-      this.body.setAngularAcceleration(360);
-    } else {
-      this.body.setAngularAcceleration(0);
+      this.setAngularVelocity(ROTATION_SPEED * delta);
     }
 
-    VelocityFromRotation(this.rotation, this.throttle, this.body.velocity);
+    if (down.isDown && Math.abs(this.throttle) > DRIFT_THRESHOLD) {
+      if (time - this.lastDriftTime > DRIFT_COOLDOWN) {
+        this.createDriftMarks();
+        this.lastDriftTime = time;
+      }
+    }
+  }
 
-    this.body.maxAngular = Phaser.Math.Clamp(
-      (90 * this.body.speed) / 1024,
-      0,
-      90
-    );
+  createDriftMarks() {
+    const offset = 35;
+    const angle = this.rotation + Math.PI / 2;
+
+    const rearLeftX = this.x + Math.cos(angle) * -offset;
+    const rearLeftY = this.y + Math.sin(angle) * -offset;
+    const rearRightX = this.x + Math.cos(angle) * offset;
+    const rearRightY = this.y + Math.sin(angle) * offset;
+
+    const markLeft = this.scene.add.image(rearLeftX, rearLeftY, "tire-mark");
+    const markRight = this.scene.add.image(rearRightX, rearRightY, "tire-mark");
+
+    markLeft.setRotation(this.rotation);
+    markRight.setRotation(this.rotation);
+
+    markLeft.setAlpha(0.6);
+    markRight.setAlpha(0.6);
+
+    markLeft.setScale(1.2);
+    markRight.setScale(1.2);
+
+    this.scene.driftLayer.add([markLeft, markRight]);
+
+    this.scene.tweens.add({
+      targets: [markLeft, markRight],
+      alpha: 0,
+      duration: 2000,
+      onComplete: () => {
+        markLeft.destroy();
+        markRight.destroy();
+      },
+    });
   }
 }
 
@@ -50,28 +107,33 @@ export default class CarGameScene extends Phaser.Scene {
   preload() {
     this.load.image("soil", "./assets/images/solo.png");
     this.load.image("car", "./assets/images/carro.png");
+
+    this.load.image("tire-mark", "./assets/images/tire_mark.png");
   }
 
   create() {
+    const width = this.scale.width;
+    const height = this.scale.height;
+
     this.ground = this.add
-      .tileSprite(256, 256, 1600, 450, "soil")
+      .tileSprite(width / 2, height / 2, 1600, 450, "soil")
       .setScrollFactor(0, 0);
 
-    this.car = new Racecar(this, 256, 512, "car");
-    this.add.existing(this.car);
-    this.physics.add.existing(this.car);
-    this.car.configure();
+    this.driftLayer = this.add.layer();
 
+    this.car = new Racecar(this, width / 2, height / 2, "car");
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
-    this.cameras.main.startFollow(this.car);
+    this.cameras.main.startFollow(this.car, true, 0.9, 0.9);
+
+    this.matter.world.setBounds(0, 0, 1600, 900, 100, { isStatic: true });
+    this.cameras.main.setBounds(0, 0, 1600, 900);
   }
 
   update(time, delta) {
     const { scrollX, scrollY } = this.cameras.main;
-
     this.ground.setTilePosition(scrollX, scrollY);
 
-    this.car.update(delta, this.cursorKeys);
+    this.car.update(delta, this.cursorKeys, time);
   }
 }
