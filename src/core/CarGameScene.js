@@ -1,13 +1,10 @@
 import Phaser from "phaser";
 
-const MAX_FORCE = 0.02;
+const MAX_FORCE = 0.002;
 const ROTATION_SPEED = 0.0025;
-const DRIFT_THRESHOLD = 0.01;
+const DRIFT_THRESHOLD = 0.001;
 const DRIFT_COOLDOWN = 10;
 const THROTTLE_RATE = 0.00001;
-
-const OBSTACLE_WIDTH = 134;
-const OBSTACLE_HEIGHT = 134;
 
 const WORLD_WIDTH = 1536;
 const WORLD_HEIGHT = 1024;
@@ -24,7 +21,7 @@ class Racecar extends Phaser.Physics.Matter.Image {
   }
 
   configure() {
-    this.setScale(0.2);
+    this.setScale(0.1);
     this.setOrigin(0.5);
 
     const w = this.width * this.scaleX;
@@ -76,7 +73,7 @@ class Racecar extends Phaser.Physics.Matter.Image {
   }
 
   createDriftMarks() {
-    const offset = 35;
+    const offset = 10;
     const angle = this.rotation + Math.PI / 2;
 
     const rearLeftX = this.x + Math.cos(angle) * -offset;
@@ -112,9 +109,9 @@ class Racecar extends Phaser.Physics.Matter.Image {
 
 export default class CarGameScene extends Phaser.Scene {
   preload() {
-    this.load.image("soil", "./assets/images/solo.png");
-    this.load.image("car", "./assets/images/carro.png");
-    this.load.image("barricade", "./assets/images/obstacle.png"); // caixa de colisão
+    this.load.image("soil", "./assets/images/cidade.png");
+    this.load.image("car", "./assets/images/car.png");
+    this.load.image("barricade", "./assets/images/obstacle.png");
     this.load.image("tire-mark", "./assets/images/tire_mark.png");
   }
 
@@ -123,24 +120,28 @@ export default class CarGameScene extends Phaser.Scene {
     const height = this.scale.height;
 
     this.ground = this.add
-      .tileSprite(width / 2, height / 2, 1600, 450, "soil")
-      .setScrollFactor(0, 0);
+      .tileSprite(
+        WORLD_WIDTH / 2,
+        WORLD_HEIGHT / 2,
+        WORLD_WIDTH,
+        WORLD_HEIGHT,
+        "soil"
+      )
+      .setScrollFactor(0, 0)
+      .setScale(1);
 
     this.driftLayer = this.add.layer();
 
     this.car = new Racecar(this, width / 2, height / 2, "car");
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
-    this.cameras.main.startFollow(this.car, true, 0.9, 0.9);
+    this.cameras.main.startFollow(this.car, true, 0.9, 0.7);
 
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 100, {
       isStatic: true,
     });
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
-    this.generateObstacles();
-
-    // Detecta colisão entre carro e obstáculos
     this.matter.world.on("collisionstart", (event) => {
       event.pairs.forEach((pair) => {
         const bodies = [pair.bodyA.gameObject, pair.bodyB.gameObject];
@@ -174,68 +175,5 @@ export default class CarGameScene extends Phaser.Scene {
 
     // Também pode exibir mensagem de game over
     console.log("Game Over! O carro colidiu com um obstáculo!");
-  }
-
-  generateObstacles() {
-    this.obstacles = [];
-
-    for (let y = OBSTACLE_HEIGHT / 2; y < WORLD_HEIGHT; y += OBSTACLE_HEIGHT) {
-      const obs = this.matter.add.image(
-        OBSTACLE_WIDTH / 2,
-        y,
-        "barricade",
-        null,
-        {
-          isStatic: true,
-        }
-      );
-
-      const obs2 = this.matter.add.image(
-        WORLD_WIDTH - OBSTACLE_WIDTH / 2,
-        y,
-        "barricade",
-        null,
-        {
-          isStatic: true,
-        }
-      );
-
-      obs.setScale(0.2);
-      obs2.setScale(0.2);
-
-      this.obstacles.push(obs);
-      this.obstacles.push(obs2);
-    }
-
-    for (
-      let x = (OBSTACLE_WIDTH * 3) / 2;
-      x < WORLD_WIDTH;
-      x += OBSTACLE_WIDTH
-    ) {
-      const obs = this.matter.add.image(
-        x,
-        OBSTACLE_HEIGHT / 2,
-        "barricade",
-        null,
-        {
-          isStatic: true,
-        }
-      );
-
-      const obs2 = this.matter.add.image(
-        x,
-        WORLD_HEIGHT,
-        "barricade",
-        null,
-        {
-          isStatic: true,
-        }
-      );
-
-      obs.setScale(0.2);
-      obs2.setScale(0.2);
-      this.obstacles.push(obs);
-      this.obstacles.push(obs2);
-    }
   }
 }
