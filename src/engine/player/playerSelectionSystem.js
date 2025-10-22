@@ -8,7 +8,12 @@ export function setupCharacterSelection(scene, onCharacterSelected) {
 
     scene.children.removeAll();
 
-    scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.7);
+    // === BACKGROUND DA CENA COM IMAGEM bg_intro ===
+    const sceneBackground = scene.add.image(width / 2, height / 2, 'bg_intro')
+        .setDisplaySize(width, height);
+
+    // Overlay escuro para melhor contraste
+    const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.3);
 
     const mainContainer = scene.add.container(width / 2, height / 2);
     
@@ -17,43 +22,15 @@ export function setupCharacterSelection(scene, onCharacterSelected) {
     const boxHeight = 450;
     const border = 3;
     
-    // === BACKGROUND COM TEXTURA GRUNGE ===
+    // === BACKGROUND SIMPLES DA CAIXA ===
     const background = scene.add.graphics();
-    
-    background.fillStyle(0x000000, 0.3);
-    background.fillRect(-boxWidth/2 + 4, -boxHeight/2 + 4, boxWidth, boxHeight);
 
-    background.fillStyle(0xf8f9fa, 0.6);
-    for (let i = 0; i < 200; i++) {
-        const x = -boxWidth/2 + Math.random() * boxWidth;
-        const y = -boxHeight/2 + Math.random() * boxHeight;
-        const size = Math.random() * 2 + 1;
-        background.fillRect(x, y, size, size);
-    }
-
-    background.lineStyle(1, 0xe9ecef, 0.4);
-    for (let i = 0; i < 8; i++) {
-        const y = -boxHeight/2 + Math.random() * boxHeight;
-        background.beginPath();
-        background.moveTo(-boxWidth/2, y);
-        background.lineTo(boxWidth/2, y);
-        background.strokePath();
-    }
-
-    background.lineStyle(border, 0x2c3e50, 1);
-    background.strokeRect(-boxWidth/2, -boxHeight/2, boxWidth, boxHeight);
-    
-    background.fillStyle(0xffffff, 1);
-    background.fillRect(-boxWidth/2, -boxHeight/2, boxWidth, boxHeight);
-    
-    background.lineStyle(border, 0x2c3e50, 1);
-    background.strokeRect(-boxWidth/2, -boxHeight/2, boxWidth, boxHeight);
     
     // === TÍTULO ===
     const title = scene.add.text(0, -boxHeight/2 + 50, 'ESCOLHA SEU PERSONAGEM!', {
         fontFamily: '"Silkscreen", "Courier New", monospace',
         fontSize: '24px',
-        color: '#2c3e50',
+        color: '#ffffff',
         fontWeight: 'bold',
         align: 'center'
     }).setOrigin(0.5);
@@ -75,8 +52,10 @@ export function setupCharacterSelection(scene, onCharacterSelected) {
     const instruction = scene.add.text(0, boxHeight/2 - 40, 'Clique no personagem ou use as teclas para selecionar', {
         fontFamily: '"Silkscreen", "Courier New", monospace',
         fontSize: '14px',
-        color: '#2c3e50',
-        align: 'center'
+        color: '#000000',
+        backgroundColor: '#ffffff',
+        align: 'center',
+        padding: { left: 8, right: 8, top: 4, bottom: 4 }
     }).setOrigin(0.5);
 
     mainContainer.add([background, title, charactersContainer, instruction]);
@@ -130,10 +109,10 @@ function createCharacterOption(scene, x, y, textureKey, keyInstruction, onClick)
     const optionWidth = 220;
     const optionHeight = 240;
     
-    const background = scene.add.graphics();
-    background.fillStyle(0xecf0f1, 1);
+const background = scene.add.graphics();
+    background.fillStyle(0xffffff, 0.15); // Branco com apenas 15% de opacidade
     background.fillRoundedRect(-optionWidth/2, -optionHeight/2, optionWidth, optionHeight, 12);
-    background.lineStyle(2, 0xbdc3c7, 1);
+    background.lineStyle(1, 0xffffff, 0.3); // Borda branca bem suave
     background.strokeRoundedRect(-optionWidth/2, -optionHeight/2, optionWidth, optionHeight, 12);
     
     const sprite = scene.add.sprite(0, -10, textureKey)
@@ -144,10 +123,10 @@ function createCharacterOption(scene, x, y, textureKey, keyInstruction, onClick)
     const keyText = scene.add.text(0, 90, keyInstruction, {
         fontFamily: '"Silkscreen", "Courier New", monospace',
         fontSize: '16px',
-        color: '#ffffff',
+        color: '#000000',
         fontWeight: 'bold',
         align: 'center',
-        backgroundColor: '#000000',
+        backgroundColor: '#ffffff',
         padding: { left: 8, right: 8, top: 4, bottom: 4 }
     }).setOrigin(0.5);
 
