@@ -1,10 +1,10 @@
 import Phaser from "phaser";
 
-const MAX_FORCE = 0.008;
+const MAX_FORCE = 0.02;
 const ROTATION_SPEED = 0.0025;
 const DRIFT_THRESHOLD = 0.005;
-const DRIFT_COOLDOWN = 50;
-const THROTTLE_RATE = 0.1;
+const DRIFT_COOLDOWN = 10;
+const THROTTLE_RATE = 0.001;
 
 class Racecar extends Phaser.Physics.Matter.Image {
   throttle = 0;
@@ -108,7 +108,7 @@ export default class CarGameScene extends Phaser.Scene {
   preload() {
     this.load.image("soil", "./assets/images/solo.png");
     this.load.image("car", "./assets/images/carro.png");
-
+    this.load.image("barricade", "./assets/images/barricada.png"); // caixa de colisão
     this.load.image("tire-mark", "./assets/images/tire_mark.png");
   }
 
@@ -129,6 +129,34 @@ export default class CarGameScene extends Phaser.Scene {
 
     this.matter.world.setBounds(0, 0, 1536, 1024, 100, { isStatic: true });
     this.cameras.main.setBounds(0, 0, 1536, 1024);
+
+    this.obstacles = [];
+    const positions = [
+      { x: 400, y: 300 },
+      { x: 700, y: 500 },
+      { x: 1200, y: 400 },
+    ];
+
+    positions.forEach((pos) => {
+      const obs = this.matter.add.image(pos.x, pos.y, "barricade", null, {
+        isStatic: true,
+      });
+      obs.setScale(0.3);
+      this.obstacles.push(obs);
+    });
+
+    // Detecta colisão entre carro e obstáculos
+    this.matter.world.on("collisionstart", (event) => {
+      event.pairs.forEach((pair) => {
+        const bodies = [pair.bodyA.gameObject, pair.bodyB.gameObject];
+        if (
+          bodies.includes(this.car) &&
+          bodies.some((obj) => this.obstacles.includes(obj))
+        ) {
+          this.handleGameOver();
+        }
+      });
+    });
   }
 
   update(time, delta) {
@@ -136,5 +164,20 @@ export default class CarGameScene extends Phaser.Scene {
     this.ground.setTilePosition(scrollX, scrollY);
 
     this.car.update(delta, this.cursorKeys, time);
+  }
+
+  handleGameOver() {
+    // Aqui você pode fazer o que quiser quando o carro colidir
+    // Por exemplo, reiniciar a posição do carro:
+    const texture = this.textures.get("soil");
+    const soilWidth = texture.getSourceImage().width;
+    const soilHeight = texture.getSourceImage().height;
+
+    this.car.setPosition(soilWidth / 2, soilHeight / 2);
+    this.car.setVelocity(0, 0);
+    this.car.setAngularVelocity(0);
+
+    // Também pode exibir mensagem de game over
+    console.log("Game Over! O carro colidiu com um obstáculo!");
   }
 }
