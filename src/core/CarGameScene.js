@@ -1,9 +1,10 @@
 import Phaser from "phaser";
 
-const MAX_FORCE = 0.02; 
-const ROTATION_SPEED = 0.002; 
-const DRIFT_THRESHOLD = 0.005; 
-const DRIFT_COOLDOWN = 50; 
+const MAX_FORCE = 0.008;
+const ROTATION_SPEED = 0.0025;
+const DRIFT_THRESHOLD = 0.005;
+const DRIFT_COOLDOWN = 50;
+const THROTTLE_RATE = 0.1;
 
 class Racecar extends Phaser.Physics.Matter.Image {
   throttle = 0;
@@ -36,14 +37,14 @@ class Racecar extends Phaser.Physics.Matter.Image {
 
     if (up.isDown) {
       this.throttle = Phaser.Math.Clamp(
-        this.throttle + 0.1 * delta,
+        this.throttle + THROTTLE_RATE * delta,
         -MAX_FORCE,
         MAX_FORCE
       );
     } else if (down.isDown) {
       this.throttle = Phaser.Math.Clamp(
-        this.throttle - 0.1 * delta,
-        -MAX_FORCE * 0.1,
+        this.throttle - THROTTLE_RATE * delta,
+        -MAX_FORCE * 0.4,
         MAX_FORCE
       );
     } else {
@@ -54,9 +55,9 @@ class Racecar extends Phaser.Physics.Matter.Image {
     const forceY = Math.sin(rotation) * this.throttle;
     this.applyForce({ x: forceX, y: forceY });
 
-    if (left.isDown) {
+    if (left.isDown && (up.isDown || down.isDown)) {
       this.setAngularVelocity(-ROTATION_SPEED * delta);
-    } else if (right.isDown) {
+    } else if (right.isDown && (up.isDown || down.isDown)) {
       this.setAngularVelocity(ROTATION_SPEED * delta);
     }
 
@@ -126,8 +127,8 @@ export default class CarGameScene extends Phaser.Scene {
 
     this.cameras.main.startFollow(this.car, true, 0.9, 0.9);
 
-    this.matter.world.setBounds(0, 0, 1600, 900, 100, { isStatic: true });
-    this.cameras.main.setBounds(0, 0, 1600, 900);
+    this.matter.world.setBounds(0, 0, 1536, 1024, 100, { isStatic: true });
+    this.cameras.main.setBounds(0, 0, 1536, 1024);
   }
 
   update(time, delta) {
