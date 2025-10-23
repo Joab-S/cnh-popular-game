@@ -4,6 +4,10 @@ const WORLD_WIDTH = 3840;
 const WORLD_HEIGHT = 2160;
 
 export default class CarGameScene extends Phaser.Scene {
+  constructor() {
+    super("CarGameScene");
+  }
+
   preload() {
     this.load.image("soil", "./assets/images/cidade.png");
     this.load.image("car", "./assets/images/car.png");
@@ -101,17 +105,10 @@ export default class CarGameScene extends Phaser.Scene {
   }
 
   handleGameOver() {
-    // Aqui você pode fazer o que quiser quando o carro colidir
-    // Por exemplo, reiniciar a posição do carro:
     const texture = this.textures.get("soil");
     const soilWidth = texture.getSourceImage().width;
     const soilHeight = texture.getSourceImage().height;
 
-    // this.car.setPosition(soilWidth / 2, soilHeight / 2);
-    // this.car.setVelocity(0, 0);
-    // this.car.setAngularVelocity(0);
-
-    // Também pode exibir mensagem de game over
     console.log("Game Over! O carro colidiu com um obstáculo!");
   }
 }

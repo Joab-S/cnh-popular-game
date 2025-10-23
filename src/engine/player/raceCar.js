@@ -74,7 +74,7 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
   }
 
   createDriftMarks() {
-    const offset = 10;
+    const offset = 20;
     const angle = this.rotation + Math.PI / 2;
 
     const rearLeftX = this.x + Math.cos(angle) * -offset;
