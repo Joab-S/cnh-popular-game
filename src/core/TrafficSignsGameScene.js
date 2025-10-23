@@ -2,7 +2,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   constructor() {
     super('TrafficSignsGameScene');
     this.score = 0;
-    this.maxScore = 20;
+    this.maxScore = 15;
     this.isGameActive = false;
     this.isWaitingToStart = true;
     this.signs = [];
@@ -24,41 +24,30 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   }
 
   preload() {
+    this.load.image('bg_game_1', './assets/images/bg_game_1.png');
     this.load.image("sign_go", "./assets/images/placa_siga.png");
     this.load.image("sign_stop", "./assets/images/placa_pare.png");
     this.load.image("sign_pedestrian", "./assets/images/placa_pedestre.png");
     this.load.image("sign_prohibited", "./assets/images/placa_proibido.png");
     this.load.image("sign_roundabout", "./assets/images/placa_rotatoria.png");
     this.load.image("sign_curvy", "./assets/images/placa_sinuoso.png");
-
-    this.load.bitmapFont('pixelFont', './assets/fonts/pixelFont.png', './assets/fonts/pixelFont.ttf');
   }
 
   create() {
     const { width, height } = this.scale;
-
-    this.add.rectangle(width / 2, height / 2, width, height, 0x1b2838);
     
-    this.createGridPattern();
+    this.add.image(width / 2, height / 2, 'bg_game_1').setDisplaySize(width, height);
     
     this.setupStartScreen();
     
     this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.spaceKey.on('down', this.handleSpacePress, this);
 
-    this.input.on('gameobjectdown', this.handleSignClick, this);
-  }
+    this.gameOverlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000000)
+    .setAlpha(0)
+    .setDepth(0);
 
-  createGridPattern() {
-    const { width, height } = this.scale;
-    const gridSize = 50;
-    
-    for (let x = 0; x < width; x += gridSize) {
-      this.add.line(x, 0, 0, 0, 0, height, 0x2d3047).setAlpha(0.1);
-    }
-    for (let y = 0; y < height; y += gridSize) {
-      this.add.line(0, y, 0, 0, width, 0, 0x2d3047).setAlpha(0.1);
-    }
+    this.input.on('gameobjectdown', this.handleSignClick, this);
   }
 
   setupStartScreen() {
@@ -67,23 +56,24 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     const randomIndex = Phaser.Math.Between(0, this.allSignTypes.length - 1);
     this.targetSignType = this.allSignTypes[randomIndex];
 
-    const titleText = this.add.text(width / 2, height / 2 - 120, 'EXAME TEÓRICO', {
-      fontSize: '32px',
-      fill: '#4cc9f0',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-      fontWeight: 'bold'
+    const titleText = this.add.text(width / 2, height / 2 - 170, 'EXAME PSICOTÉCNICO', {
+        fontFamily: '"Silkscreen", "Courier New", monospace',
+        fontSize: '28px',
+        color: '#000000',
+        fontWeight: 'bold',
+        align: 'center',
     }).setOrigin(0.5);
+
     this.startScreenTexts.push(titleText);
 
-    // CORREÇÃO: Esta é a imagem GRANDE da tela inicial
-    const targetSignImage = this.add.image(width / 2, height / 2 - 40, this.targetSignType.key)
+    const targetSignImage = this.add.image(width / 2, height / 2 - 100, this.targetSignType.key)
       .setScale(0.08);
     this.startScreenTexts.push(targetSignImage);
 
-    const instructionText = this.add.text(width / 2, height / 2 + 20, `Pressione a BARRA DE ESPAÇO ou clique na placa "${this.targetSignType.name}" quando ela aparecer`, {
+    const instructionText = this.add.text(width / 2, height / 2 - 40, `Pressione a BARRA DE ESPAÇO ou clique na placa "${this.targetSignType.name}" quando ela aparecer`, {
       fontSize: '18px',
-      fill: '#e2e2e2',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+      color: '#000000',
+      fontFamily: '"Silkscreen", "Courier New", monospace',
       fontWeight: '300',
       wordWrap: { width: width * 0.8 },
       align: 'center'
@@ -91,10 +81,10 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     
     this.startScreenTexts.push(instructionText);
 
-    this.startText = this.add.text(width / 2, height / 2 + 80, 'Clique em qualquer lugar para começar', {
-      fontSize: '24px',
-      fill: '#4ade80',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+    this.startText = this.add.text(width / 2, height / 2 + 200, 'Clique em qualquer lugar para começar', {
+      fontSize: '18px',
+      color: '#000000',
+      fontFamily: '"Silkscreen", "Courier New", monospace',
       fontWeight: 'bold'
     }).setOrigin(0.5);
     
@@ -116,8 +106,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
 
     this.scoreText = this.add.text(width / 2, 30, `${this.score}/${this.maxScore}`, {
       fontSize: '32px',
-      fill: '#e2e2e2',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+      color: '#ffffff',
+      fontFamily: '"Silkscreen", "Courier New", monospace',
       fontWeight: '300'
     }).setOrigin(0.5);
   }
@@ -125,6 +115,13 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   startGame() {
     this.isWaitingToStart = false;
     this.isGameActive = true;
+
+    this.tweens.add({
+      targets: this.gameOverlay,
+      alpha: 0.6,
+      duration: 500,
+      ease: 'Power2'
+    });
     
     this.removeStartScreen();
     
@@ -354,8 +351,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   showFeedback(x, y, text, color) {
     const feedback = this.add.text(x, y - 40, text, {
       fontSize: '20px',
-      fill: '#ffffff',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
+      color: '#ffffff',
+      fontFamily: '"Silkscreen", "Courier New", monospace',
       fontWeight: 'bold'
     }).setOrigin(0.5);
     
@@ -407,17 +404,17 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     
     const resultDisplay = this.add.text(width / 2, height / 2 - 30, 'PARABÉNS!', {
       fontSize: '48px',
-      fill: '#4cc9f0',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-      fontWeight: '300'
+      color: '#ffffff',
+      fontFamily: '"Silkscreen", "Courier New", monospace',
+      fontWeight: 'bold'
     }).setOrigin(0.5);
     
     const scoreDisplay = this.add.text(width / 2, height / 2 + 30, 
       `Pontuação: ${this.score}/${this.maxScore}`, {
       fontSize: '24px',
-      fill: '#e2e2e2',
-      fontFamily: 'Segoe UI, Tahoma, Geneva, Verdana, sans-serif',
-      fontWeight: '300'
+      color: '#ffffff',
+      fontFamily: '"Silkscreen", "Courier New", monospace',
+      fontWeight: 'bold'
     }).setOrigin(0.5);
   }
 
