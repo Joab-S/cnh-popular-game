@@ -17,20 +17,28 @@ export default class StartCarGameScene extends Phaser.Scene {
       .setDisplaySize(width, height);
 
     this.add
-      .text(width / 2, height / 2 - 100, "Corrida Urbana", {
+      .text(width / 2, height / 2 - 150, "Prova Prática", {
         fontSize: "64px",
-        color: "#ffffff",
+        color: "black",
         fontFamily: '"Silkscreen", "Courier New", monospace',
       })
       .setOrigin(0.5);
 
-    this.add
-      .text(width / 2, height / 2 + 20, "Pressione ESPAÇO para começar", {
+    this.startInstructions = this.add
+      .text(width / 2, height / 2 + 20, "Clique em qualquer lugar para começar", {
         fontSize: "28px",
-        color: "#dddddd",
+        color: "black",
         fontFamily: '"Silkscreen", "Courier New", monospace',
       })
       .setOrigin(0.5);
+
+    this.tweens.add({
+      targets: this.startInstructions,
+      alpha: 0.3,
+      duration: 800,
+      yoyo: true,
+      repeat: -1,
+    });
 
     this.input.once("pointerdown", () => {
       this.scene.start("CarGameScene");
