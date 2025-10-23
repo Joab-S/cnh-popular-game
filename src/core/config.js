@@ -19,4 +19,8 @@ export const GAME_CONFIG = {
       debug: true, // ative para visualizar hitboxes
     },
   },
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
 };
