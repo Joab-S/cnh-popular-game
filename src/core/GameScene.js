@@ -1,6 +1,6 @@
 import Ground from "../engine/physics/Ground.js";
 import * as CameraSystem from "../engine/camera/cameraSystem.js";
-import { createPlayerState } from "../engine/player/playerState.js";
+import { createPlayerState, getPlayerStateInstance } from "../engine/player/playerState.js";
 import { setupPlayer, updatePlayerMovement } from "../engine/player/playerController.js";
 import { setupUI, updateUI } from "../engine/ui/uiSystem.js";
 import { setupTransitions, checkTransitions } from "../engine/transition/transitionSystem.js";
@@ -11,6 +11,12 @@ import { updateGenericInteractions } from '../engine/interaction/interactionSyst
 import { AREAS, WORLD_SIZE } from "./config.js";
 
 import { setupCharacterSelection, startGameWithCharacter } from "../engine/player/playerSelectionSystem.js";
+import { updatePhase3 } from "../phases/phase3_clinic/clinicSystem.js";
+import { updatePhase4 } from "../phases/phase4_driving_school1/drivingSchool1.js";
+import { updatePhase5 } from "../phases/phase5_theoretical_test/theoreticalTest.js";
+import { updatePhase6 } from "../phases/phase6_driving_school2/drivingSchool2.js";
+import { updatePhase7 } from "../phases/phase7_practical_test/practicalTest.js";
+import { updatePhase8 } from "../phases/phase8_final_scene/finalScene.js";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -119,6 +125,21 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, this.ground.ground);
 
     this.playerState = createPlayerState();
+    const _stateRef = getPlayerStateInstance();
+
+    Object.defineProperty(this, 'playerState', {
+      configurable: false,
+      enumerable: true,
+      get() {
+        return _stateRef;
+      },
+      set(newVal) {
+        if (newVal && typeof newVal === 'object') {
+          Object.assign(_stateRef, newVal);
+        }
+      }
+    });
+
     this.playerState.currentArea = AREAS.home;
     this.playerState.character = this.selectedCharacter;
     this.playerState.playerTexture = this.playerTexture;
@@ -153,12 +174,25 @@ export default class GameScene extends Phaser.Scene {
     
     try {
       updatePlayerMovement(this);
+
       if (this.playerState?.currentArea === AREAS.home && this.documents) {
         updateDocuments(this);
-      }
-      if (this.playerState?.currentArea === AREAS.city) {
+      } else if (this.playerState?.currentArea === AREAS.city) {
         updatePhase2(this);
+      } else if (this.playerState?.currentArea === AREAS.clinic) {
+        updatePhase3(this);
+      } else if (this.playerState?.currentArea === AREAS.drivingSchool1) {
+        updatePhase4(this);
+      } else if (this.playerState?.currentArea === AREAS.theoreticalTest) {
+        updatePhase5(this);
+      } else if (this.playerState?.currentArea === AREAS.drivingSchool2) {
+        updatePhase6(this);
+      } else if (this.playerState?.currentArea === AREAS.practicalTest) {
+        updatePhase7(this);
+      } else if (this.playerState?.currentArea === AREAS.finalScene) {
+        updatePhase8(this);
       }
+
       updateGenericInteractions(this);
       checkTransitions(this);
       updateUI(this);

@@ -1,3 +1,5 @@
+import { clearInteractions } from "../interaction/interactionSystem";
+
 /**
  * Limpa com segurança a cena atual, preservando apenas os objetos passados.
  * @param {Phaser.Scene} scene 
@@ -5,6 +7,13 @@
  */
 export function clearScene(scene, keepObjects = []) {
   if (!scene || !scene.children) return;
+
+  // Destrói as interações antigas (PC, NPC...)
+  try {
+    clearInteractions(scene);
+  } catch (err) {
+    console.warn("Erro ao limpar interações:", err);
+  }
 
   const keep = new Set(keepObjects.filter(o => o));
 

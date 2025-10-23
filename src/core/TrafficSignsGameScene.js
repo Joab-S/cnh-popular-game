@@ -56,7 +56,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     const randomIndex = Phaser.Math.Between(0, this.allSignTypes.length - 1);
     this.targetSignType = this.allSignTypes[randomIndex];
 
-    const titleText = this.add.text(width / 2, height / 2 - 170, 'EXAME PSICOTÉCNICO', {
+    const titleText = this.add.text(width / 2, height / 2 - 170, 'EXAME TEÓRICO', {
         fontFamily: '"Silkscreen", "Courier New", monospace',
         fontSize: '28px',
         color: '#000000',
@@ -416,6 +416,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       fontFamily: '"Silkscreen", "Courier New", monospace',
       fontWeight: 'bold'
     }).setOrigin(0.5);
+
+    this.events.emit('gameEnded', { victory: isVictory, score: this.score });
   }
 
   update() {
