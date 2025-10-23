@@ -1,6 +1,6 @@
 const MAX_FORCE = 0.01;
 const ROTATION_SPEED = 0.002;
-const DRIFT_THRESHOLD = 0.001;
+const DRIFT_THRESHOLD = 0.005;
 const DRIFT_COOLDOWN = 10;
 const THROTTLE_RATE = 0.00001;
 
@@ -55,7 +55,7 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
     this.applyForce({ x: forceX, y: forceY });
 
     const velocity = this.body.speed;
-    const maxSpeed = 15;
+    const maxSpeed = 13;
     const speedFactor = Phaser.Math.Clamp(1 - velocity / maxSpeed, 0.2, 1);
     const dynamicRotationSpeed = ROTATION_SPEED * speedFactor;
 

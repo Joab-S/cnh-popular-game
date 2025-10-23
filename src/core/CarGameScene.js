@@ -34,13 +34,11 @@ export default class CarGameScene extends Phaser.Scene {
     this.cameras.main.startFollow(this.car, true, 0.7, 0.7);
 
     this.cameras.main.setZoom(1.2);
-    
+
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 100, {
       isStatic: true,
     });
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
-
-
 
     this.hitboxes = [];
 
@@ -54,19 +52,19 @@ export default class CarGameScene extends Phaser.Scene {
         width: blockWidth,
         height: blockHeight,
       },
-       {
+      {
         x: blockWidth / 2 + 280,
         y: blockHeight / 2 + blockHeight + 560,
         width: blockWidth,
         height: blockHeight,
       },
-       {
+      {
         x: blockWidth / 2 + blockWidth + 560,
         y: blockHeight / 2 + 280,
         width: blockWidth,
         height: blockHeight,
       },
-       {
+      {
         x: blockWidth / 2 + blockWidth + 560,
         y: blockHeight / 2 + blockHeight + 560,
         width: blockWidth,
@@ -80,20 +78,8 @@ export default class CarGameScene extends Phaser.Scene {
         label: "hitbox",
       });
       this.hitboxes.push(body);
-
-      // Opcional: desenhar para ver onde estão as hitboxes
-      const debugRect = this.add.rectangle(
-        b.x,
-        b.y,
-        b.width,
-        b.height,
-        0xff0000,
-        0.2
-      );
-      debugRect.setDepth(10);
     });
 
-    // 🔹 Detectar colisões com as hitboxes
     this.matter.world.on("collisionstart", (event) => {
       event.pairs.forEach((pair) => {
         if (pair.bodyA === this.car.body || pair.bodyB === this.car.body) {
