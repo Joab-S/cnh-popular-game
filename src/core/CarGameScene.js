@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
-const MAX_FORCE = 0.002;
-const ROTATION_SPEED = 0.0025;
+const MAX_FORCE = 0.003;
+const ROTATION_SPEED = 0.0015;
 const DRIFT_THRESHOLD = 0.001;
 const DRIFT_COOLDOWN = 10;
 const THROTTLE_RATE = 0.00001;
@@ -21,7 +21,7 @@ class Racecar extends Phaser.Physics.Matter.Image {
   }
 
   configure() {
-    this.setScale(0.1);
+    this.setScale(0.05);
     this.setOrigin(0.5);
 
     const w = this.width * this.scaleX;
@@ -135,21 +135,57 @@ export default class CarGameScene extends Phaser.Scene {
     this.car = new Racecar(this, width / 2, height / 2, "car");
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
-    this.cameras.main.startFollow(this.car, true, 0.9, 0.7);
+    this.cameras.main.startFollow(this.car, true, 1, 1);
 
     this.matter.world.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT, 100, {
       isStatic: true,
     });
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
+    this.hitboxes = [];
+
+    const blockWidth = 450;
+    const blockHeight = 350;
+
+    const boxes = [
+      {
+        x: blockWidth / 2 + 55,
+        y: blockHeight / 2 + 55,
+        width: blockWidth,
+        height: blockHeight,
+      },
+      // { x: 1000, y: 600, width: 50, height: 300 },
+      // { x: 300, y: 800, width: 400, height: 50 },
+    ];
+
+    boxes.forEach((b) => {
+      const body = this.matter.add.rectangle(b.x, b.y, b.width, b.height, {
+        isStatic: true,
+        label: "hitbox",
+      });
+      this.hitboxes.push(body);
+
+      // Opcional: desenhar para ver onde estão as hitboxes
+      const debugRect = this.add.rectangle(
+        b.x,
+        b.y,
+        b.width,
+        b.height,
+        0xff0000,
+        0.2
+      );
+      debugRect.setDepth(10);
+    });
+
+    // 🔹 Detectar colisões com as hitboxes
     this.matter.world.on("collisionstart", (event) => {
       event.pairs.forEach((pair) => {
-        const bodies = [pair.bodyA.gameObject, pair.bodyB.gameObject];
-        if (
-          bodies.includes(this.car) &&
-          bodies.some((obj) => this.obstacles.includes(obj))
-        ) {
-          this.handleGameOver();
+        if (pair.bodyA === this.car.body || pair.bodyB === this.car.body) {
+          const other = pair.bodyA === this.car.body ? pair.bodyB : pair.bodyA;
+          if (other.label === "hitbox") {
+            console.log("🚗💥 Colidiu com hitbox!");
+            this.handleGameOver();
+          }
         }
       });
     });
