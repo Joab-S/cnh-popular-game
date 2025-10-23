@@ -29,7 +29,7 @@ export default class DialogBubble {
 
     // === Texto principal ===
     const textObj = this.scene.add.text(0, -8, text, {
-      fontFamily: 'monospace',
+      fontFamily: '"Silkscreen", monospace',
       fontSize: '14px',
       color: '#000000',
       align: 'center',
@@ -47,7 +47,7 @@ export default class DialogBubble {
       boxH / 2 - 18,
       '[E] CONTINUAR',
       {
-        fontFamily: 'monospace',
+        fontFamily: '"Silkscreen", monospace',
         fontSize: '12px',
         color: '#000000',
         fontStyle: 'bold'

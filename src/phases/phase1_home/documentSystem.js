@@ -39,7 +39,7 @@ export function setupDocuments(scene) {
       desc: 'Cadastro de Pessoa Física, usado em cadastros e registros.'
     },
     {
-      id: 'Comprovante de Residência',
+      id: 'CR',
       key: 'doc_comprovante',
       x: 200,
       y: scene.scale.height - 150,
