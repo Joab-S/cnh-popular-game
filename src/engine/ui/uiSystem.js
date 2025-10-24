@@ -2,7 +2,7 @@ export function setupUI(scene) {
   const { width, height } = scene.scale;
 
   // === INVENTÁRIO ===
-  const inventory = scene.add.container(width - 100, 60).setScrollFactor(0).setDepth(10);
+  const inventory = scene.add.container(100, height - 60).setScrollFactor(0).setDepth(10);    
 
   const inventoryBg = scene.add.graphics();
   inventoryBg.setAlpha(0);
