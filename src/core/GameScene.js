@@ -189,6 +189,7 @@ export default class GameScene extends Phaser.Scene {
       if (this.playerState?.currentArea === AREAS.home && this.documents) {
         updateDocuments(this);
       } else if (this.playerState?.currentArea === AREAS.city) {
+        this.player.body.setSize(120, 270)
         updatePhase2(this);
       } else if (this.playerState?.currentArea === AREAS.clinic) {
         updatePhase3(this);
