@@ -12,7 +12,7 @@ export default class CarGameScene extends Phaser.Scene {
 
   preload() {
     this.load.image("soil", "./assets/images/cidade.png");
-    this.load.image("car", "./assets/images/car.png");
+    this.load.image("car", "./assets/images/carro.png");
     this.load.image("barricade", "./assets/images/obstacle.png");
     this.load.image("tire-mark", "./assets/images/tire_mark.png");
   }
@@ -30,7 +30,7 @@ export default class CarGameScene extends Phaser.Scene {
       .setScale(1);
 
     this.driftLayer = this.add.layer();
-    this.car = new Racecar(this, 100, 450, "car");
+    this.car = new Racecar(this, 100, 460, "car");
     this.cursorKeys = this.input.keyboard.createCursorKeys();
 
     this.cameras.main.startFollow(this.car, true, 0.7, 0.7);
@@ -88,17 +88,20 @@ export default class CarGameScene extends Phaser.Scene {
           const other = pair.bodyA === this.car.body ? pair.bodyB : pair.bodyA;
 
           if (other.label === "hitbox") {
-            console.log("🚗💥 Colidiu com hitbox!");
-            this.handleGameOver();
+            this.cameras.main.shake(200, 0.01);
+            this.time.delayedCall(500, () => {
+              this.handleGameOver();
+            });
           }
 
           if (
             other.label === "trafficSensor" &&
             this.trafficLight.state === "red"
           ) {
-            console.log("🚦 Parado no vermelho!");
-            this.car.setVelocity(0, 0);
-            this.car.throttle = 0;
+            this.cameras.main.shake(200, 0.01);
+            this.time.delayedCall(500, () => {
+              this.handleGameOver();
+            });
           }
         }
       });
@@ -113,5 +116,7 @@ export default class CarGameScene extends Phaser.Scene {
 
   handleGameOver() {
     console.log("Game Over! O carro colidiu com um obstáculo!");
+
+    this.scene.start("EndScene");
   }
 }

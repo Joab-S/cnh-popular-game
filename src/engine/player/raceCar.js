@@ -2,7 +2,7 @@ const MAX_FORCE = 0.01;
 const ROTATION_SPEED = 0.002;
 const DRIFT_THRESHOLD = 0.005;
 const DRIFT_COOLDOWN = 10;
-const THROTTLE_RATE = 0.00001;
+const THROTTLE_RATE = 0.000008;
 
 export default class Racecar extends Phaser.Physics.Matter.Image {
   throttle = 0;
@@ -16,7 +16,7 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
   }
 
   configure() {
-    this.setScale(0.1);
+    this.setScale(0.6);
     this.setOrigin(0.5);
 
     const w = this.width * this.scaleX;
@@ -55,7 +55,7 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
     this.applyForce({ x: forceX, y: forceY });
 
     const velocity = this.body.speed;
-    const maxSpeed = 13;
+    const maxSpeed = 10;
     const speedFactor = Phaser.Math.Clamp(1 - velocity / maxSpeed, 0.2, 1);
     const dynamicRotationSpeed = ROTATION_SPEED * speedFactor;
 
@@ -74,7 +74,7 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
   }
 
   createDriftMarks() {
-    const offset = 20;
+    const offset = 30;
     const angle = this.rotation + Math.PI / 2;
 
     const rearLeftX = this.x + Math.cos(angle) * -offset;

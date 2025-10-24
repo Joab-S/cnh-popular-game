@@ -8,7 +8,7 @@ export default class TrafficLight {
 
     this.state = "red";
 
-    this.light = scene.add.circle(x, y - 80, 20, 0xff0000);
+    this.light = scene.add.circle(x, y + 80, 20, 0xff0000);
 
     this.sensor = scene.matter.add.rectangle(x, y, width, height, {
       isStatic: true,
