@@ -111,7 +111,7 @@ export default class GameScene extends Phaser.Scene {
           this.ui.showMessage('Missão: Encontre RG, CPF e comprovante na sua casa!');
         }
       },
-      hintText: 'Clique E para ver informações sobre a CNH Popular'
+      hintText: ''
     });
 
     this.pc.setScale(0.35);

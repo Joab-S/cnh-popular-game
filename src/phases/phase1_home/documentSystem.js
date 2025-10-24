@@ -26,16 +26,16 @@ export function setupDocuments(scene) {
       id: 'RG',
       key: 'doc_rg',
       x: 455,
-      spawnY: 100,
-      targetY: scene.scale.height - 145,
+      spawnY: 120,
+      targetY: scene.scale.height - 240,
       desc: 'Documento de identidade, necessário para se identificar.'
     },
     {
       id: 'CPF',
       key: 'doc_cpf',
-      x: 728,
+      x: 943,
       spawnY: 150,
-      targetY: scene.scale.height - 160,
+      targetY: scene.scale.height - 270,
       desc: 'Cadastro de Pessoa Física, usado em cadastros e registros.'
     },
     {
