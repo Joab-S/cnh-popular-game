@@ -30,6 +30,8 @@ export function startPhase5(scene) {
     phase5Completed: false
   };
 
+  scene.miniGameKey = 'TrafficSignsGameScene';
+
   scene.ui.showMessage('Procure a tia da autoescola, ela irá aplicar seu exame teórico.');
 
   new InteractiveObject(scene, {
@@ -45,6 +47,10 @@ export function startPhase5(scene) {
     ],
     onInteract: () => {
       if (scene.playerState.miniGameActive) return;
+      if (scene.playerState.phase5Completed) {
+        scene.ui.showMessage('Você já completou o exame teórico. Parabéns!');
+        return;
+      }
       startMiniGame(scene);
     },
   });
@@ -54,6 +60,14 @@ export function updatePhase5(scene) {
   if (scene.playerState.currentArea !== AREAS.theoreticalTest) return;
   if (scene.playerState.minigameActive) return; 
   updateGenericInteractions(scene);
+
+  const miniGame = scene.scene.get(scene.miniGameKey);
+
+  if (miniGame && scene.playerState.miniGameActive) {
+    miniGame.events.once('gameEnded', (data) => {
+      closeMiniGame(scene, scene.overlay, scene.miniGameContainer, scene.miniGameKey, data);
+    });
+  }
 }
 
 function startMiniGame(scene) {
@@ -64,39 +78,33 @@ function startMiniGame(scene) {
     scene.playerState.inDialog = true;
     scene.playerState.miniGameActive = true;
 
-  const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.5)
+  scene.overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.5)
     .setScrollFactor(0)
     .setDepth(1000);
 
-  const miniGameContainer = scene.add.container(width / 2, height / 2).setDepth(1001);
+  scene.miniGameContainer = scene.add.container(width / 2, height / 2).setDepth(1001);
 
   // Adiciona o minigame como uma cena flutuante
-  const miniGameKey = 'TrafficSignsGameScene';
-  if (!scene.scene.get(miniGameKey)) {
-    scene.scene.add(miniGameKey, TrafficSignsGameScene, false);
+  if (!scene.scene.get(scene.miniGameKey)) {
+    scene.scene.add(scene.miniGameKey, TrafficSignsGameScene, false);
   }
 
-  // pausa a cena principal
-  scene.scene.pause();
-
   // inicia o minigame
-  scene.scene.launch(miniGameKey);
+  scene.scene.launch(scene.miniGameKey);
 
   scene.time.delayedCall(100, () => {
-    const miniGame = scene.scene.get(miniGameKey);
+    const miniGame = scene.scene.get(scene.miniGameKey);
 
     if (!miniGame || !miniGame.cameras?.main) return;
 
     miniGame.cameras.main.setBackgroundColor('#ffffff');
-    miniGame.scale.resize(width * 0.7, height * 0.7);
+    miniGame.scale.resize(width * 1, height * 1);
 
-    miniGame.events.once('gameEnded', (data) => {
-      closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, data);
-    });
   });
 }
 
 function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
+  console.log('Minigame ended with result:', result);
   if (overlay && overlay.destroy) overlay.destroy();
   if (miniGameContainer && miniGameContainer.destroy) miniGameContainer.destroy();
 
@@ -107,13 +115,11 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
     scene.scene.remove(miniGameKey);
   }
 
-  // retoma o jogo principal
-  scene.scene.resume();
-
   // restaura controle do jogador
   scene.playerState.miniGameActive = false;
   scene.playerState.canMove = true;
   scene.playerState.inDialog = false;
+  scene.playerState.phase5Completed = true;
 
   // mensagem final
   const msg = result?.victory
