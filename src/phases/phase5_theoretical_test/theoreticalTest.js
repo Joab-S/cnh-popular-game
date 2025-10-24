@@ -118,6 +118,12 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   scene.playerState.inDialog = false;
   scene.playerState.phase5Completed = true;
 
+  const theoreticalObject = scene.interactiveObjects.find(o => o.key === 'aplicador_do_exame');
+  const dialog = 'Você foi aprovado, siga para as aulas práticas.';
+  theoreticalObject.dialogs = [
+    dialog
+  ];
+
   // mensagem final
   const msg = result?.victory
     ? `Excelente! Você completou o exame com ${result.score} pontos!`
