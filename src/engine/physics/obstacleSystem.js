@@ -1,19 +1,42 @@
 export function setupObstacles(scene) {
-  const group = scene.physics.add.staticGroup();
+  const obstacles = [];
+
   const { width, height } = scene.scale;
 
-  const positions = [300, 600, 900, 1200];
-  positions.forEach(x => {
-    const obs = group.create(x, height - 60, null);
-    obs.displayWidth = 40;
-    obs.displayHeight = 30;
+  const textures = ['obstacle_1', 'obstacle_2', 'obstacle_3'];
+
+  const positions = [155, 430, 690];
+
+  const sizes = [
+    { w: 50, h: 65, y: height - 90 },
+    { w: 45, h: 40, y: height - 77 },
+    { w: 50, h: 65, y: height - 90 },
+  ];
+  
+  positions.forEach((x, index) => {
+    const texture = textures[index % textures.length];
+    const size = sizes[index];
+    
+    const obs = scene.physics.add.staticSprite(x, size.y, texture);
+    obs.setDisplaySize(size.w, size.h);
     obs.setOrigin(0.5);
-    obs.setTint(0x222222);
+    
+    const hitboxWidth = size.w * 0.7;
+    const hitboxHeight = size.h * 0.7;
+
+    obs.body.setSize(hitboxWidth, hitboxHeight);
+    obs.body.setOffset(
+      (size.w - hitboxWidth) / 2,
+      (size.h - hitboxHeight) / 2
+    );
+
+    obs.refreshBody();
+    
+    obstacles.push(obs);
   });
 
-  return group;
+  return obstacles;
 }
-
 
 export function updateObstacles(scene) {
   // futuro: mover ou animar obstáculos
