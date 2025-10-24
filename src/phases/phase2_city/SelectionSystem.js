@@ -55,7 +55,7 @@ export function startPhase2(scene) {
   };
 
   // === INTERFACE ===
-  scene.ui.showMessage('Missão: Encontre a AUTOESCOLA e pressione E para interagir!');
+  scene.ui.showMessage('Missão: Encontre a AUTOESCOLA e pressione a tecla E para interagir!');
 
   // === OBSTÁCULOS ===
   scene.obstacles = setupObstacles(scene);

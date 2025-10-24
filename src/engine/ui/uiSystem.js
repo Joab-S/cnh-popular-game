@@ -1,7 +1,7 @@
 export function setupUI(scene) {
   const { width, height } = scene.scale;
 
-  // === INVENTÁRIO NO CANTO SUPERIOR DIREITO ===
+  // === INVENTÁRIO ===
   const inventory = scene.add.container(width - 100, 60).setScrollFactor(0).setDepth(10);
 
   const inventoryBg = scene.add.graphics();
@@ -9,32 +9,24 @@ export function setupUI(scene) {
   
   const bgWidth = 150;
   const bgHeight = 70;
-  
-  // === ESTILO DE CAIXINHA 3D ===
-  
-  // Sombra da caixa (fundo)
+
   inventoryBg.fillStyle(0x000000, 0.5);
   inventoryBg.fillRoundedRect(-bgWidth/2 + 2, -bgHeight/2 + 2, bgWidth, bgHeight, 6);
-  
-  // Corpo principal da caixa (cor mais quente)
-  inventoryBg.fillStyle(0xffffff, 0.95); // Cor de madeira/marrom
+
+  inventoryBg.fillStyle(0xffffff, 0.95);
   inventoryBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 6);
-  
-  // Borda interna clara (efeito de relevo)
-  inventoryBg.lineStyle(2, 0x000000, 0.6); // Borda dourada/clara
+
+  inventoryBg.lineStyle(2, 0x000000, 0.6);
   inventoryBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 6);
-  
-  // Borda externa escura (profundidade)
-  inventoryBg.lineStyle(1, 0x1a140d, 0.9); // Borda marrom escura
+
+  inventoryBg.lineStyle(1, 0x1a140d, 0.9);
   inventoryBg.strokeRoundedRect(-bgWidth/2 + 1, -bgHeight/2 + 1, bgWidth - 2, bgHeight - 2, 5);
-  
-  // Efeito de iluminação no topo
-  inventoryBg.lineStyle(1, 0x000000, 0.6); // Luz dourada
+
+  inventoryBg.lineStyle(1, 0x000000, 0.6);
   inventoryBg.strokeRoundedRect(-bgWidth/2 + 3, -bgHeight/2 + 3, bgWidth - 6, 8, 3);
-  
-  // Detalhe de fechadura/decoração
-  inventoryBg.fillStyle(0x000000, 0.7); // Dourado
-  inventoryBg.fillRect(-5, -bgHeight/2 + 10, 10, 4); // Pequeno retângulo no topo
+
+  inventoryBg.fillStyle(0x000000, 0.7);
+  inventoryBg.fillRect(-5, -bgHeight/2 + 10, 10, 4);
 
   inventory.add([inventoryBg]);
 
