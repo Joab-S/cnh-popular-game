@@ -16,33 +16,34 @@
  */
 
 export function setupDocuments(scene) {
-  // grupo vazio inicialmente (sem corpos)
   if (scene.playerState.docsMissionCompleted) return;
 
-  const group = scene.physics.add.group( { allowGravity: true });
+  const group = scene.physics.add.group({ allowGravity: true });
   group.runChildUpdate = true;
 
-  // informações estáticas (posições, texturas etc)
   const documentsData = [
     {
       id: 'RG',
       key: 'doc_rg',
-      x: 400,
-      y: scene.scale.height - 150,
+      x: 455,
+      spawnY: 120,
+      targetY: scene.scale.height - 240,
       desc: 'Documento de identidade, necessário para se identificar.'
     },
     {
       id: 'CPF',
       key: 'doc_cpf',
-      x: 800,
-      y: scene.scale.height - 150,
+      x: 943,
+      spawnY: 150,
+      targetY: scene.scale.height - 270,
       desc: 'Cadastro de Pessoa Física, usado em cadastros e registros.'
     },
     {
       id: 'CR',
       key: 'doc_comprovante',
       x: 200,
-      y: scene.scale.height - 150,
+      spawnY: 80,
+      targetY: scene.scale.height - 160,
       desc: 'Comprovante de residência, usado para confirmar seu endereço.'
     }
   ];
@@ -50,8 +51,8 @@ export function setupDocuments(scene) {
   return {
     group,
     documentsData,
-    spawned: false, // ainda não criados no mundo
-    completed: false, // missão concluída?
+    spawned: false,
+    completed: false,
   };
 }
 
@@ -67,10 +68,20 @@ export function updateDocuments(scene) {
   if (!playerState.hasMission) return;
 
   // missão começou → spawna os documentos (uma única vez)
-  if (!documents.spawned && !documents.spawned) {
+  if (!documents.spawned) {
     spawnDocuments(scene);
     documents.spawned = true;
   }
+
+  // Congela os documentos quando atingem a posição Y desejada
+  documents.group.getChildren().forEach(doc => {
+    if (doc.body && doc.active && doc.y >= doc.targetY) {
+      doc.body.setVelocity(0, 0);
+      doc.body.allowGravity = false;
+      doc.body.moves = false;
+      doc.y = doc.targetY;
+    }
+  });
 
   // monitora progresso
   checkMissionProgress(scene);
@@ -87,9 +98,11 @@ function spawnDocuments(scene) {
 
   // cria sprite físico apenas quando a missão começa
   documentsData.forEach(data => {
-    const doc = group.create(data.x, data.y, data.key).setScale(0.15);
+    // Spawna na posição alta (spawnY) para cair
+    const doc = group.create(data.x, data.spawnY, data.key).setScale(0.08);
     doc.docId = data.id;
     doc.docDesc = data.desc;
+    doc.targetY = data.targetY; // guarda a posição final desejada
   });
 
   // colisão com o chão
@@ -100,6 +113,7 @@ function spawnDocuments(scene) {
     collectDocument(scene, doc);
   });
 }
+
 
 function collectDocument(scene, doc) {
   const { playerState } = scene;
