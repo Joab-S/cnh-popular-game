@@ -1,8 +1,44 @@
 export function setupUI(scene) {
   const { width, height } = scene.scale;
 
-  const inventory = scene.add.container(width / 2, height - 20).setScrollFactor(0);
+  // === INVENTÁRIO NO CANTO SUPERIOR DIREITO ===
+  const inventory = scene.add.container(width - 100, 60).setScrollFactor(0).setDepth(10);
 
+  const inventoryBg = scene.add.graphics();
+  inventoryBg.setAlpha(0);
+  
+  const bgWidth = 150;
+  const bgHeight = 70;
+  
+  // === ESTILO DE CAIXINHA 3D ===
+  
+  // Sombra da caixa (fundo)
+  inventoryBg.fillStyle(0x000000, 0.5);
+  inventoryBg.fillRoundedRect(-bgWidth/2 + 2, -bgHeight/2 + 2, bgWidth, bgHeight, 6);
+  
+  // Corpo principal da caixa (cor mais quente)
+  inventoryBg.fillStyle(0xffffff, 0.95); // Cor de madeira/marrom
+  inventoryBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 6);
+  
+  // Borda interna clara (efeito de relevo)
+  inventoryBg.lineStyle(2, 0x000000, 0.6); // Borda dourada/clara
+  inventoryBg.strokeRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 6);
+  
+  // Borda externa escura (profundidade)
+  inventoryBg.lineStyle(1, 0x1a140d, 0.9); // Borda marrom escura
+  inventoryBg.strokeRoundedRect(-bgWidth/2 + 1, -bgHeight/2 + 1, bgWidth - 2, bgHeight - 2, 5);
+  
+  // Efeito de iluminação no topo
+  inventoryBg.lineStyle(1, 0x000000, 0.6); // Luz dourada
+  inventoryBg.strokeRoundedRect(-bgWidth/2 + 3, -bgHeight/2 + 3, bgWidth - 6, 8, 3);
+  
+  // Detalhe de fechadura/decoração
+  inventoryBg.fillStyle(0x000000, 0.7); // Dourado
+  inventoryBg.fillRect(-5, -bgHeight/2 + 10, 10, 4); // Pequeno retângulo no topo
+
+  inventory.add([inventoryBg]);
+
+  // === MESSAGE BOX ===
   const messageBox = scene.add.container(scene.scale.width / 2, 60).setScrollFactor(0).setDepth(10);
   messageBox.setAlpha(0);
 
@@ -25,7 +61,7 @@ export function setupUI(scene) {
     color: '#ffffff',
     align: 'center',
     fontWeight: '600',
-    lineSpacing: 4,
+    lineSpacing: 3,
     wordWrap: { 
       width: textWidth - 20,
       useAdvancedWrap: true 
@@ -76,19 +112,31 @@ export function setupUI(scene) {
     },
     
     addToInventory: (key) => {
-      const icon = scene.add.image(0, 0, key).setScale(0.1).setScrollFactor(0);
-      const itemCount = inventory.list.length;
-      const horizontalSpacing = 80;
-
-      const offset = (itemCount * horizontalSpacing) - ((itemCount - 1) * horizontalSpacing / 2);
+      const items = inventory.list.filter(item => item.type === 'Image');
+      const itemCount = items.length;
       
-      icon.setPosition(offset, 0);
+      const horizontalSpacing = 45;
+      const maxItems = 3;
+      
+      const centerOffset = ((maxItems - 1) * horizontalSpacing) / 2;
+      const x = (itemCount * horizontalSpacing) - centerOffset;
+      const y = 0;
+      
+      const icon = scene.add.image(x, y, key)
+        .setScale(0.07)
+        .setScrollFactor(0);
+      
       inventory.add(icon);
-      
-      const totalItems = inventory.list.length;
-      const totalWidth = (totalItems - 1) * horizontalSpacing;
-      inventory.setX(scene.scale.width / 2 - totalWidth / 2);
-    }
+
+      if (itemCount === 0) {
+        scene.tweens.add({
+          targets: inventoryBg,
+          alpha: 1,
+          duration: 300,
+          ease: 'Power2'
+        });
+      }
+    },
   };
 }
 

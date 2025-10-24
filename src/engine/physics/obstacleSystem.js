@@ -8,9 +8,9 @@ export function setupObstacles(scene) {
   const positions = [155, 430, 690];
 
   const sizes = [
-    { w: 50, h: 65, y: height - 90 },
-    { w: 45, h: 40, y: height - 77 },
-    { w: 50, h: 65, y: height - 90 },
+    { w: 50, h: 65, y: height - 100 },
+    { w: 45, h: 40, y: height - 87 },
+    { w: 50, h: 65, y: height - 98 },
   ];
   
   positions.forEach((x, index) => {
