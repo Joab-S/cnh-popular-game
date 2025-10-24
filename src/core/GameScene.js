@@ -100,14 +100,18 @@ export default class GameScene extends Phaser.Scene {
         'Encontre seus documentos para começar o processo!'
       ],
       onInteract: () => {
-        if (!this.playerState.docsMissionCompleted) {
+        const pcObject = this.interactiveObjects.find(o => o.key === 'pc');
+
+        if (this.playerState.docsMissionCompleted) {
+          pcObject.dialogs = [
+            'Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!'
+          ];
+        } else {
           this.playerState.hasMission = true;
           this.ui.showMessage('Missão: Encontre RG, CPF e comprovante na sua casa!');
-        } else {
-          this.ui.showMessage('Documentos encontrados! Agora você pode se inscrever.');
         }
       },
-      hintText: 'Clique E para ver informações sobre a CNH Popular'
+      hintText: ''
     });
 
     this.pc.setScale(0.35);

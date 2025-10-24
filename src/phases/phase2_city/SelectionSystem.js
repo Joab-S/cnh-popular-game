@@ -11,6 +11,18 @@ import { AREAS, WORLD_SIZE } from '../../core/config.js';
 export function startPhase2(scene) {
   const { width, height } = scene.scale;
 
+  if (scene.interactiveObjects) {
+
+    scene.interactiveObjects = scene.interactiveObjects.filter(obj => 
+      obj.key !== 'pc'
+    );
+    
+    if (scene.pc) {
+      scene.pc.destroy();
+      scene.pc = null;
+    }
+  }
+
   // clearScene(scene, [scene.player, scene.playerState, scene.ground, scene.ui?.inventory, scene.ui?.messageBox]);
   // scene.time.removeAllEvents();
 
