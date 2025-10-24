@@ -45,7 +45,7 @@ export function setupInteractiveObject(scene, config) {
 export function updateGenericInteractions(scene) {
   const { player, keys, interactiveObjects } = scene;
   if (!player || !interactiveObjects) return;
-  if (scene.playerState?.quizActive) return;
+  if (scene.playerState?.quizActive || scene.playerState?.miniGameActive) return;
   
   interactiveObjects.forEach(entry => {
     if (!entry.object || !entry.object.active) return;
