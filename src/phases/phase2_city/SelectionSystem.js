@@ -23,21 +23,27 @@ export function startPhase2(scene) {
     }
   }
 
-  // clearScene(scene, [scene.player, scene.playerState, scene.ground, scene.ui?.inventory, scene.ui?.messageBox]);
-  // scene.time.removeAllEvents();
-
   // === MUNDO VISUAL ===
   CameraSystem.initCamera(scene, scene.player, WORLD_SIZE, height);
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
-  scene.add.rectangle(WORLD_SIZE / 2, height / 2, WORLD_SIZE, height, 0x87ceeb).setDepth(-5);
+  scene.add.image((width / 2), height / 2, "city_bg")
+    .setDepth(-3)
+    .setScale(0.48);
+
+  scene.add.image(width / 2 + 620, height / 2, "city_bg_2")
+    .setDepth(-3)
+    .setScale(0.48);
+    
   const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
+  groundRect.setVisible(false);
+
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
 
   // === PLAYER ===
-  scene.player.setPosition(30, height - 105);
+  scene.player.setPosition(30, height - 305);
   scene.player.setVelocity(0);
   scene.playerState.canMove = true;
   scene.playerState.currentArea = AREAS.city;
@@ -49,40 +55,48 @@ export function startPhase2(scene) {
   };
 
   // === INTERFACE ===
-  scene.ui.showMessage('Missão: Encontre o tio do DETRAN!');
+  scene.ui.showMessage('Missão: Encontre a AUTOESCOLA e pressione a tecla E para interagir!');
 
   // === OBSTÁCULOS ===
   scene.obstacles = setupObstacles(scene);
-  scene.physics.add.collider(scene.obstacles, groundRect);
+  
+  let collisionDebugged = false;
+
   scene.physics.add.collider(scene.player, scene.obstacles, () => {
-    scene.player.setVelocityY(-250);
+    if (!collisionDebugged) {
+      collisionDebugged = true;
+    }
   });
 
-  // === NPC DO DETRAN ===
-  new InteractiveObject(scene, {
-    key: 'npc_detran',
-    x: width ,
-    y: height - 120,
-    width: 60,
-    height: 120,
-    color: 0x5dadec,
-    dialogs:[
-      'Olá! Parabéns por chegar até aqui.',
-      'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
-    ],
-    onInteract: () => {
-      if (scene.playerState.quizActive) return;
-      if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
-        startQuiz(scene);
-      } else {
-        scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
-          'Dirija-se à Autoescola para iniciar a próxima fase.'
-        ];
-        // scene.ui.showMessage('Dirija-se à Autoescola para iniciar a próxima fase.');
-      }
-    },
-    label: 'Agente DETRAN'
-  });
+  // === AUTOESCOLA ===
+    const autoescola = new InteractiveObject(scene, {
+      key: 'autoescola',
+      x: width + 160,
+      y: height - 190,
+      texture: 'autoescola',
+      scale: 0.60,
+      width: 200,
+      height: 100,
+      proximity: { x: 80, y: 120 }, 
+      dialogs: [
+        'Olá! Parabéns por chegar até aqui.',
+        'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
+      ],
+      onInteract: () => {
+        if (scene.playerState.quizActive) return;
+        if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
+          startQuiz(scene);
+        } else {
+          scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
+            'Dirija-se à Autoescola para iniciar a próxima fase.'
+          ];
+        }
+      },
+      label: '',
+      hintText: '',
+    });
+
+  autoescola.sprite.setDepth(-2);
 }
 
 /**
@@ -90,7 +104,7 @@ export function startPhase2(scene) {
  */
 export function updatePhase2(scene) {
   if (scene.playerState.currentArea !== AREAS.city) return;
-  updateObstacles(scene);
+
   updateGenericInteractions(scene);
 }
 
