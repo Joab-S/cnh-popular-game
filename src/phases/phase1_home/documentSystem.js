@@ -148,6 +148,11 @@ function checkMissionProgress(scene) {
     playerState.docsMissionCompleted = true;
     playerState.hasMission = false;
 
+    const pcObject = scene.interactiveObjects.find(o => o.key === 'pc');
+    pcObject.dialogs = [
+      'Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!'
+    ];
+
     // Feedback e encerramento
     scene.time.delayedCall(2000, () => {
       scene.ui.showMessage("Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!");

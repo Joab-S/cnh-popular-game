@@ -106,13 +106,7 @@ export default class GameScene extends Phaser.Scene {
         'Encontre seus documentos para começar o processo!'
       ],
       onInteract: () => {
-        const pcObject = this.interactiveObjects.find(o => o.key === 'pc');
-
-        if (this.playerState.docsMissionCompleted) {
-          pcObject.dialogs = [
-            'Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!'
-          ];
-        } else {
+        if (!this.playerState.docsMissionCompleted) {
           this.playerState.hasMission = true;
           this.ui.showMessage('Missão: Encontre RG, CPF e comprovante na sua casa!');
         }

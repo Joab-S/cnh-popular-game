@@ -74,11 +74,6 @@ export function startPhase2(scene) {
       if (scene.playerState.quizActive) return;
       if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
         startQuiz(scene);
-      } else {
-        scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
-          'Dirija-se à Autoescola para iniciar a próxima fase.'
-        ];
-        // scene.ui.showMessage('Dirija-se à Autoescola para iniciar a próxima fase.');
       }
     },
     label: 'Agente DETRAN'
@@ -183,9 +178,15 @@ function startQuiz(scene) {
     scene.playerState.phase2Completed = true;
     scene.playerState.hasMission = true;
     
+    const npcObject = scene.interactiveObjects.find(o => o.key === 'npc_detran');
+    const dialog = 'Dirija-se à Autoescola para iniciar a próxima fase.';
+    npcObject.dialogs = [
+      dialog
+    ];
+
     // libera o movimento novamente
     scene.time.delayedCall(500, () => {
-      scene.ui.showMessage('Dirija-se à Autoescola para iniciar a próxima fase.');
+      scene.ui.showMessage(dialog);
       scene.playerState.canMove = true;
       scene.playerState.inDialog = false;
       scene.playerState.quizActive = false;

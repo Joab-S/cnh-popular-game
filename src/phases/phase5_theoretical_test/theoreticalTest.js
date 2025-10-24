@@ -47,11 +47,9 @@ export function startPhase5(scene) {
     ],
     onInteract: () => {
       if (scene.playerState.miniGameActive) return;
-      if (scene.playerState.phase5Completed) {
-        scene.ui.showMessage('Você já completou o exame teórico. Parabéns!');
-        return;
+      if (!scene.playerState.phase5Completed) {
+        startMiniGame(scene);
       }
-      startMiniGame(scene);
     },
   });
 }
@@ -63,7 +61,7 @@ export function updatePhase5(scene) {
 
   const miniGame = scene.scene.get(scene.miniGameKey);
 
-  if (miniGame && scene.playerState.miniGameActive) {
+  if (miniGame && scene.playerState.miniGameActive && !scene.playerState.phase5Completed) {
     miniGame.events.once('gameEnded', (data) => {
       closeMiniGame(scene, scene.overlay, scene.miniGameContainer, scene.miniGameKey, data);
     });
@@ -104,7 +102,6 @@ function startMiniGame(scene) {
 }
 
 function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
-  console.log('Minigame ended with result:', result);
   if (overlay && overlay.destroy) overlay.destroy();
   if (miniGameContainer && miniGameContainer.destroy) miniGameContainer.destroy();
 
@@ -127,4 +124,3 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
     : 'Você terminou o exame.';
   scene.ui.showMessage(msg);
 }
-
