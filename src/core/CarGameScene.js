@@ -40,7 +40,6 @@ export default class CarGameScene extends Phaser.Scene {
     });
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
-    // === Obstáculos ===
     this.hitboxes = [];
     const blockWidth = 1500;
     const blockHeight = 660;
@@ -72,6 +71,18 @@ export default class CarGameScene extends Phaser.Scene {
       },
     ];
 
+    const destination = {
+      x: 800,
+      y: 150,
+      radius: 50,
+    };
+
+    this.matter.add.circle(destination.x, destination.y, destination.radius, {
+      isStatic: true,
+      isSensor: true,
+      label: "destination",
+    });
+
     boxes.forEach((b) => {
       const body = this.matter.add.rectangle(b.x, b.y, b.width, b.height, {
         isStatic: true,
@@ -87,21 +98,17 @@ export default class CarGameScene extends Phaser.Scene {
         if (pair.bodyA === this.car.body || pair.bodyB === this.car.body) {
           const other = pair.bodyA === this.car.body ? pair.bodyB : pair.bodyA;
 
-          if (other.label === "hitbox") {
-            this.cameras.main.shake(200, 0.01);
-            this.time.delayedCall(500, () => {
-              this.handleGameOver();
-            });
+          if (
+            other.label === "hitbox" ||
+            (other.label === "trafficSensor" &&
+              this.trafficLight.state === "red")
+          ) {
+            this.handleGameOver();
           }
 
-          if (
-            other.label === "trafficSensor" &&
-            this.trafficLight.state === "red"
-          ) {
-            this.cameras.main.shake(200, 0.01);
-            this.time.delayedCall(500, () => {
-              this.handleGameOver();
-            });
+          if (other.label === "destination") {
+            console.log("Parabéns! Você chegou ao destino!");
+            this.scene.start("EndScene", { victory: true });
           }
         }
       });
@@ -115,8 +122,14 @@ export default class CarGameScene extends Phaser.Scene {
   }
 
   handleGameOver() {
-    console.log("Game Over! O carro colidiu com um obstáculo!");
+    this.cameras.main.shake(200, 0.01);
 
-    this.scene.start("EndScene");
+    this.time.delayedCall(500, () => {
+      this.cameras.main.fade(500, 0, 0, 0);
+    });
+
+    this.time.delayedCall(1000, () => {
+      this.scene.start("EndScene", { victory: false });
+    });
   }
 }
