@@ -7,13 +7,21 @@ const WORLD_HEIGHT = 2160;
 
 export default class CarGameScene extends Phaser.Scene {
   constructor() {
-    super("CarGameScene");
+    super({
+      key: "CarGameScene",
+      physics: {
+        default: "matter",
+        matter: {
+          gravity: { x: 0, y: 0 },
+          debug: true,
+        },
+      },
+    });
   }
 
   preload() {
     this.load.image("soil", "./assets/images/cidade.png");
     this.load.image("car", "./assets/images/carro.png");
-    this.load.image("barricade", "./assets/images/obstacle.png");
     this.load.image("tire-mark", "./assets/images/tire_mark.png");
   }
 

@@ -14,12 +14,15 @@ export const AREAS = {
 
 export const GAME_CONFIG = {
   type: Phaser.AUTO,
+  parent: 'game',
   width: GAME_WIDTH,
   height: GAME_HEIGHT,
+  backgroundColor: '#0e0e0e',
+  pixelArt: true,
   physics: {
-    default: "matter",
-    matter: {
-      gravity: { x: 0, y: 0 },
+    default: "arcade",
+    arcade: {
+      gravity: { x: 0, y: 800 },
       debug: true, // ative para visualizar hitboxes
     },
   },
