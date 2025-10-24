@@ -1,6 +1,8 @@
 import { AREAS } from "../../core/config";
 
-export function createPlayerState() {
+let playerState = null;
+
+function getDefaultState() {
   return {
     canMove: true,
     inDialog: false,
@@ -21,5 +23,43 @@ export function createPlayerState() {
     // Missões (Fase 2)
     phase2Completed: false,
     quizActive: false,
+    
+    miniGameActive: false,
+    
+    phase3Completed: false,
+    phase4Completed: false,
+    phase5Completed: false,
+    phase6Completed: false,
+    phase7Completed: false,
+    phase8Completed: false,
   };
+}
+
+export function createPlayerState() {
+  if (playerState) return playerState;
+
+  const base = getDefaultState();
+
+  const proxy = new Proxy(base, {
+    set(target, key, value) {
+      target[key] = value;
+      return true;
+    },
+    get(target, key) {
+      return target[key];
+    }
+  });
+
+  playerState = proxy;
+  return proxy;
+
+}
+
+export function getPlayerStateInstance() {
+  return playerState;
+}
+
+export function resetPlayerState() {
+  if (!playerState) return;
+  Object.assign(playerState, getDefaultState());
 }

@@ -45,9 +45,11 @@ export function setupInteractiveObject(scene, config) {
 export function updateGenericInteractions(scene) {
   const { player, keys, interactiveObjects } = scene;
   if (!player || !interactiveObjects) return;
-  if (scene.playerState?.quizActive) return; 
-
+  if (scene.playerState?.quizActive || scene.playerState?.miniGameActive) return;
+  
   interactiveObjects.forEach(entry => {
+    if (!entry.object || !entry.object.active) return;
+    
     const dx = Math.abs(player.x - entry.object.x);
     const dy = Math.abs(player.y - entry.object.y);
     const near = dx < entry.proximity.x && dy < entry.proximity.y;
@@ -125,4 +127,20 @@ function toggleHint(scene, hint, visible) {
       ease: 'Linear'
     });
   }
+}
+
+export function clearInteractions(scene) {
+  if (!scene.interactiveObjects) return;
+
+  for (const entry of scene.interactiveObjects) {
+    try {
+      if (entry.hint?.destroy) entry.hint.destroy();
+      if (entry.object?.destroy) entry.object.destroy();
+      if (entry.dialog?.destroy) entry.dialog.destroy();
+    } catch (err) {
+      console.warn("Falha ao limpar interação:", err);
+    }
+  }
+
+  scene.interactiveObjects.length = 0;
 }

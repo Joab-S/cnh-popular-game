@@ -2,6 +2,9 @@ import * as CameraSystem from '../camera/cameraSystem.js';
 import { clearScene } from '../utils/sceneUtils.js';
 import { startPhase2 } from '../../phases/phase2_city/SelectionSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
+import { startPhase3 } from '../../phases/phase3_clinic/clinicSystem.js';
+import { startPhase4 } from '../../phases/phase4_driving_school1/drivingSchool1.js';
+import { startPhase5 } from '../../phases/phase5_theoretical_test/theoreticalTest.js';
 
 /**
  * Define o limite de transição padrão (borda direita da casa).
@@ -27,9 +30,24 @@ export function checkTransitions(scene) {
   }
   if (playerState.currentArea === AREAS.city && player.x >= transition.sceneEndX) {
     if (playerState.phase2Completed) {
-      goToArea(scene, AREAS.drivingSchool);
+      goToArea(scene, AREAS.clinic);
     }
-  } 
+  }
+  if (playerState.currentArea === AREAS.clinic && player.x >= transition.sceneEndX) {
+    goToArea(scene, AREAS.drivingSchool1);
+  }
+  if (playerState.currentArea === AREAS.drivingSchool1 && player.x >= transition.sceneEndX) {
+    goToArea(scene, AREAS.theoreticalTest);
+  }
+  if (playerState.currentArea === AREAS.theoreticalTest && player.x >= transition.sceneEndX) {
+    goToArea(scene, AREAS.drivingSchool2);
+  }
+  if (playerState.currentArea === AREAS.drivingSchool2 && player.x >= transition.sceneEndX) {
+    goToArea(scene, AREAS.practicalTest);
+  }
+  if (playerState.currentArea === AREAS.practicalTest && player.x >= transition.sceneEndX) {
+    goToArea(scene, AREAS.finalScene);
+  }
 }
 
 /**
@@ -63,6 +81,18 @@ export function goToArea(scene, area, options = {}) {
         loadHome(scene);
       } else if (area === AREAS.city) {
         startPhase2(scene);
+      } else if (area === AREAS.clinic) {
+        startPhase3(scene);
+      } else if (area === AREAS.drivingSchool1) {
+        startPhase4(scene);
+      } else if (area === AREAS.theoreticalTest) {
+        startPhase5(scene);
+      } else if (area === AREAS.drivingSchool2) {
+        startPhase6(scene);
+      } else if (area === AREAS.practicalTest) {
+        startPhase7(scene);
+      } else if (area === AREAS.finalScene) {
+        startPhase8(scene);
       } else {
         console.warn(`Área desconhecida: ${area}`);
       }
@@ -72,6 +102,8 @@ export function goToArea(scene, area, options = {}) {
       state.transitioning = false;
       state.transitionCooldown = true;
       state.canMove = true;
+
+      console.log(state);
 
       // === cooldown pra evitar loop de entradas rápidas ===
       scene.time.delayedCall(1000, () => {
