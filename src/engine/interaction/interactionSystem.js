@@ -63,6 +63,8 @@ export function updateGenericInteractions(scene) {
       near &&
       (Phaser.Input.Keyboard.JustDown(keys.E) || scene.buttons.action)
     ) {
+      scene.buttons.action = false;
+
       progressDialog(scene, entry);
     }
   });
