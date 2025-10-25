@@ -86,6 +86,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_1", "./assets/images/obstaculo_1.png");
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
+    
+    this.load.image("clinic_bg_1", "./assets/images/clinica_bg_1.png");
+    this.load.image("clinic_bg_2", "./assets/images/clinica_bg_2.png");
+    this.load.image("clinic", "./assets/images/clinica.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
