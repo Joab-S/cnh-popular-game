@@ -56,7 +56,6 @@ export function startPhase5(scene) {
 
 export function updatePhase5(scene) {
   if (scene.playerState.currentArea !== AREAS.theoreticalTest) return;
-  if (scene.playerState.minigameActive) return; 
   updateGenericInteractions(scene);
 
   const miniGame = scene.scene.get(scene.miniGameKey);
