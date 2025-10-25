@@ -10,14 +10,23 @@ export function startPhase5(scene) {
   CameraSystem.initCamera(scene, scene.player, WORLD_SIZE, height);
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
-  scene.add.rectangle(WORLD_SIZE / 2, height / 2, WORLD_SIZE, height, 0x87ceeb).setDepth(-5);
+  scene.add.image((width / 2), height / 2, "detran_theorical_bg")
+    .setDepth(-3)
+    .setScale(0.48);
+
+  scene.add.image(width / 2 + 620, height / 2, "detran_theorical_bg_2")
+    .setDepth(-3)
+    .setScale(0.48);
+
   const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
+  groundRect.setVisible(false);
+
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
 
   // === PLAYER ===
-  scene.player.setPosition(30, height - 105);
+  scene.player.setPosition(30, height - 305);
   scene.player.setVelocity(0);
   scene.playerState.canMove = true;
   scene.playerState.currentArea = AREAS.theoreticalTest;
@@ -32,26 +41,33 @@ export function startPhase5(scene) {
 
   scene.miniGameKey = 'TrafficSignsGameScene';
 
-  scene.ui.showMessage('Procure a tia da autoescola, ela irá aplicar seu exame teórico.');
+  scene.ui.showMessage('Procure o prédio do Detran e aperte a tecla E para interagir.');
 
-  new InteractiveObject(scene, {
-    key: 'aplicador_do_exame',
-    x: width * 0.8,
-    y: height - 120,
-    width: 60,
-    height: 120,
-    label: 'Aplicador do Exame',
-    dialogs: [
-      'Olá, vamos começar seu exame teórico.',
-      'Concentre-se nas placas e reaja rapidamente!'
-    ],
-    onInteract: () => {
-      if (scene.playerState.miniGameActive) return;
-      if (!scene.playerState.phase5Completed) {
-        startMiniGame(scene);
-      }
-    },
-  });
+  // === AUTOESCOLA ===
+      const detran = new InteractiveObject(scene, {
+        key: 'detran',
+        x: width - 395,
+        y: height - 205,
+        texture: 'detran',
+        scale: 0.27,
+        width: 200,
+        height: 100,
+        proximity: { x: 80, y: 120 }, 
+        dialogs: [
+          'Olá! Parabéns por chegar até aqui.',
+          'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
+        ],
+        onInteract: () => {
+        if (scene.playerState.quizActive) return;
+        if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
+          startQuiz(scene);
+        }
+      },
+        label: '',
+        hintText: '',
+      });
+  
+    detran.sprite.setDepth(-2);
 }
 
 export function updatePhase5(scene) {

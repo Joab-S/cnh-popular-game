@@ -90,6 +90,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
     this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
     this.load.image("clinic", "./assets/images/clinica.png");
+    
+    this.load.image("detran_theorical_bg", "./assets/images/detran_theorical_bg.png");
+    this.load.image("detran_theorical_bg_2", "./assets/images/detran_theorical_bg_2.png");
+    this.load.image("detran", "./assets/images/detran.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
