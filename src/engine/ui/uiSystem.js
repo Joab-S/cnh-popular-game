@@ -143,16 +143,16 @@ export function setupUI(scene) {
   };
 
   const pressButton = (prop) => {
-    buttons[prop].active = true;
+    buttons[prop] = true;
   };
 
   const releaseButton = (prop) => {
-    buttons[prop].active = false;
+    buttons[prop] = false;
   };
 
   Object.keys(buttons).forEach((key) => {
     const btn = buttons[key];
-    buttons[key].active = false;
+    buttons[key] = false;
 
     btn.on("pointerdown", () => pressButton(key));
     btn.on("pointerout", () => releaseButton(key));

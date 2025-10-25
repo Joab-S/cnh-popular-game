@@ -39,11 +39,10 @@ export function updatePlayerMovement(scene) {
 
   const speed = 160;
 
-  const leftPressed = keys.A.isDown || keys.LEFT.isDown || buttons.left.active;
-  const rightPressed =
-    keys.D.isDown || keys.RIGHT.isDown || buttons.right.active;
+  const leftPressed = keys.A.isDown || keys.LEFT.isDown || buttons.left;
+  const rightPressed = keys.D.isDown || keys.RIGHT.isDown || buttons.right;
   const jumpPressed =
-    keys.W.isDown || keys.SPACE.isDown || keys.UP.isDown || buttons.up.active;
+    keys.W.isDown || keys.SPACE.isDown || keys.UP.isDown || buttons.up;
 
   if (leftPressed) {
     player.setVelocityX(-speed);
