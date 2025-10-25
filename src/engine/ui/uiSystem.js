@@ -1,19 +1,19 @@
 export function setupUI(scene) {
   const { width, height } = scene.scale;
 
-  // === INVENTÁRIO ===
-  const inventory = scene.add.container(100, height - 60).setScrollFactor(0).setDepth(10);    
+  // === INVENTÁRIO NO CANTO SUPERIOR ESQUERDO ===
+  const inventory = scene.add.container(45, 80).setScrollFactor(0).setDepth(10);
 
   const inventoryBg = scene.add.graphics();
   inventoryBg.setAlpha(0);
   
-  const bgWidth = 150;
-  const bgHeight = 70;
+  const bgWidth = 70;
+  const bgHeight = 130;
 
   inventoryBg.fillStyle(0x000000, 0.5);
   inventoryBg.fillRoundedRect(-bgWidth/2 + 2, -bgHeight/2 + 2, bgWidth, bgHeight, 6);
 
-  inventoryBg.fillStyle(0xffffff, 0.95);
+  inventoryBg.fillStyle(0xffffff, 0.85);
   inventoryBg.fillRoundedRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight, 6);
 
   inventoryBg.lineStyle(2, 0x000000, 0.6);
@@ -107,15 +107,15 @@ export function setupUI(scene) {
       const items = inventory.list.filter(item => item.type === 'Image');
       const itemCount = items.length;
       
-      const horizontalSpacing = 45;
+      const verticalSpacing = 35;
       const maxItems = 3;
       
-      const centerOffset = ((maxItems - 1) * horizontalSpacing) / 2;
-      const x = (itemCount * horizontalSpacing) - centerOffset;
-      const y = 0;
+      const startY = -((maxItems - 1) * verticalSpacing) / 2;
+      const x = 0;
+      const y = startY + (itemCount * verticalSpacing);
       
       const icon = scene.add.image(x, y, key)
-        .setScale(0.07)
+        .setScale(0.065)
         .setScrollFactor(0);
       
       inventory.add(icon);
