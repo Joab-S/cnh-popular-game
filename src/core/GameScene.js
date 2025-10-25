@@ -87,6 +87,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
 
+    this.load.image("button_up", "./assets/images/button-up.png");
+    this.load.image("button_left", "./assets/images/button-left.png");
+    this.load.image("button_right", "./assets/images/button-right.png");
+
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
 
@@ -208,6 +212,19 @@ export default class GameScene extends Phaser.Scene {
         "Aproxime-se do computador e aperte a TECLA E para começar sua jornada!"
       );
     });
+
+    this.add
+      .image(40, height - 40, "button_left")
+      .setScrollFactor(0)
+      .setScale(0.2);
+    this.add
+      .image(120, height - 40, "button_right")
+      .setScrollFactor(0)
+      .setScale(0.2);
+    this.add
+      .image(width - 40, height - 40, "button_up")
+      .setScrollFactor(0)
+      .setScale(0.2);
   }
 
   update() {
