@@ -86,7 +86,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_1", "./assets/images/obstaculo_1.png");
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
-    
+
     this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
     this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
     this.load.image("clinic", "./assets/images/clinica.png");
@@ -100,8 +100,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    this.buttons = {};
-
     // === VERIFICA SE PRECISA MOSTRAR SELEÇÃO DE PERSONAGEM ===
     if (!this.selectedCharacter) {
       setupCharacterSelection(this, (character) => {
@@ -212,44 +210,6 @@ export default class GameScene extends Phaser.Scene {
       this.ui.showMessage(
         "Aproxime-se do computador e aperte a TECLA E para começar sua jornada!"
       );
-    });
-
-    this.buttons.left = this.add
-      .sprite(40, height - 40, "button_left")
-      .setScrollFactor(0)
-      .setScale(0.2)
-      .setInteractive();
-    this.buttons.right = this.add
-      .sprite(120, height - 40, "button_right")
-      .setScrollFactor(0)
-      .setScale(0.2)
-      .setInteractive();
-    this.buttons.up = this.add
-      .sprite(width - 40, height - 40, "button_up")
-      .setScrollFactor(0)
-      .setScale(0.2)
-      .setInteractive();
-    this.buttons.action = this.add
-      .sprite(width - 120, height - 40, "button_action")
-      .setScrollFactor(0)
-      .setScale(0.2)
-      .setInteractive();
-
-    const pressButton = (prop) => {
-      this.buttons[prop] = true;
-    };
-
-    const releaseButton = (prop) => {
-      this.buttons[prop] = false;
-    };
-
-    Object.keys(this.buttons).forEach((key) => {
-      const btn = this.buttons[key];
-      this.buttons[key] = false;
-
-      btn.on("pointerdown", () => pressButton(key));
-      btn.on("pointerout", () => releaseButton(key));
-      btn.on("pointerup", () => releaseButton(key));
     });
   }
 

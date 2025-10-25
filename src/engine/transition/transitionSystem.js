@@ -99,6 +99,7 @@ export function goToArea(scene, area, options = {}) {
             scene.playerState,
             scene.ui?.inventory,
             scene.ui?.messageBox,
+            scene.ui?.buttonsContainer,
           ]
         : []
     );
