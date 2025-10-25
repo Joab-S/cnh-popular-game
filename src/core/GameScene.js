@@ -90,11 +90,14 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("button_up", "./assets/images/button-up.png");
     this.load.image("button_left", "./assets/images/button-left.png");
     this.load.image("button_right", "./assets/images/button-right.png");
+    this.load.image("button_action", "./assets/images/button-action.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
 
   create() {
+    this.buttons = {};
+
     // === VERIFICA SE PRECISA MOSTRAR SELEÇÃO DE PERSONAGEM ===
     if (!this.selectedCharacter) {
       setupCharacterSelection(this, (character) => {
@@ -213,18 +216,43 @@ export default class GameScene extends Phaser.Scene {
       );
     });
 
-    this.add
-      .image(40, height - 40, "button_left")
+    this.buttons.left = this.add
+      .sprite(40, height - 40, "button_left")
       .setScrollFactor(0)
-      .setScale(0.2);
-    this.add
-      .image(120, height - 40, "button_right")
+      .setScale(0.2)
+      .setInteractive();
+    this.buttons.right = this.add
+      .sprite(120, height - 40, "button_right")
       .setScrollFactor(0)
-      .setScale(0.2);
-    this.add
-      .image(width - 40, height - 40, "button_up")
+      .setScale(0.2)
+      .setInteractive();
+    this.buttons.up = this.add
+      .sprite(width - 40, height - 40, "button_up")
       .setScrollFactor(0)
-      .setScale(0.2);
+      .setScale(0.2)
+      .setInteractive();
+    this.buttons.action = this.add
+      .sprite(width - 120, height - 40, "button_action")
+      .setScrollFactor(0)
+      .setScale(0.2)
+      .setInteractive();
+
+    const pressButton = (prop) => {
+      this.buttons[prop] = true;
+    };
+
+    const releaseButton = (prop) => {
+      this.buttons[prop] = false;
+    };
+
+    Object.keys(this.buttons).forEach((key) => {
+      const btn = this.buttons[key];
+      this.buttons[key] = false;
+
+      btn.on("pointerdown", () => pressButton(key));
+      btn.on("pointerout", () => releaseButton(key));
+      btn.on("pointerup", () => releaseButton(key));
+    });
   }
 
   update() {

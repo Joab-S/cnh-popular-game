@@ -27,7 +27,8 @@ export function setupPlayer(scene, x, y, textureKey = "player_boy") {
 }
 
 export function updatePlayerMovement(scene) {
-  const { player, keys, playerState } = scene;
+  const { player, keys, playerState, buttons } = scene;
+
   if (!player || !keys) return;
 
   if (!playerState?.canMove) {
@@ -38,9 +39,9 @@ export function updatePlayerMovement(scene) {
 
   const speed = 160;
 
-  const leftPressed = keys.A.isDown || keys.LEFT.isDown;
-  const rightPressed = keys.D.isDown || keys.RIGHT.isDown;
-  const jumpPressed = keys.W.isDown || keys.SPACE.isDown || keys.UP.isDown;
+  const leftPressed = keys.A.isDown || keys.LEFT.isDown || buttons.left;
+  const rightPressed = keys.D.isDown || keys.RIGHT.isDown || buttons.right;
+  const jumpPressed = keys.W.isDown || keys.SPACE.isDown || keys.UP.isDown || buttons.up;
 
   if (leftPressed) {
     player.setVelocityX(-speed);
