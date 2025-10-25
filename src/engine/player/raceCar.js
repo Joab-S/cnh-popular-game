@@ -29,14 +29,14 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
     this.setAngle(-90);
   }
 
-  update(delta, cursorKeys, time) {
-    const { left, right, up, down, wKey, aKey, sKey, dKey } = cursorKeys;
+  update(delta, keys, time) {
+    const { LEFT, RIGHT, UP, DOWN, W, A, S, D } = keys;
     const rotation = this.rotation;
 
-    const leftPressed = left.isDown || aKey.isDown;
-    const rightPressed = right.isDown || dKey.isDown;
-    const upPressed = up.isDown || wKey.isDown;
-    const downPressed = down.isDown || sKey.isDown;
+    const leftPressed = LEFT.isDown || A.isDown;
+    const rightPressed = RIGHT.isDown || D.isDown;
+    const upPressed = UP.isDown || W.isDown;
+    const downPressed = DOWN.isDown || S.isDown;
 
     // --- Aceleração / frenagem ---
     if (upPressed) {
