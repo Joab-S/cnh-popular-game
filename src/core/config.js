@@ -20,14 +20,14 @@ export const GAME_CONFIG = {
   backgroundColor: '#0e0e0e',
   pixelArt: true,
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
       gravity: { x: 0, y: 800 },
-      debug: true
-    }
+      debug: true, // ative para visualizar hitboxes
+    },
   },
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH
-  }
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+  },
 };
