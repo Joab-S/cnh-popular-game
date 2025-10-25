@@ -87,6 +87,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
 
+    this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
+    this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
+    this.load.image("clinic", "./assets/images/clinica.png");
+
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
 
@@ -121,8 +125,10 @@ export default class GameScene extends Phaser.Scene {
 
     const pc = new InteractiveObject(this, {
       key: "pc",
+      key: "pc",
       x: width - 235,
       y: height - 160,
+      texture: "pc",
       texture: "pc",
       label: "",
       dialogs: [
@@ -132,9 +138,21 @@ export default class GameScene extends Phaser.Scene {
         "O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exame médico e provas teórica e prática.",
         "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF e comprovante de residência.",
         "Encontre seus documentos para começar o processo!",
+        "CNH Popular Ceará - Inscrições Abertas!",
+        "O programa oferece a 1ª via da Carteira Nacional de Habilitação de forma gratuita para pessoas de baixa renda.",
+        "Para se inscrever, você precisa: Ter entre 18 e 65 anos, ser de família de baixa renda e morar no Ceará há pelo menos 2 anos.",
+        "O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exame médico e provas teórica e prática.",
+        "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF e comprovante de residência.",
+        "Encontre seus documentos para começar o processo!",
       ],
       onInteract: () => {
-        if (!this.playerState.docsMissionCompleted) {
+        const pcObject = this.interactiveObjects.find((o) => o.key === "pc");
+
+        if (this.playerState.docsMissionCompleted) {
+          pcObject.dialogs = [
+            "Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!",
+          ];
+        } else {
           this.playerState.hasMission = true;
           this.ui.showMessage(
             "Missão: Encontre RG, CPF e comprovante na sua casa!"
@@ -247,3 +265,4 @@ export default class GameScene extends Phaser.Scene {
     g.destroy();
   }
 }
+
