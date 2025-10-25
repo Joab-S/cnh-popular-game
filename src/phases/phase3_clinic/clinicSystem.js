@@ -12,7 +12,7 @@ export function startPhase3(scene) {
     .setDepth(-3)
     .setScale(0.48);
 
-  scene.add.image(width / 2 + 585, height / 2, "clinic_bg_2")
+  scene.add.image(width / 2 + 590, height / 2, "clinic_bg_2")
     .setDepth(-3)
     .setScale(0.48);
 
@@ -44,9 +44,9 @@ export function startPhase3(scene) {
             if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
                 startQuiz(scene);
             } else {
-                scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
-                    'Dirija-se à Autoescola para iniciar a próxima fase.'
-                ];
+              scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
+                  'Dirija-se à Autoescola para iniciar a próxima fase.'
+              ];
             }
         },
         label: '',
