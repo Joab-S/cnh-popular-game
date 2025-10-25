@@ -1,10 +1,13 @@
-import * as CameraSystem from '../camera/cameraSystem.js';
-import { clearScene } from '../utils/sceneUtils.js';
-import { startPhase2 } from '../../phases/phase2_city/SelectionSystem.js';
-import { AREAS, WORLD_SIZE } from '../../core/config.js';
-import { startPhase3 } from '../../phases/phase3_clinic/clinicSystem.js';
-import { startPhase4 } from '../../phases/phase4_driving_school1/drivingSchool1.js';
-import { startPhase5 } from '../../phases/phase5_theoretical_test/theoreticalTest.js';
+import * as CameraSystem from "../camera/cameraSystem.js";
+import { clearScene } from "../utils/sceneUtils.js";
+import { startPhase2 } from "../../phases/phase2_city/SelectionSystem.js";
+import { AREAS, WORLD_SIZE } from "../../core/config.js";
+import { startPhase3 } from "../../phases/phase3_clinic/clinicSystem.js";
+import { startPhase4 } from "../../phases/phase4_driving_school1/drivingSchool1.js";
+import { startPhase5 } from "../../phases/phase5_theoretical_test/theoreticalTest.js";
+import { startPhase6 } from "../../phases/phase6_driving_school2/drivingSchool2.js";
+import { startPhase7 } from "../../phases/phase7_practical_test/practicalTest.js";
+import { startPhase8 } from "../../phases/phase8_final_scene/finalScene.js";
 
 /**
  * Define o limite de transição padrão (borda direita da casa).
@@ -23,29 +26,50 @@ export function checkTransitions(scene) {
   if (playerState.transitioning || playerState.transitionCooldown) return;
 
   // sair da casa pela direita → cidade
-  if (playerState.currentArea === AREAS.home && player.x >= transition.sceneEndX) {
+  if (
+    playerState.currentArea === AREAS.home &&
+    player.x >= transition.sceneEndX
+  ) {
     if (playerState.docsMissionCompleted) {
       goToArea(scene, AREAS.city);
     }
   }
-  if (playerState.currentArea === AREAS.city && player.x >= transition.sceneEndX) {
+  if (
+    playerState.currentArea === AREAS.city &&
+    player.x >= transition.sceneEndX
+  ) {
     if (playerState.phase2Completed) {
       goToArea(scene, AREAS.clinic);
     }
   }
-  if (playerState.currentArea === AREAS.clinic && player.x >= transition.sceneEndX) {
+  if (
+    playerState.currentArea === AREAS.clinic &&
+    player.x >= transition.sceneEndX
+  ) {
     goToArea(scene, AREAS.drivingSchool1);
   }
-  if (playerState.currentArea === AREAS.drivingSchool1 && player.x >= transition.sceneEndX) {
+  if (
+    playerState.currentArea === AREAS.drivingSchool1 &&
+    player.x >= transition.sceneEndX
+  ) {
     goToArea(scene, AREAS.theoreticalTest);
   }
-  if (playerState.currentArea === AREAS.theoreticalTest && player.x >= transition.sceneEndX) {
+  if (
+    playerState.currentArea === AREAS.theoreticalTest &&
+    player.x >= transition.sceneEndX
+  ) {
     goToArea(scene, AREAS.drivingSchool2);
   }
-  if (playerState.currentArea === AREAS.drivingSchool2 && player.x >= transition.sceneEndX) {
+  if (
+    playerState.currentArea === AREAS.drivingSchool2 &&
+    player.x >= transition.sceneEndX
+  ) {
     goToArea(scene, AREAS.practicalTest);
   }
-  if (playerState.currentArea === AREAS.practicalTest && player.x >= transition.sceneEndX) {
+  if (
+    playerState.currentArea === AREAS.practicalTest &&
+    player.x >= transition.sceneEndX
+  ) {
     goToArea(scene, AREAS.finalScene);
   }
 }
@@ -70,7 +94,12 @@ export function goToArea(scene, area, options = {}) {
     clearScene(
       scene,
       preservePlayer
-        ? [scene.player, scene.playerState, scene.ui?.inventory, scene.ui?.messageBox]
+        ? [
+            scene.player,
+            scene.playerState,
+            scene.ui?.inventory,
+            scene.ui?.messageBox,
+          ]
         : []
     );
 
