@@ -47,11 +47,9 @@ export function startPhase5(scene) {
     ],
     onInteract: () => {
       if (scene.playerState.miniGameActive) return;
-      if (scene.playerState.phase5Completed) {
-        scene.ui.showMessage('Você já completou o exame teórico. Parabéns!');
-        return;
+      if (!scene.playerState.phase5Completed) {
+        startMiniGame(scene);
       }
-      startMiniGame(scene);
     },
   });
 }
@@ -63,7 +61,7 @@ export function updatePhase5(scene) {
 
   const miniGame = scene.scene.get(scene.miniGameKey);
 
-  if (miniGame && scene.playerState.miniGameActive) {
+  if (miniGame && scene.playerState.miniGameActive && !scene.playerState.phase5Completed) {
     miniGame.events.once('gameEnded', (data) => {
       closeMiniGame(scene, scene.overlay, scene.miniGameContainer, scene.miniGameKey, data);
     });
@@ -104,7 +102,6 @@ function startMiniGame(scene) {
 }
 
 function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
-  console.log('Minigame ended with result:', result);
   if (overlay && overlay.destroy) overlay.destroy();
   if (miniGameContainer && miniGameContainer.destroy) miniGameContainer.destroy();
 
@@ -121,10 +118,15 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   scene.playerState.inDialog = false;
   scene.playerState.phase5Completed = true;
 
+  const theoreticalObject = scene.interactiveObjects.find(o => o.key === 'aplicador_do_exame');
+  const dialog = 'Você foi aprovado, siga para as aulas práticas.';
+  theoreticalObject.dialogs = [
+    dialog
+  ];
+
   // mensagem final
   const msg = result?.victory
     ? `Excelente! Você completou o exame com ${result.score} pontos!`
     : 'Você terminou o exame.';
   scene.ui.showMessage(msg);
 }
-
