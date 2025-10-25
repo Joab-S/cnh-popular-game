@@ -30,17 +30,17 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
   }
 
   update(delta, cursorKeys, time) {
-    const { left, right, up, down } = cursorKeys;
+    const { left, right, up, down, wKey, aKey, sKey, dKey } = cursorKeys;
     const rotation = this.rotation;
 
     // --- Aceleração / frenagem ---
-    if (up.isDown) {
+    if (up.isDown || wKey.isDown) {
       this.throttle = Phaser.Math.Clamp(
         this.throttle + THROTTLE_RATE * delta,
         -MAX_FORCE,
         MAX_FORCE
       );
-    } else if (down.isDown) {
+    } else if (down.isDown || sKey.isDown) {
       this.throttle = Phaser.Math.Clamp(
         this.throttle - THROTTLE_RATE * delta,
         -MAX_FORCE * 0.4,
@@ -63,9 +63,16 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
       this.setAngularVelocity(-dynamicRotationSpeed * delta);
     } else if (right.isDown && (up.isDown || down.isDown)) {
       this.setAngularVelocity(dynamicRotationSpeed * delta);
+    } else if (aKey.isDown && (wKey.isDown || sKey.isDown)) {
+      this.setAngularVelocity(-dynamicRotationSpeed * delta);
+    } else if (dKey.isDown && (wKey.isDown || sKey.isDown)) {
+      this.setAngularVelocity(dynamicRotationSpeed * delta);
     }
 
-    if (down.isDown && Math.abs(this.throttle) > DRIFT_THRESHOLD) {
+    if (
+      (down.isDown || sKey.isDown) &&
+      Math.abs(this.throttle) > DRIFT_THRESHOLD
+    ) {
       if (time - this.lastDriftTime > DRIFT_COOLDOWN) {
         this.createDriftMarks();
         this.lastDriftTime = time;

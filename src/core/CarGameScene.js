@@ -40,6 +40,18 @@ export default class CarGameScene extends Phaser.Scene {
     this.driftLayer = this.add.layer();
     this.car = new Racecar(this, 100, 460, "car");
     this.cursorKeys = this.input.keyboard.createCursorKeys();
+    this.cursorKeys.wKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.W
+    );
+    this.cursorKeys.aKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.A
+    );
+    this.cursorKeys.sKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.S
+    );
+    this.cursorKeys.dKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.D
+    );
 
     this.cameras.main.startFollow(this.car, true, 0.7, 0.7);
     this.cameras.main.setZoom(1.2);
