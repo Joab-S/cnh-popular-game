@@ -38,11 +38,15 @@ export function updatePlayerMovement(scene) {
 
   const speed = 160;
 
-  if (keys.A.isDown || keys.LEFT.isDown) {
+  const leftPressed = keys.A.isDown || keys.LEFT.isDown;
+  const rightPressed = keys.D.isDown || keys.RIGHT.isDown;
+  const jumpPressed = keys.W.isDown || keys.SPACE.isDown || keys.UP.isDown;
+
+  if (leftPressed) {
     player.setVelocityX(-speed);
     player.flipX = true;
     player.play("walk", true);
-  } else if (keys.D.isDown || keys.RIGHT.isDown) {
+  } else if (rightPressed) {
     player.setVelocityX(speed);
     player.flipX = false;
     player.play("walk", true);
@@ -52,10 +56,7 @@ export function updatePlayerMovement(scene) {
   }
 
   // pulo
-  if (
-    (keys.W.isDown || keys.SPACE.isDown || keys.UP.isDown) &&
-    player.body.blocked.down
-  ) {
+  if (jumpPressed && player.body.blocked.down) {
     player.setVelocityY(-400);
   }
 }
