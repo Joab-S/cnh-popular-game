@@ -29,18 +29,23 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
     this.setAngle(-90);
   }
 
-  update(delta, cursorKeys, time) {
-    const { left, right, up, down } = cursorKeys;
+  update(delta, keys, time) {
+    const { LEFT, RIGHT, UP, DOWN, W, A, S, D } = keys;
     const rotation = this.rotation;
 
+    const leftPressed = LEFT.isDown || A.isDown;
+    const rightPressed = RIGHT.isDown || D.isDown;
+    const upPressed = UP.isDown || W.isDown;
+    const downPressed = DOWN.isDown || S.isDown;
+
     // --- Aceleração / frenagem ---
-    if (up.isDown) {
+    if (upPressed) {
       this.throttle = Phaser.Math.Clamp(
         this.throttle + THROTTLE_RATE * delta,
         -MAX_FORCE,
         MAX_FORCE
       );
-    } else if (down.isDown) {
+    } else if (downPressed) {
       this.throttle = Phaser.Math.Clamp(
         this.throttle - THROTTLE_RATE * delta,
         -MAX_FORCE * 0.4,
@@ -59,13 +64,13 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
     const speedFactor = Phaser.Math.Clamp(1 - velocity / maxSpeed, 0.2, 1);
     const dynamicRotationSpeed = ROTATION_SPEED * speedFactor;
 
-    if (left.isDown && (up.isDown || down.isDown)) {
+    if (leftPressed && (upPressed || downPressed)) {
       this.setAngularVelocity(-dynamicRotationSpeed * delta);
-    } else if (right.isDown && (up.isDown || down.isDown)) {
+    } else if (rightPressed && (upPressed || downPressed)) {
       this.setAngularVelocity(dynamicRotationSpeed * delta);
     }
 
-    if (down.isDown && Math.abs(this.throttle) > DRIFT_THRESHOLD) {
+    if (downPressed && Math.abs(this.throttle) > DRIFT_THRESHOLD) {
       if (time - this.lastDriftTime > DRIFT_COOLDOWN) {
         this.createDriftMarks();
         this.lastDriftTime = time;

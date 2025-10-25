@@ -39,7 +39,17 @@ export default class CarGameScene extends Phaser.Scene {
 
     this.driftLayer = this.add.layer();
     this.car = new Racecar(this, 100, 460, "car");
-    this.cursorKeys = this.input.keyboard.createCursorKeys();
+    this.keys = this.input.keyboard.addKeys({
+      W: Phaser.Input.Keyboard.KeyCodes.W,
+      A: Phaser.Input.Keyboard.KeyCodes.A,
+      S: Phaser.Input.Keyboard.KeyCodes.S,
+      D: Phaser.Input.Keyboard.KeyCodes.D,
+
+      UP: Phaser.Input.Keyboard.KeyCodes.UP,
+      LEFT: Phaser.Input.Keyboard.KeyCodes.LEFT,
+      RIGHT: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+      DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
+    });
 
     this.cameras.main.startFollow(this.car, true, 0.7, 0.7);
     this.cameras.main.setZoom(1.2);
@@ -126,7 +136,7 @@ export default class CarGameScene extends Phaser.Scene {
   update(time, delta) {
     const { scrollX, scrollY } = this.cameras.main;
     this.ground.setTilePosition(scrollX, scrollY);
-    this.car.update(delta, this.cursorKeys, time);
+    this.car.update(delta, this.keys, time);
   }
 
   handleGameOver() {
