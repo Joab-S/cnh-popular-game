@@ -86,6 +86,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_1", "./assets/images/obstaculo_1.png");
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
+    
+    this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
+    this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
+    this.load.image("clinic", "./assets/images/clinica.png");
 
     this.load.image("button_up", "./assets/images/button-up.png");
     this.load.image("button_left", "./assets/images/button-left.png");
@@ -141,13 +145,7 @@ export default class GameScene extends Phaser.Scene {
         "Encontre seus documentos para começar o processo!",
       ],
       onInteract: () => {
-        const pcObject = this.interactiveObjects.find((o) => o.key === "pc");
-
-        if (this.playerState.docsMissionCompleted) {
-          pcObject.dialogs = [
-            "Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!",
-          ];
-        } else {
+        if (!this.playerState.docsMissionCompleted) {
           this.playerState.hasMission = true;
           this.ui.showMessage(
             "Missão: Encontre RG, CPF e comprovante na sua casa!"

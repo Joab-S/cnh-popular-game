@@ -83,15 +83,11 @@ export function startPhase2(scene) {
         'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
       ],
       onInteract: () => {
-        if (scene.playerState.quizActive) return;
-        if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
-          startQuiz(scene);
-        } else {
-          scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
-            'Dirija-se à Autoescola para iniciar a próxima fase.'
-          ];
-        }
-      },
+      if (scene.playerState.quizActive) return;
+      if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
+        startQuiz(scene);
+      }
+    },
       label: '',
       hintText: '',
     });
@@ -197,9 +193,15 @@ function startQuiz(scene) {
     scene.playerState.phase2Completed = true;
     scene.playerState.hasMission = true;
     
+    const npcObject = scene.interactiveObjects.find(o => o.key === 'autoescola');
+    const dialog = 'Dirija-se à Clínica para iniciar seus exames.';
+    npcObject.dialogs = [
+      dialog
+    ];
+
     // libera o movimento novamente
     scene.time.delayedCall(500, () => {
-      scene.ui.showMessage('Dirija-se à Autoescola para iniciar a próxima fase.');
+      scene.ui.showMessage(dialog);
       scene.playerState.canMove = true;
       scene.playerState.inDialog = false;
       scene.playerState.quizActive = false;
