@@ -11,7 +11,7 @@ export const AREAS = {
   practicalTest: 'practical-test',        // Então o jogador é direcioado ao minigame do exame prático
   finalScene: 'final-scene'               // Após a aprovação, o jogador recebe sua PPD, e poderá desfrutar de digigir pela cidade.
 };
-export const PHYSICS_DEBUG = true;
+export const PHYSICS_DEBUG = false;
 
 export const GAME_CONFIG = {
   type: Phaser.AUTO,
