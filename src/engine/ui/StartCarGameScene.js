@@ -2,7 +2,7 @@ import Phaser from "phaser";
 
 export default class StartCarGameScene extends Phaser.Scene {
   constructor() {
-    super("StartScene");
+    super("StartCarGameScene");
   }
 
   preload() {
