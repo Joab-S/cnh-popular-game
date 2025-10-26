@@ -22,7 +22,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       { key: "sign_curvy", name: "Via Sinuosa" },
     ];
   }
-
+ 
   preload() {
     this.load.image("bg_game_1", "./assets/images/bg_game_1.png");
     this.load.image("sign_go", "./assets/images/placa_siga.png");
