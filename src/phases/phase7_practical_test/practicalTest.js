@@ -9,14 +9,26 @@ export function startPhase7(scene) {
   CameraSystem.initCamera(scene, scene.player, WORLD_SIZE, height);
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
-  scene.add.rectangle(WORLD_SIZE / 2, height / 2, WORLD_SIZE, height, 0x87ceeb).setDepth(-5);
+  scene.add.image((width / 2), height / 2 - 20, "detran_practical_bg")
+    .setDepth(-3)
+    .setScale(0.48);
+
+  scene.add.image(width / 2 + 620, height / 2 - 20, "detran_practical_bg_2")
+    .setDepth(-3)
+    .setScale(0.48);
+
   const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
+  scene.physics.add.existing(groundRect, true);
+  scene.physics.add.collider(scene.player, groundRect);
+
+  groundRect.setVisible(false);
+
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
 
   // === PLAYER ===
-  scene.player.setPosition(30, height - 105);
+  scene.player.setPosition(30, height - 305);
   scene.player.setVelocity(0);
   scene.playerState.canMove = true;
   scene.playerState.currentArea = AREAS.practicalTest;
@@ -34,11 +46,11 @@ export function startPhase7(scene) {
   // === INSTRUTOR ===
   const instrutor_exame_pratico = new InteractiveObject(scene, {
     key: 'instrutor_exame_pratico',
-    x: width + 160,
+    x: width - 150,
     y: height - 190,
     texture: 'instrutor_exame_pratico',
     scale: 0.20,
-    width: 60,
+    width: 200,
     height: 100,
     proximity: { x: 80, y: 120 }, 
     dialogs: [
@@ -59,6 +71,7 @@ export function startPhase7(scene) {
     hintText: '',
   });
   
+  instrutor_exame_pratico.sprite.setAlpha(0);
   instrutor_exame_pratico.sprite.setDepth(-2);
 }
 
