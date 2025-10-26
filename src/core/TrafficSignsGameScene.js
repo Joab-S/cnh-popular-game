@@ -2,7 +2,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   constructor() {
     super('TrafficSignsGameScene');
     this.score = 0;
-    this.maxScore = 15;
+    this.maxScore = 1;
     this.isGameActive = false;
     this.isWaitingToStart = true;
     this.signs = [];
@@ -417,7 +417,9 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       fontWeight: 'bold'
     }).setOrigin(0.5);
 
-    this.events.emit('gameEnded', { victory: isVictory, score: this.score });
+    this.time.delayedCall(800, () => {
+      this.events.emit('gameEnded', { victory: isVictory, score: this.score });
+    })
   }
 
   update() {
