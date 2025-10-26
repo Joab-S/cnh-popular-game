@@ -6,6 +6,6 @@ import EndCarGameScene from "../engine/ui/EndCarGameScene.js";
 
 const config = {
   ...GAME_CONFIG,
-  scene: [GameScene, CarGameScene, EndCarGameScene],
+  scene: [CarGameScene, EndCarGameScene],
 };
 new Phaser.Game(config);
