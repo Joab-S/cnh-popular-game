@@ -33,10 +33,12 @@ export default class Racecar extends Phaser.Physics.Matter.Image {
     const { LEFT, RIGHT, UP, DOWN, W, A, S, D } = keys;
     const rotation = this.rotation;
 
-    const leftPressed = LEFT.isDown || A.isDown;
-    const rightPressed = RIGHT.isDown || D.isDown;
-    const upPressed = UP.isDown || W.isDown;
-    const downPressed = DOWN.isDown || S.isDown;
+    const buttonPressed = this.scene.buttonPressed;
+
+    const leftPressed = LEFT.isDown || A.isDown || buttonPressed.left;
+    const rightPressed = RIGHT.isDown || D.isDown || buttonPressed.right;
+    const upPressed = UP.isDown || W.isDown || buttonPressed.up;
+    const downPressed = DOWN.isDown || S.isDown || buttonPressed.down;
 
     // --- Aceleração / frenagem ---
     if (upPressed) {
