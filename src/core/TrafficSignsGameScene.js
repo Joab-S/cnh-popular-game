@@ -2,7 +2,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   constructor() {
     super('TrafficSignsGameScene');
     this.score = 0;
-    this.maxScore = 15;
+    this.maxScore = 10;
     this.isGameActive = false;
     this.isWaitingToStart = true;
     this.signs = [];
