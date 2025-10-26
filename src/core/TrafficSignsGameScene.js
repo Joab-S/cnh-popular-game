@@ -417,7 +417,9 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       fontWeight: 'bold'
     }).setOrigin(0.5);
 
-    this.events.emit('gameEnded', { victory: isVictory, score: this.score });
+    this.time.delayedCall(800, () => {
+      this.events.emit('gameEnded', { victory: isVictory, score: this.score });
+    })
   }
 
   update() {
