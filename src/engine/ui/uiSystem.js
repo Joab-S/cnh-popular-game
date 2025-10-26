@@ -111,6 +111,8 @@ export function setupUI(scene) {
 
   scene.buttons = {};
 
+  scene.input.addPointer(2);
+
   const buttonLeft = scene.add
     .sprite(40, height - 40, "button_left")
     .setScrollFactor(0)
