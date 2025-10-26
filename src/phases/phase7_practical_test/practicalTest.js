@@ -1,7 +1,7 @@
 import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
-import CarGameScene from '../../core/CarGameScene.js';
+import StartCarGameScene from '../../engine/ui/StartCarGameScene.js';
 
 export function startPhase7(scene) {
   const { width, height } = scene.scale;
@@ -39,7 +39,7 @@ export function startPhase7(scene) {
     currentArea: AREAS.practicalTest
   };
 
-  scene.miniGameKey = 'CarGameScene';
+  scene.miniGameKey = 'StartCarGameScene';
 
   scene.ui.showMessage('Encontre seu instrutor do exame prático logo mais a frente.');
 
@@ -101,7 +101,7 @@ function startMiniGame(scene) {
   }
 
   if (!scene.scene.get(scene.miniGameKey)) {
-    scene.scene.add(scene.miniGameKey, CarGameScene, false);
+    scene.scene.add(scene.miniGameKey, StartCarGameScene, false);
   }
 
   // inicia o minigame

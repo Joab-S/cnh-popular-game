@@ -136,8 +136,6 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
     dialog
   ];
 
-  const msg = result?.victory
-    ? `Excelente! Você completou o exame com ${result.score} pontos!`
-    : 'Você terminou o exame.';
+  const msg = "Você completou o exame teórico!";
   scene.ui.showMessage(msg);
 }
