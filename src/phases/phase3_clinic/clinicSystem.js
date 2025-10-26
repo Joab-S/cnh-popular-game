@@ -41,13 +41,17 @@ export function startPhase3(scene) {
         ],
         onInteract: () => {
             if (scene.playerState.quizActive) return;
-            if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
-                startQuiz(scene);
-            } else {
-                scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
-                    'Dirija-se à Autoescola para iniciar a próxima fase.'
-                ];
+            console.log(scene.playerState.phase3Completed, scene.playerState.hasMission);
+            if (!scene.playerState.phase3Completed && !scene.playerState.hasMission) {
+                console.log('Iniciando exame psicotécnico...');
+                scene.ui.showMessage('Foi descoberto que você é um gênio, siga em frente feliz!');
+                scene.playerState.phase3Completed = true;
             }
+            // else {
+                // scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
+                    // 'Dirija-se à Autoescola para iniciar a próxima fase.'
+            //     ];
+            // }
         },
         label: '',
         hintText: '',

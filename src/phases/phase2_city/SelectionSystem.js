@@ -191,7 +191,7 @@ function startQuiz(scene) {
     );
 
     scene.playerState.phase2Completed = true;
-    scene.playerState.hasMission = true;
+    scene.playerState.hasMission = false;
     
     const npcObject = scene.interactiveObjects.find(o => o.key === 'autoescola');
     const dialog = 'Dirija-se à Clínica para iniciar seus exames.';

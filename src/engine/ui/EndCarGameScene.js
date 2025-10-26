@@ -36,7 +36,8 @@ export default class EndCarGameScene extends Phaser.Scene {
           color: "white",
           fontFamily: '"Silkscreen", "Courier New", monospace',
         })
-        .setOrigin(0.5).setDepth(1001);
+        .setOrigin(0.5)
+        .setDepth(1001);
     } else {
       this.add
         .text(width / 2, height / 2 - 150, "VOCÊ COMETEU", {
@@ -44,7 +45,8 @@ export default class EndCarGameScene extends Phaser.Scene {
           color: "white",
           fontFamily: '"Silkscreen", "Courier New", monospace',
         })
-        .setOrigin(0.5).setDepth(1001);
+        .setOrigin(0.5)
+        .setDepth(1001);
 
       this.add
         .text(width / 2, height / 2 - 90, "UMA INFRAÇÃO", {
@@ -52,7 +54,8 @@ export default class EndCarGameScene extends Phaser.Scene {
           color: "white",
           fontFamily: '"Silkscreen", "Courier New", monospace',
         })
-        .setOrigin(0.5).setDepth(1001);
+        .setOrigin(0.5)
+        .setDepth(1001);
     }
 
     this.startInstructions = this.add
@@ -66,7 +69,8 @@ export default class EndCarGameScene extends Phaser.Scene {
           fontFamily: '"Silkscreen", "Courier New", monospace',
         }
       )
-      .setOrigin(0.5).setDepth(1001);
+      .setOrigin(0.5)
+      .setDepth(1001);
 
     this.tweens.add({
       targets: this.startInstructions,
@@ -76,12 +80,24 @@ export default class EndCarGameScene extends Phaser.Scene {
       repeat: -1,
     });
 
-    this.input.once("pointerdown", () => {
-      this.scene.start("CarGameScene");
-    });
+    if (this.victory) {
+      this.input.once("pointerdown", () => {
+        this.game.events.emit("car:minigame:end", { victory: this.victory });
+        this.scene.stop();
+      });
 
-    this.input.keyboard.once("keydown-SPACE", () => {
-      this.scene.start("CarGameScene");
-    });
+      this.input.keyboard.once("keydown-SPACE", () => {
+        this.game.events.emit("car:minigame:end", { victory: this.victory });
+        this.scene.stop();
+      });
+    } else {
+      this.input.once("pointerdown", () => {
+        this.scene.start("CarGameScene");
+      });
+
+      this.input.keyboard.once("keydown-SPACE", () => {
+        this.scene.start("CarGameScene");
+      });
+    }
   }
 }
