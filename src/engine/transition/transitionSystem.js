@@ -46,7 +46,9 @@ export function checkTransitions(scene) {
     playerState.currentArea === AREAS.clinic &&
     player.x >= transition.sceneEndX
   ) {
-    goToArea(scene, AREAS.drivingSchool1);
+    if (playerState.phase3Completed) {
+      goToArea(scene, AREAS.drivingSchool1);
+    }
   }
   if (
     playerState.currentArea === AREAS.drivingSchool1 &&
@@ -58,7 +60,9 @@ export function checkTransitions(scene) {
     playerState.currentArea === AREAS.theoreticalTest &&
     player.x >= transition.sceneEndX
   ) {
-    goToArea(scene, AREAS.drivingSchool2);
+    if (playerState.phase5Completed) {
+      goToArea(scene, AREAS.drivingSchool2);
+    }
   }
   if (
     playerState.currentArea === AREAS.drivingSchool2 &&
@@ -70,7 +74,9 @@ export function checkTransitions(scene) {
     playerState.currentArea === AREAS.practicalTest &&
     player.x >= transition.sceneEndX
   ) {
-    goToArea(scene, AREAS.finalScene);
+    if (playerState.phase7Completed) {
+      goToArea(scene, AREAS.finalScene);
+    }
   }
 }
 
