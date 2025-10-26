@@ -12,7 +12,7 @@ export function startPhase3(scene) {
     .setDepth(-3)
     .setScale(0.48);
 
-  scene.add.image(width / 2 + 585, height / 2, "clinic_bg_2")
+  scene.add.image(width / 2 + 590, height / 2, "clinic_bg_2")
     .setDepth(-3)
     .setScale(0.48);
 
