@@ -20,7 +20,7 @@ import {
 import { updatePhase2 } from "../phases/phase2_city/SelectionSystem.js";
 import InteractiveObject from "../engine/interaction/InteractiveObject.js";
 import { updateGenericInteractions } from "../engine/interaction/interactionSystem.js";
-import { AREAS, WORLD_SIZE } from "./config.js";
+import { AREAS, PHYSICS_DEBUG, WORLD_SIZE } from "./config.js";
 
 import {
   setupCharacterSelection,
@@ -32,6 +32,7 @@ import { updatePhase5 } from "../phases/phase5_theoretical_test/theoreticalTest.
 import { updatePhase6 } from "../phases/phase6_driving_school2/drivingSchool2.js";
 import { updatePhase7 } from "../phases/phase7_practical_test/practicalTest.js";
 import { updatePhase8 } from "../phases/phase8_final_scene/finalScene.js";
+import { enableDebug, setupDebugToggle } from "../engine/utils/enableDebug.js";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -87,6 +88,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
 
+    this.load.image(
+      "instrutor_exame_pratico",
+      "./assets/images/instrutor_exame_pratico.png"
+    );
     this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
     this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
     this.load.image("clinic", "./assets/images/clinica.png");
@@ -95,6 +100,13 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("button_left", "./assets/images/button-left.png");
     this.load.image("button_right", "./assets/images/button-right.png");
     this.load.image("button_action", "./assets/images/button-action.png");
+
+    this.load.image("detran", "./assets/images/detran.png");
+    this.load.image("detran_theoretical_bg", "./assets/images/detran_theoretical_bg.png");
+    this.load.image("detran_theoretical_bg_2", "./assets/images/detran_theoretical_bg_2.png");
+
+    this.load.image("detran_practical_bg", "./assets/images/detran_practical_bg.png");
+    this.load.image("detran_practical_bg_2", "./assets/images/detran_practical_bg_2.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
@@ -211,6 +223,11 @@ export default class GameScene extends Phaser.Scene {
         "Aproxime-se do computador e aperte a TECLA E para começar sua jornada!"
       );
     });
+
+    if (PHYSICS_DEBUG) {
+      enableDebug(this, { initialOn: true });
+      setupDebugToggle(this, "P");
+    }
   }
 
   update() {

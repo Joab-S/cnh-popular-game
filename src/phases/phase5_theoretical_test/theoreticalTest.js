@@ -10,48 +10,64 @@ export function startPhase5(scene) {
   CameraSystem.initCamera(scene, scene.player, WORLD_SIZE, height);
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
-  scene.add.rectangle(WORLD_SIZE / 2, height / 2, WORLD_SIZE, height, 0x87ceeb).setDepth(-5);
+  scene.add.image((width / 2), height / 2, "detran_theoretical_bg")
+    .setDepth(-3)
+    .setScale(0.48);
+
+  scene.add.image(width / 2 + 620, height / 2, "detran_theoretical_bg_2")
+    .setDepth(-3)
+    .setScale(0.48);
+
   const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
+  groundRect.setVisible(false);
+
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
 
   // === PLAYER ===
-  scene.player.setPosition(30, height - 105);
+  scene.player.setPosition(30, height - 305);
   scene.player.setVelocity(0);
   scene.playerState.canMove = true;
   scene.playerState.currentArea = AREAS.theoreticalTest;
 
-  scene.playerState = {
-    canMove: true,
-    inDialog: false,
-    currentArea: AREAS.theoreticalTest,
-    miniGameActive: false,
-    phase5Completed: false
-  };
+  scene.playerState.canMove = true;
+  scene.playerState.inDialog = false;
+  scene.playerState.currentArea = AREAS.theoreticalTest;
+  scene.playerState.miniGameActive = false;
+  scene.playerState.phase5Completed = false;
 
   scene.miniGameKey = 'TrafficSignsGameScene';
 
-  scene.ui.showMessage('Procure a tia da autoescola, ela irá aplicar seu exame teórico.');
+  scene.ui.showMessage('Procure o prédio do Detran e aperte a tecla E para interagir.');
 
-  new InteractiveObject(scene, {
-    key: 'aplicador_do_exame',
-    x: width * 0.8,
-    y: height - 120,
-    width: 60,
-    height: 120,
-    label: 'Aplicador do Exame',
+  // === DETRAN ===
+  const detran = new InteractiveObject(scene, {
+    key: 'detran',
+    x: width - 395,
+    y: height - 205,
+    texture: 'detran',
+    scale: 0.27,
+    width: 200,
+    height: 100,
+    proximity: { x: 80, y: 120 }, 
     dialogs: [
-      'Olá, vamos começar seu exame teórico.',
-      'Concentre-se nas placas e reaja rapidamente!'
+      'Olá! Você acaba de chegar na etapa de prova teórica do DETRAN.',
+      'Vamos iniciar sua prova agora. Boa sorte!'
     ],
     onInteract: () => {
-      if (scene.playerState.miniGameActive) return;
+      console.log('Interagindo com DETRAN'); // Debug
+      if (scene.playerState.quizActive) return;
       if (!scene.playerState.phase5Completed) {
+        console.log('Iniciando minigame...'); // Debug
         startMiniGame(scene);
       }
     },
+    label: '',
+    hintText: '',
   });
+
+  detran.sprite.setDepth(-2);
 }
 
 export function updatePhase5(scene) {
@@ -71,7 +87,6 @@ export function updatePhase5(scene) {
 function startMiniGame(scene) {
   const { width, height } = scene.scale;
 
-    // impede movimento do jogador
     scene.playerState.canMove = false;
     scene.playerState.inDialog = true;
     scene.playerState.miniGameActive = true;
@@ -82,12 +97,10 @@ function startMiniGame(scene) {
 
   scene.miniGameContainer = scene.add.container(width / 2, height / 2).setDepth(1001);
 
-  // Adiciona o minigame como uma cena flutuante
   if (!scene.scene.get(scene.miniGameKey)) {
     scene.scene.add(scene.miniGameKey, TrafficSignsGameScene, false);
   }
 
-  // inicia o minigame
   scene.scene.launch(scene.miniGameKey);
 
   scene.time.delayedCall(100, () => {
@@ -105,26 +118,24 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   if (overlay && overlay.destroy) overlay.destroy();
   if (miniGameContainer && miniGameContainer.destroy) miniGameContainer.destroy();
 
-  // encerra o minigame
+
   const miniGame = scene.scene.get(miniGameKey);
   if (miniGame) {
     miniGame.scene.stop();
     scene.scene.remove(miniGameKey);
   }
 
-  // restaura controle do jogador
   scene.playerState.miniGameActive = false;
   scene.playerState.canMove = true;
   scene.playerState.inDialog = false;
   scene.playerState.phase5Completed = true;
 
-  const theoreticalObject = scene.interactiveObjects.find(o => o.key === 'aplicador_do_exame');
-  const dialog = 'Você foi aprovado, siga para as aulas práticas.';
+  const theoreticalObject = scene.interactiveObjects.find(o => o.key === 'detran');
+  const dialog = 'Parabéns, você foi aprovado! Siga agora para as aulas práticas.';
   theoreticalObject.dialogs = [
     dialog
   ];
 
-  // mensagem final
   const msg = result?.victory
     ? `Excelente! Você completou o exame com ${result.score} pontos!`
     : 'Você terminou o exame.';
