@@ -75,7 +75,7 @@ export function checkTransitions(scene) {
     player.x >= transition.sceneEndX
   ) {
     if (playerState.phase7Completed) {
-      goToArea(scene, AREAS.finalScene);
+      // goToArea(scene, AREAS.finalScene);
     }
   }
 }
