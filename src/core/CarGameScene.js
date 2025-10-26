@@ -23,10 +23,10 @@ export default class CarGameScene extends Phaser.Scene {
     this.load.image("soil", "./assets/images/cidade.png");
     this.load.image("car", "./assets/images/carro.png");
     this.load.image("tire-mark", "./assets/images/tire_mark.png");
-    this.load.image("button_up", "./assets/images/pedal-gas.png");
+    this.load.image("button_gas", "./assets/images/pedal-gas.png");
     this.load.image("button_left", "./assets/images/button-left.png");
     this.load.image("button_right", "./assets/images/button-right.png");
-    this.load.image("button_down", "./assets/images/pedal-brake.png");
+    this.load.image("button_brake", "./assets/images/pedal-brake.png");
   }
 
   create() {
@@ -66,6 +66,8 @@ export default class CarGameScene extends Phaser.Scene {
     const w = cam.width;
     const h = cam.height;
 
+    this.input.addPointer(2);
+
     const makeButton = (x, y, key, prop) => {
       const btn = this.add
         .sprite(x, y, key)
@@ -91,8 +93,8 @@ export default class CarGameScene extends Phaser.Scene {
 
     makeButton(120, h - 90, "button_left", "left");
     makeButton(200, h - 90, "button_right", "right");
-    makeButton(w - 120, h - 80, "button_up", "up");
-    makeButton(w - 220, h - 80, "button_down", "down");
+    makeButton(w - 120, h - 80, "button_gas", "up");
+    makeButton(w - 220, h - 80, "button_brake", "down");
 
     this.cameras.main.startFollow(this.car, true, 0.7, 0.7);
     this.cameras.main.setZoom(1.2);
