@@ -102,8 +102,8 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("button_action", "./assets/images/button-action.png");
 
     this.load.image("detran", "./assets/images/detran.png");
-    this.load.image("detran_practical_bg", "./assets/images/detran_theoretical_bg.png");
-    this.load.image("detran_practical_bg_2", "./assets/images/detran_theoretical_bg_2.png");
+    this.load.image("detran_theoretical_bg", "./assets/images/detran_theoretical_bg.png");
+    this.load.image("detran_theoretical_bg_2", "./assets/images/detran_theoretical_bg_2.png");
 
     this.load.image("detran_practical_bg", "./assets/images/detran_practical_bg.png");
     this.load.image("detran_practical_bg_2", "./assets/images/detran_practical_bg_2.png");
