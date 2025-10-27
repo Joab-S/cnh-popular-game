@@ -74,14 +74,6 @@ export function updatePhase5(scene) {
   if (scene.playerState.currentArea !== AREAS.theoreticalTest) return;
   if (scene.playerState.minigameActive) return; 
   updateGenericInteractions(scene);
-
-  const miniGame = scene.scene.get(scene.miniGameKey);
-
-  if (miniGame && scene.playerState.miniGameActive && !scene.playerState.phase5Completed) {
-    miniGame.events.once('gameEnded', (data) => {
-      closeMiniGame(scene, scene.overlay, scene.miniGameContainer, scene.miniGameKey, data);
-    });
-  }
 }
 
 function startMiniGame(scene) {
@@ -96,6 +88,13 @@ function startMiniGame(scene) {
     .setDepth(1000);
 
   scene.miniGameContainer = scene.add.container(width / 2, height / 2).setDepth(1001);
+
+  if (!scene._theorreticalEndListenerSet) {
+    scene._theorreticalEndListenerSet = true;
+    scene.events.once('trafficsigns:end', (data) => {
+      closeMiniGame(scene, scene.overlay, scene.miniGameContainer, scene.miniGameKey, data);
+    });
+  }
 
   if (!scene.scene.get(scene.miniGameKey)) {
     scene.scene.add(scene.miniGameKey, TrafficSignsGameScene, false);

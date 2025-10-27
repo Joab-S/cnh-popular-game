@@ -273,5 +273,9 @@ export default class MemoryGameScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.isPlayerTurn = false;
+
+    this.time.delayedCall(800, () => {
+      this.scene.get('GameScene').events.emit("memorygame:end", { victory: true });
+    });
   }
 }
