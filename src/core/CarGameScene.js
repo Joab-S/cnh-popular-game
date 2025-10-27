@@ -48,6 +48,8 @@ export default class CarGameScene extends Phaser.Scene {
       action: false,
     };
 
+    this.trafficLight = new TrafficLight(this, 140, 330, 270, 100);
+
     this.driftLayer = this.add.layer();
     this.car = new Racecar(this, 100, 460, "car");
     this.keys = this.input.keyboard.addKeys({
@@ -103,6 +105,10 @@ export default class CarGameScene extends Phaser.Scene {
     });
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
+    Object.values(this.matter.world.walls).forEach((wall) => {
+      wall.label = "boundary";
+    });
+
     this.hitboxes = [];
     const blockWidth = 1500;
     const blockHeight = 660;
@@ -135,8 +141,8 @@ export default class CarGameScene extends Phaser.Scene {
     ];
 
     const destination = {
-      x: 800,
-      y: 150,
+      x: 3700,
+      y: 1000,
       radius: 50,
     };
 
@@ -154,14 +160,13 @@ export default class CarGameScene extends Phaser.Scene {
       this.hitboxes.push(body);
     });
 
-    this.trafficLight = new TrafficLight(this, 140, 330, 270, 100);
-
     this.matter.world.on("collisionstart", (event) => {
       event.pairs.forEach((pair) => {
         if (pair.bodyA === this.car.body || pair.bodyB === this.car.body) {
           const other = pair.bodyA === this.car.body ? pair.bodyB : pair.bodyA;
 
           if (
+            other.label === "boundary" ||
             other.label === "hitbox" ||
             (other.label === "trafficSensor" &&
               this.trafficLight.state === "red")
