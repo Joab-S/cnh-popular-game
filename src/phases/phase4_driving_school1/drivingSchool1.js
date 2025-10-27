@@ -1,5 +1,6 @@
 import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
+import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
 
 export function startPhase4(scene) {
   const { width, height } = scene.scale;
@@ -33,6 +34,32 @@ export function startPhase4(scene) {
     inDialog: false,
     currentArea: AREAS.drivingSchool1
   };
+
+  const instructor = new InteractiveObject(scene, {
+    key: 'instructor',
+    x: width - 310,
+    y: height - 130,
+    texture: 'instructor',
+    scale: 0.24,
+    width: 100,
+    height: 100,
+    proximity: { x: 80, y: 120 }, 
+    dialogs: [
+      'Olá! Agora você terá suas aulas teóricas.',
+      'Aprendeu? Por hoje é só, pessoal!'
+    ],
+    onInteract: () => {
+        if (!scene.playerState.phase4Completed) {
+          console.log('Iniciando aulas teóricas...');
+          scene.ui.showMessage('Pode seguir em frente, campeão!');
+          scene.playerState.phase4Completed = true;
+        }
+  },
+    label: '',
+    hintText: '',
+  });
+    
+  instructor.sprite.setDepth(-2);
 }
 
 export function updatePhase4(scene) {
