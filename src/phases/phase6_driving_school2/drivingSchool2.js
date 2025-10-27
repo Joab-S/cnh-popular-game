@@ -10,11 +10,11 @@ export function startPhase6(scene) {
 
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
-  scene.add.image((width / 2), height / 2, "city_bg")
+  scene.add.image((width / 2), height / 2, "driving_2_bg")
     .setDepth(-3)
     .setScale(0.48);
 
-  scene.add.image(width / 2 + 620, height / 2, "city_bg_2")
+  scene.add.image(width / 2 + 630, height / 2, "driving_2_bg_2")
     .setDepth(-3)
     .setScale(0.48);
     
@@ -37,32 +37,35 @@ export function startPhase6(scene) {
     currentArea: AREAS.drivingSchool2
   };
 
-    // === AUTOESCOLA ===
-      const autoescola = new InteractiveObject(scene, {
-        key: 'autoescola',
-        x: width + 160,
-        y: height - 190,
-        texture: 'autoescola',
-        scale: 0.60,
-        width: 200,
-        height: 100,
-        proximity: { x: 80, y: 120 }, 
-        dialogs: [
-          'Olá! Agora você terá suas aulas práticas.',
-          'Aprendeu? Por hoje é só, pessoal!'
-        ],
-        onInteract: () => {
-            if (!scene.playerState.phase6Completed) {
-              console.log('Iniciando aulas práticas...');
-              scene.ui.showMessage('Pode seguir em frente, campeão!');
-              scene.playerState.phase6Completed = true;
-            }
-      },
-        label: '',
-        hintText: '',
-      });
-  
-    autoescola.sprite.setDepth(-2);
+    const instructor = new InteractiveObject(scene, {
+      key: 'instructor',
+      x: width - 310,
+      y: height - 175,
+      texture: 'instructor_2',
+      scale: 0.24,
+      width: 150,
+      height: 100,
+      proximity: { x: 80, y: 120 }, 
+      dialogs: [
+        'Olá, futuro condutor! Bem-vindo às aulas práticas.',
+        'Aqui você vai aprender a controlar o veículo na prática: embreagem, câmbio, setas e espelhos.',
+        'São 20 horas/aula obrigatórias, começando no pátio e evoluindo para o trânsito real.',
+        'Você vai praticar: baliza, estacionamento, rampas, mudança de marcha e direção no trânsito.',
+        'O instrutor estará ao seu lado para orientar e garantir sua segurança durante todo o processo.',
+        'Lembre-se: sempre use cinto de segurança, ajuste os espelhos e verifique os pedais antes de iniciar.',
+        'Boa sorte nos estudos!'
+    ],
+      onInteract: () => {
+          if (!scene.playerState.phase6Completed) {
+            scene.ui.showMessage('Pode seguir em frente, campeã(o)!');
+            scene.playerState.phase6Completed = true;
+          }
+    },
+      label: '',
+      hintText: '',
+    });
+      
+    instructor.sprite.setDepth(-2);
 }
 
 export function updatePhase6(scene) {

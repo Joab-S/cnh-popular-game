@@ -45,13 +45,17 @@ export function startPhase4(scene) {
     height: 100,
     proximity: { x: 80, y: 120 }, 
     dialogs: [
-      'Olá! Agora você terá suas aulas teóricas.',
-      'Aprendeu? Por hoje é só, pessoal!'
+      'Olá, futuro(a) motorista! Bem-vindo às aulas teóricas.',
+      'Aqui você vai aprender as regras de trânsito, sinalização, direção defensiva e primeiros socorros.',
+      'São 45 horas/aula obrigatórias, divididas em conteúdo legislativo e prático.',
+      'Ao final, fará uma prova teórica no DETRAN. Precisa acertar pelo menos 70% para ser aprovado(a).',
+      'Preste atenção nas aulas e faça os simulados. Isso vai te ajudar muito!',
+      'Boa sorte nos estudos!'
     ],
     onInteract: () => {
         if (!scene.playerState.phase4Completed) {
           console.log('Iniciando aulas teóricas...');
-          scene.ui.showMessage('Pode seguir em frente, campeão!');
+          scene.ui.showMessage('Pode seguir em frente, campeã(o)!');
           scene.playerState.phase4Completed = true;
         }
   },
