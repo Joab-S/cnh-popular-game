@@ -119,6 +119,8 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("detran_practical_bg", "./assets/images/detran_practical_bg.png");
     this.load.image("detran_practical_bg_2", "./assets/images/detran_practical_bg_2.png");
 
+    this.load.audio("boing", "./assets/sounds/boing.wav");
+
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
 
@@ -200,6 +202,31 @@ export default class GameScene extends Phaser.Scene {
       },
     });
 
+    const bedY = this.scale.height - 130;
+    this.bed = this.add
+      .rectangle(152, bedY, 180, 10, 0x9966ff)
+      .setOrigin(0.5, 1)
+      .setAlpha(0);
+
+    this.physics.add.existing(this.bed, true);
+    this.bed.body.setSize(160, 8);
+    this.bed.body.updateFromGameObject();
+
+    this.bed.setDepth(-1);
+
+    this.bedBounceStrength = 380; // força inicial do pulo
+    this.bedDamping = 0.75;       // redução da força a cada quique
+    this.minBounce = 120;         // mínimo antes de parar
+    this.lastBounceTime = 0;
+
+    this.physics.add.overlap(
+      this.player,
+      this.bed,
+      this.handleBedBounce,
+      undefined,
+      this
+    );
+
     this.playerState.currentArea = AREAS.home;
     this.playerState.character = this.selectedCharacter;
     this.playerState.playerTexture = this.playerTexture;
@@ -246,6 +273,10 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.playerState.transitioning) return;
 
+    if (this.player.body.touching.down && this.player.body.velocity.y === 0) {
+      this.bedBounceStrength = 380;
+    }
+
     try {
       updatePlayerMovement(this);
 
@@ -273,6 +304,34 @@ export default class GameScene extends Phaser.Scene {
       updateUI(this);
     } catch (err) {
       console.error("Erro no clico de update:", err);
+    }
+  }
+
+  handleBedBounce() {
+    const player = this.player;
+    const bed = this.bed;
+    const now = this.time.now;
+
+    if (!player.body || !bed.body) return;
+
+    // só reage se o jogador estiver caindo (velocidade positiva)
+    const playerFalling = player.body.velocity.y > 100;
+    const touchingTop = player.body.bottom <= bed.body.top + 10;
+
+    if (playerFalling && touchingTop) {
+      if (now - this.lastBounceTime < 200) return;
+      this.lastBounceTime = now;
+
+      // aplica impulso vertical
+      player.setVelocityY(-this.bedBounceStrength);
+
+      // amortecimento
+      this.bedBounceStrength *= this.bedDamping;
+      if (this.bedBounceStrength < this.minBounce) {
+        this.bedBounceStrength = 0;
+      }
+
+      this.sound.play("boing", { volume: 0.3 });
     }
   }
 
