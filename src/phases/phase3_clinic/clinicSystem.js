@@ -1,6 +1,7 @@
 import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
+import MemoryGameScene from '../../core/MemoryGameScene.js';
 
 export function startPhase3(scene) {
   const { width, height } = scene.scale;
@@ -23,41 +24,35 @@ export function startPhase3(scene) {
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
 
-    // === CLÍNICA ===
-    const clinic = new InteractiveObject(scene, {
-        key: 'clinic',
-        x: width + 157,
-        y: height - 228,
-        texture: 'clinic',
-        scale: 0.8,
-        width: 200,
-        height: 100,
-        proximity: { x: 80, y: 120 }, 
-        dialogs: [
-            'Olá, seja bem-vindo à clínica credenciada.',
-            'Vou realizar o exame psicotécnico, que avalia suas condições psicológicas para dirigir.',
-            'É um teste rápido que verifica atenção, memória e habilidades necessárias para a CNH.',
-            'Vamos dar início ao exame agora.'
-        ],
-        onInteract: () => {
-            if (scene.playerState.quizActive) return;
-            console.log(scene.playerState.phase3Completed, scene.playerState.hasMission);
-            if (!scene.playerState.phase3Completed && !scene.playerState.hasMission) {
-                console.log('Iniciando exame psicotécnico...');
-                scene.ui.showMessage('Foi descoberto que você é um gênio, siga em frente feliz!');
-                scene.playerState.phase3Completed = true;
-            }
-            // else {
-                // scene.interactiveObjects.find(o => o.key === 'npc_detran').dialogs = [
-                    // 'Dirija-se à Autoescola para iniciar a próxima fase.'
-            //     ];
-            // }
-        },
-        label: '',
-        hintText: '',
-    });
-  
-    clinic.sprite.setDepth(-2);
+  // === CLÍNICA ===
+  const clinic = new InteractiveObject(scene, {
+    key: 'clinic',
+    x: width + 157,
+    y: height - 228,
+    texture: 'clinic',
+    scale: 0.8,
+    width: 200,
+    height: 100,
+    proximity: { x: 80, y: 120 }, 
+    dialogs: [
+        'Olá, seja bem-vindo à clínica credenciada.',
+        'Vou realizar o exame psicotécnico, que avalia suas condições psicológicas para dirigir.',
+        'É um teste rápido que verifica atenção, memória e habilidades necessárias para a CNH.',
+        'Vamos dar início ao exame agora.'
+    ],
+    onInteract: () => {
+        if (scene.playerState.quizActive) return;
+        if (!scene.playerState.phase3Completed) {
+          startMiniGame(scene);
+        }
+    },
+    label: '',
+    hintText: '',
+  });
+
+  clinic.sprite.setDepth(-2);
+
+  scene.miniGameKey = "MemoryGameScene";
 
   // === PLAYER ===
   scene.player.setPosition(30, height - 305);
@@ -74,4 +69,68 @@ export function startPhase3(scene) {
 
 export function updatePhase3(scene) {
   if (scene.playerState.currentArea !== AREAS.clinic) return;
+}
+
+
+function startMiniGame(scene) {
+  const { width, height } = scene.scale;
+  console.log("Iniciando o minigame do psicotécnico...");
+
+  // impede movimento do jogador
+  scene.playerState.canMove = false;
+  scene.playerState.inDialog = true;
+  scene.playerState.miniGameActive = true;
+
+  scene.overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.5)
+    .setScrollFactor(0)
+    .setDepth(1000);
+
+  const miniGame = scene.scene.get(scene.miniGameKey);
+
+  if (!scene._memoryEndListenerSet) {
+    scene._memoryEndListenerSet = true;
+    scene.events.once('memorygame:end', (data) => {
+      closeMiniGame(scene, scene.overlay, scene.miniGameContainer, scene.miniGameKey, data);
+    });
+  }
+
+  if (!miniGame) {
+    scene.scene.add(scene.miniGameKey, MemoryGameScene, false);
+  }
+
+  // inicia o minigame
+  scene.scene.launch(scene.miniGameKey);
+  scene.scene.bringToTop(scene.miniGameKey);
+
+  scene.time.delayedCall(100, () => {
+    if (!miniGame || !miniGame.cameras?.main) return;
+  });
+}
+
+function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
+  if (overlay?.destroy) overlay.destroy();
+  if (miniGameContainer?.destroy) miniGameContainer.destroy();
+
+  const miniGame = scene.scene.get(miniGameKey);
+  if (miniGame) {
+    miniGame.scene.stop();
+    scene.scene.remove(miniGameKey);
+  }
+
+  scene.playerState.miniGameActive = false;
+  scene.playerState.canMove = true;
+  scene.playerState.inDialog = false;
+  scene.playerState.phase3Completed = true;
+
+  const clinic = scene.interactiveObjects.find(o => o.key === 'clinic');
+  if (clinic) {
+    clinic.dialogs = [
+      "Incrível...",
+      "Nem mesmo Salomão, em toda a sua sabedoria, teria se saído melhor!",
+      "Você passou no exame psicoténico com louvor!",
+      "Você é totalmente capaz, siga em frente!"
+    ];
+  }
+
+  scene.ui.showMessage("Foi descoberto que você é um gênio, siga em frente feliz!");
 }
