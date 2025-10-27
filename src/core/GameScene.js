@@ -81,7 +81,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("home_bg", "./assets/images/home_bg.png");
     this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
 
-    this.load.image("bg_intro", "./assets/images/bg_intro.png");
+    this.load.image("bg_intro", "./assets/images/intro_bg.png");
 
     this.load.image("city_bg", "./assets/images/city_bg.png");
     this.load.image("city_bg_2", "./assets/images/city_bg_2.png");
