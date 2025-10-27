@@ -3,7 +3,6 @@ import Phaser from "phaser";
 export default class EndCarGameScene extends Phaser.Scene {
   constructor(x) {
     super("EndScene");
-    console.log(x?.victory);
   }
 
   init(data) {
