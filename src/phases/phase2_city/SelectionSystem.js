@@ -12,7 +12,6 @@ export function startPhase2(scene) {
   const { width, height } = scene.scale;
 
   if (scene.interactiveObjects) {
-
     scene.interactiveObjects = scene.interactiveObjects.filter(obj => 
       obj.key !== 'pc'
     );
@@ -69,28 +68,28 @@ export function startPhase2(scene) {
   });
 
   // === AUTOESCOLA ===
-    const autoescola = new InteractiveObject(scene, {
-      key: 'autoescola',
-      x: width + 160,
-      y: height - 190,
-      texture: 'autoescola',
-      scale: 0.60,
-      width: 200,
-      height: 100,
-      proximity: { x: 80, y: 120 }, 
-      dialogs: [
-        'Olá! Parabéns por chegar até aqui.',
-        'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
-      ],
-      onInteract: () => {
+  const autoescola = new InteractiveObject(scene, {
+    key: 'autoescola',
+    x: width + 160,
+    y: height - 190,
+    texture: 'autoescola',
+    scale: 0.60,
+    width: 200,
+    height: 100,
+    proximity: { x: 80, y: 120 }, 
+    dialogs: [
+      'Olá! Parabéns por chegar até aqui.',
+      'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
+    ],
+    onInteract: () => {
       if (scene.playerState.quizActive) return;
       if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
         startQuiz(scene);
       }
     },
-      label: '',
-      hintText: '',
-    });
+    label: '',
+    hintText: '',
+  });
 
   autoescola.sprite.setDepth(-2);
 }
@@ -116,91 +115,216 @@ function startQuiz(scene) {
 
   const quiz = [
     {
-      text: 'Quem pode participar do programa CNH Popular?',
-      options: ['A) Qualquer pessoa', 'B) Pessoas inscritas no CadÚnico'],
+      text: 'Qual é o principal objetivo do programa CNH Popular?',
+      options: [
+        'A) Oferecer carteira de motorista gratuita para toda a população',
+        'B) Facilitar o acesso à CNH para pessoas de baixa renda',
+        'C) Substituir todas as autoescolas particulares',
+        'D) Aumentar a arrecadação do governo'
+      ],
       correct: 1,
-      explanation: 'Somente quem está no CadÚnico pode participar.'
+      explanation: 'O CNH Popular tem como objetivo principal facilitar o acesso à Carteira Nacional de Habilitação para pessoas de baixa renda, reduzindo os custos do processo.'
     },
     {
-      text: 'Quais documentos são obrigatórios para a inscrição?',
-      options: ['A) RG e CPF', 'B) Certidão de nascimento'],
-      correct: 0,
-      explanation: 'É necessário RG e CPF válidos.'
+      text: 'Quem tem prioridade no programa CNH Popular?',
+      options: [
+        'A) Pessoas com ensino superior completo',
+        'B) Desempregados há mais de 6 meses',
+        'C) Beneficiários de programas sociais como Bolsa Família',
+        'D) Proprietários de veículos'
+      ],
+      correct: 2,
+      explanation: 'Beneficiários de programas sociais como Bolsa Família têm prioridade, pois o programa é voltado para pessoas em situação de vulnerabilidade social.'
     },
     {
-      text: 'Onde são divulgados os resultados da seleção?',
-      options: ['A) No site do DETRAN', 'B) Na prefeitura'],
+      text: 'Quais documentos são normalmente exigidos para inscrição?',
+      options: [
+        'A) RG, CPF, comprovante de residência e comprovante de renda',
+        'B) Passaporte e carteira de trabalho',
+        'C) Certidão de casamento e título de eleitor',
+        'D) Carteira de identidade profissional e CNH anterior'
+      ],
       correct: 0,
-      explanation: 'Os resultados são divulgados no site oficial do DETRAN.'
+      explanation: 'Os documentos básicos são: RG, CPF, comprovante de residência e comprovante de renda para comprovar elegibilidade.'
+    },
+    {
+      text: 'O que cobre o benefício do CNH Popular?',
+      options: [
+        'A) Apenas as taxas do DETRAN',
+        'B) Somente as aulas teóricas',
+        'C) Taxas, exames e curso teórico-prático',
+        'D) Apenas a emissão da carteira'
+      ],
+      correct: 2,
+      explanation: 'O programa geralmente cobre as taxas do DETRAN, exames médicos e psicológicos, e o curso teórico-prático nas autoescolas credenciadas.'
+    },
+    {
+      text: 'Como são divulgados os resultados da seleção?',
+      options: [
+        'A) Apenas por telefone',
+        'B) No Diário Oficial e site do órgão responsável',
+        'C) Nas redes sociais do prefeito',
+        'D) Nas autoescolas participantes'
+      ],
+      correct: 1,
+      explanation: 'Os resultados são divulgados oficialmente no Diário Oficial e no site do órgão responsável, garantindo transparência.'
     }
   ];
 
   let current = 0;
   let correctCount = 0;
 
-  const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.7).setScrollFactor(0);
-  const question = scene.add.text(width / 2, height / 2 - 80, '', {
+  const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
+    .setScrollFactor(0)
+    .setDepth(100);
+
+  const panel = scene.add.rectangle(width / 2, height / 2, width - 100, height - 100, 0x000000)
+    .setStrokeStyle(2, 0xffffff)
+    .setScrollFactor(0)
+    .setDepth(101);
+
+  const progress = scene.add.text(width / 2, height / 2 - 200, '', {
+    fontSize: '14px',
+    color: '#bdc3c7',
+    fontFamily: '"Silkscreen", monospace',
+  }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
+
+  const question = scene.add.text(width / 2, height / 2 - 140, '', {
     fontSize: '16px',
-    color: '#fff',
+    color: '#ecf0f1',
     align: 'center',
-    wordWrap: { width: width - 80 }
-  }).setOrigin(0.5).setScrollFactor(0);
+    fontStyle: 'bold',
+    fontFamily: '"Silkscreen", monospace',
+    wordWrap: { width: width - 150 },
+    lineSpacing: 8
+  }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
 
   const buttons = [];
+  const feedback = scene.add.text(width / 2, height / 2 + 130, '', {
+    fontSize: '12px',
+    color: '#f39c12',
+    align: 'center',
+    fontFamily: '"Silkscreen", monospace',
+    wordWrap: { width: width - 120 }
+  }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
 
   function showQuestion() {
     const q = quiz[current];
+    
+    // Atualiza progresso
+    progress.setText(`Pergunta ${current + 1} de ${quiz.length}`);
+    
     question.setText(q.text);
-    buttons.forEach(b => b.destroy());
+    feedback.setText('');
+    
+    // Limpa botões anteriores
+    buttons.forEach(b => {
+      if (b.destroy) b.destroy();
+    });
     buttons.length = 0;
 
     q.options.forEach((opt, i) => {
-      const btn = scene.add.text(width / 2, height / 2 + i * 40, opt, {
-        fontSize: '14px',
-        color: '#fff',
-        backgroundColor: 'rgba(0,0,0,0.4)',
-        padding: { x: 8, y: 4 }
-      }).setOrigin(0.5).setInteractive().setScrollFactor(0);
+      // Posicionamento mais alto para as opções
+      const yPos = height / 2 - 80 + (i * 55);
+      
+      const btnBg = scene.add.rectangle(width / 2, yPos, width - 150, 40, 0x000000)
+        .setStrokeStyle(1, 0xffffff)
+        .setScrollFactor(0)
+        .setDepth(101)
+        .setInteractive();
 
-      btn.on('pointerdown', () => {
-        if (i === q.correct) {
-          scene.ui.showMessage('Correto!');
-          correctCount++;
-        } else {
-          scene.ui.showMessage(`Errado. ${q.explanation}`);
-        }
+      const btnText = scene.add.text(width / 2, yPos, opt, {
+        fontSize: '13px',
+        fontFamily: '"Silkscreen", monospace',
+        color: '#ecf0f1',
+        align: 'start',
+        wordWrap: { width: width - 200 },
+        lineSpacing: 4
+      }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
 
-        current++;
-        if (current < quiz.length) showQuestion();
-        else finishQuiz();
+      let isHovering = false;
+
+      btnBg.on('pointerover', () => {
+        if (isHovering) return;
+        isHovering = true;
+        btnBg.setFillStyle(0xffffff);
+        btnText.setColor('#000000');
       });
 
-      buttons.push(btn);
+      btnBg.on('pointerout', () => {
+        if (!isHovering) return;
+        isHovering = false;
+        btnBg.setFillStyle(0x000000);
+        btnText.setColor('#ffffff');
+      });
+
+      btnBg.on('pointerdown', () => {
+        // Remove listeners para prevenir múltiplos cliques
+        btnBg.removeAllListeners();
+        
+        // Desativa hover de todos os botões
+        buttons.forEach((b, index) => {
+          if (index % 2 === 0) { // É um btnBg
+            b.removeAllListeners();
+            b.disableInteractive();
+          }
+        });
+
+        if (i === q.correct) {
+          btnBg.setFillStyle(0x27ae60);
+          btnBg.setStrokeStyle(2, 0x2ecc71);
+          btnText.setColor('#ffffff');
+          feedback.setText('✓ Correto! ' + q.explanation);
+          feedback.setColor('#2ecc71');
+          correctCount++;
+        } else {
+          btnBg.setFillStyle(0xe74c3c);
+          btnBg.setStrokeStyle(2, 0xc0392b);
+          btnText.setColor('#ffffff');
+          feedback.setText('✗ Incorreto. ' + q.explanation);
+          feedback.setColor('#e74c3c');
+          
+          const correctBtnIndex = q.correct * 2;
+          if (buttons[correctBtnIndex]) {
+            buttons[correctBtnIndex].setFillStyle(0x27ae60);
+            buttons[correctBtnIndex].setStrokeStyle(2, 0x2ecc71);
+            if (buttons[correctBtnIndex + 1]) {
+              buttons[correctBtnIndex + 1].setColor('#ffffff');
+            }
+          }
+        }
+
+        scene.time.delayedCall(3500, () => {
+          current++;
+          if (current < quiz.length) {
+            showQuestion();
+          } else {
+            finishQuiz();
+          }
+        });
+      });
+
+      buttons.push(btnBg, btnText);
     });
   }
 
   function finishQuiz() {
-    buttons.forEach(b => b.destroy());
-    overlay.destroy();
-    question.destroy();
-
-    scene.ui.showMessage(
-      correctCount === quiz.length
-        ? 'Você acertou todas! Parabéns!'
-        : 'Você concluiu o quiz!'
-    );
+    [overlay, panel, progress, question, feedback].forEach(el => {
+      if (el && el.destroy) el.destroy();
+    });
+    
+    buttons.forEach(b => {
+      if (b && b.destroy) b.destroy();
+    });
 
     scene.playerState.phase2Completed = true;
     scene.playerState.hasMission = false;
     
     const npcObject = scene.interactiveObjects.find(o => o.key === 'autoescola');
-    const dialog = 'Dirija-se à Clínica para iniciar seus exames.';
-    npcObject.dialogs = [
-      dialog
-    ];
+    const dialog = 'Parabéns! Sua inscrição foi confirmada. Dirija-se à Clínica para iniciar seus exames médicos.';
+    npcObject.dialogs = [dialog];
 
-    // libera o movimento novamente
-    scene.time.delayedCall(500, () => {
+    scene.time.delayedCall(1000, () => {
       scene.ui.showMessage(dialog);
       scene.playerState.canMove = true;
       scene.playerState.inDialog = false;
