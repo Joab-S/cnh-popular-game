@@ -21,6 +21,22 @@ export default class MemoryGameScene extends Phaser.Scene {
   }
 
   create() {
+    this.bg1 = this.add
+      .rectangle(0, 0, this.scale.width, this.scale.height, 0x112244)
+      .setOrigin(0);
+
+    this.bg2 = this.add
+      .rectangle(0, 0, this.scale.width, this.scale.height, 0x223355)
+      .setOrigin(0);
+
+    this.tweens.add({
+      targets: this.bg2,
+      alpha: 0.3,
+      duration: 2000,
+      yoyo: true,
+      repeat: -1,
+    });
+
     this.setUpStartScreen();
 
     this.soundsArray = [
@@ -94,8 +110,8 @@ export default class MemoryGameScene extends Phaser.Scene {
   }
 
   createGridButtons() {
-    const size = 150;
-    const margin = 20;
+    const size = 160;
+    const margin = 30;
     const startX = this.scale.width / 2 - size - margin / 2;
     const startY = this.scale.height / 2 - size - margin / 2;
 
@@ -104,11 +120,22 @@ export default class MemoryGameScene extends Phaser.Scene {
       const y = startY + Math.floor(i / 2) * (size + margin);
 
       const button = this.add
-        .rectangle(x, y, size, size, this.tileColors[i])
+        .rectangle(x, y, size, size, this.tileColors[i], 1)
         .setOrigin(0)
-        .setInteractive();
+        .setInteractive()
+        .setStrokeStyle(6, 0xffffff);
 
+      button.setData("index", i);
       button.originalColor = this.tileColors[i];
+
+      button.on("pointerover", () => {
+        if (!this.isPlayerTurn) return;
+        button.setStrokeStyle(8, 0xffffff);
+      });
+
+      button.on("pointerout", () => {
+        button.setStrokeStyle(6, 0xffffff);
+      });
 
       button.on("pointerdown", () => {
         if (!this.isPlayerTurn) return;
@@ -145,10 +172,19 @@ export default class MemoryGameScene extends Phaser.Scene {
 
   flash(button) {
     return new Promise((resolve) => {
-      button.setFillStyle(0xffffff);
-      this.time.delayedCall(200, () => {
-        button.setFillStyle(button.originalColor);
-        resolve();
+      this.tweens.add({
+        targets: button,
+        duration: 120,
+        scaleX: 1.1,
+        scaleY: 1.1,
+        yoyo: true,
+        repeat: 0,
+        onYoyo: () => button.setFillStyle(button.originalColor),
+        onStart: () => button.setFillStyle(0xffffff),
+        onComplete: () => {
+          button.setFillStyle(button.originalColor);
+          resolve();
+        },
       });
     });
   }
