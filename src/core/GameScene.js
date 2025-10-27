@@ -77,6 +77,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("doc_cpf", "./assets/images/cpf.png");
     this.load.image("doc_comprovante", "./assets/images/comprovante.png");
     this.load.image("doc_comprovante_renda", "./assets/images/comprovante_renda.png");
+    this.load.image("habilitacao", "./assets/images/habilitacao.png");
     this.load.image("home_bg", "./assets/images/home_bg.png");
     this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
 
@@ -120,6 +121,13 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("detran_practical_bg_2", "./assets/images/detran_practical_bg_2.png");
 
     this.load.audio("boing", "./assets/sounds/boing.wav");
+    this.load.image("final_bg", "./assets/images/final_bg.png");
+    this.load.image("final_bg_2", "./assets/images/final_bg_2.png");
+    this.load.image("mail", "./assets/images/correio.png");
+    this.load.image("car_final", "./assets/images/carro_final.png");
+    this.load.image("mother", "./assets/images/mae.png");
+    this.load.image("brother", "./assets/images/irmao.png");
+    this.load.image("grandpa", "./assets/images/avo.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
