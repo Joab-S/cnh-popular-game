@@ -76,6 +76,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("doc_rg", "./assets/images/rg.png");
     this.load.image("doc_cpf", "./assets/images/cpf.png");
     this.load.image("doc_comprovante", "./assets/images/comprovante.png");
+    this.load.image("doc_comprovante_renda", "./assets/images/comprovante_renda.png");
     this.load.image("home_bg", "./assets/images/home_bg.png");
     this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
 
@@ -161,14 +162,14 @@ export default class GameScene extends Phaser.Scene {
         "O programa oferece a 1ª via da Carteira Nacional de Habilitação de forma gratuita para pessoas de baixa renda.",
         "Para se inscrever, você precisa: Ter entre 18 e 65 anos, ser de família de baixa renda e morar no Ceará há pelo menos 2 anos.",
         "O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exame médico e provas teórica e prática.",
-        "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF e comprovante de residência.",
+        "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF, comprovante de residência e de renda.",
         "Encontre seus documentos para começar o processo!",
       ],
       onInteract: () => {
         if (!this.playerState.docsMissionCompleted) {
           this.playerState.hasMission = true;
           this.ui.showMessage(
-            "Missão: Encontre RG, CPF e comprovante na sua casa!"
+            "Missão: Encontre RG, CPF e comprovante de residência e de renda na sua casa!"
           );
         }
       },

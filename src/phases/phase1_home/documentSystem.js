@@ -45,6 +45,14 @@ export function setupDocuments(scene) {
       spawnY: 80,
       targetY: scene.scale.height - 160,
       desc: 'Comprovante de residência, usado para confirmar seu endereço.'
+    },
+    {
+      id: 'CRE',
+      key: 'doc_comprovante_renda',
+      x: 660,
+      spawnY: 80,
+      targetY: scene.scale.height - 185,
+      desc: 'Comprovante de renda, usado para confirmar sua renda mensal.'
     }
   ];
 
