@@ -214,7 +214,7 @@ export function setupUI(scene) {
       const verticalSpacing = 35;
       const maxItems = 4;
 
-      const startY = -((maxItems - 1) * verticalSpacing) / 2;
+      const startY = -((maxItems - 1) * verticalSpacing - 8) / 2;
       const x = 0;
       const y = startY + itemCount * verticalSpacing;
 
