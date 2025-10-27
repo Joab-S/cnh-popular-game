@@ -2,13 +2,13 @@ export function setupUI(scene) {
   const { width, height } = scene.scale;
 
   // === INVENTÁRIO NO CANTO SUPERIOR ESQUERDO ===
-  const inventory = scene.add.container(45, 90).setScrollFactor(0).setDepth(10);
+  const inventory = scene.add.container(45, 110).setScrollFactor(0).setDepth(10);
 
   const inventoryBg = scene.add.graphics();
   inventoryBg.setAlpha(0);
 
   const bgWidth = 70;
-  const bgHeight = 160;
+  const bgHeight = 195;
 
   inventoryBg.fillStyle(0x000000, 0.5);
   inventoryBg.fillRoundedRect(
@@ -212,7 +212,7 @@ export function setupUI(scene) {
       const itemCount = items.length;
 
       const verticalSpacing = 35;
-      const maxItems = 4;
+      const maxItems = 5;
 
       const startY = -((maxItems - 1) * verticalSpacing - 8) / 2;
       const x = 0;
