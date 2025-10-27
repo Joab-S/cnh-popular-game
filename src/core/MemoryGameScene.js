@@ -13,10 +13,22 @@ export default class MemoryGameScene extends Phaser.Scene {
     this.tileColors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00];
   }
 
-  preload() {}
+  preload() {
+    this.load.audio("beep1", "./assets/sounds/beep1.wav");
+    this.load.audio("beep2", "./assets/sounds/beep2.wav");
+    this.load.audio("beep3", "./assets/sounds/beep3.wav");
+    this.load.audio("beep4", "./assets/sounds/beep4.wav");
+  }
 
   create() {
     this.setUpStartScreen();
+
+    this.soundsArray = [
+      this.sound.add("beep1"),
+      this.sound.add("beep2"),
+      this.sound.add("beep3"),
+      this.sound.add("beep4"),
+    ];
   }
 
   setUpStartScreen() {
@@ -24,7 +36,20 @@ export default class MemoryGameScene extends Phaser.Scene {
       .text(
         this.scale.width / 2,
         this.scale.height / 2 - 150,
-        "Teste psicotécnico\nRepita a sequência de cores!",
+        "Teste psicotécnico",
+        {
+          fontFamily: '"Silkscreen", monospace',
+          fontSize: "25px",
+          fill: "#fff",
+        }
+      )
+      .setOrigin(0.5);
+
+    this.add
+      .text(
+        this.scale.width / 2,
+        this.scale.height / 2 - 100,
+        "Repita a sequência de cores!",
         {
           fontFamily: '"Silkscreen", monospace',
           fontSize: "25px",
@@ -88,6 +113,7 @@ export default class MemoryGameScene extends Phaser.Scene {
       button.on("pointerdown", () => {
         if (!this.isPlayerTurn) return;
         this.flash(button);
+        this.soundsArray[i].play();
         this.handlePlayerInput(i);
       });
 
@@ -107,7 +133,9 @@ export default class MemoryGameScene extends Phaser.Scene {
     for (let i = 0; i < this.sequence.length; i++) {
       const index = this.sequence[i];
       const button = this.buttons[index];
+      const sound = this.soundsArray[index];
 
+      sound.play();
       await this.flash(button);
       await this.sleep(400);
     }
@@ -154,19 +182,39 @@ export default class MemoryGameScene extends Phaser.Scene {
   }
 
   gameOver() {
-    this.add
+    this.cameras.main.shake(200, 0.01);
+
+    const lostRectangle = this.add.rectangle(
+      this.scale.width / 2,
+      this.scale.height / 2,
+      550,
+      100,
+      0x000000,
+      1.0
+    );
+
+    const lostText = this.add
       .text(
         this.scale.width / 2,
-        this.scale.height / 2 + 120,
-        "Você errou! Reiniciando...",
-        { fontSize: "20px", fill: "#fff" }
+        this.scale.height / 2,
+        "Você errou! Vamos tentar novamente...",
+        {
+          fontSize: "20px",
+          fill: "#fff",
+          fontFamily: '"Silkscreen", monospace',
+        }
       )
       .setOrigin(0.5);
 
     this.sequence = [];
     this.userSequence = [];
 
-    this.time.delayedCall(1500, () => {
+    this.time.delayedCall(2000, () => {
+      lostText.destroy();
+      lostRectangle.destroy();
+    });
+
+    this.time.delayedCall(3000, () => {
       this.addToSequence();
       this.playSequence();
     });
