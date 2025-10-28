@@ -133,6 +133,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
+    // === CONFIGURA A ORIENTAÇÃO DA TELA ===
+    // setupOrientation(this);
+
     // === VERIFICA SE PRECISA MOSTRAR SELEÇÃO DE PERSONAGEM ===
     if (!this.selectedCharacter) {
       setupCharacterSelection(this, (character) => {
