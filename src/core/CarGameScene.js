@@ -13,7 +13,7 @@ export default class CarGameScene extends Phaser.Scene {
         default: "matter",
         matter: {
           gravity: { x: 0, y: 0 },
-          debug: true,
+          debug: false,
         },
       },
     });
@@ -178,15 +178,71 @@ export default class CarGameScene extends Phaser.Scene {
             console.log("Parabéns! Você chegou ao destino!");
             this.scene.start("EndScene", { victory: true });
           }
+
+          if (other.label === "checkpoint") {
+            const index = other.checkpointIndex;
+
+            if (!this.passedCheckpoints.has(index)) {
+              this.passedCheckpoints.add(index);
+              const hint = this.checkpoints[index].hint;
+
+              this.showCheckpointHint(hint);
+            }
+          }
         }
       });
     });
+
+    this.checkpoints = [
+      { x: 1500, y: 120, width: 140, height: 300, hint: "↑" },
+      { x: 3400, y: 120, width: 140, height: 300, hint: "→" },
+    ];
+
+    this.passedCheckpoints = new Set();
+
+    this.checkpoints.forEach((cp, index) => {
+      const sensor = this.matter.add.rectangle(
+        cp.x,
+        cp.y,
+        cp.width,
+        cp.height,
+        {
+          isStatic: true,
+          isSensor: true,
+          label: "checkpoint",
+        }
+      );
+      sensor.checkpointIndex = index;
+    });
+
+    this.checkpointText = this.add
+      .text(w / 2, 50, "", {
+        fontSize: "26px",
+        fill: "#fff",
+        backgroundColor: "rgba(0,0,0,0.4)",
+        fontFamily: '"Silkscreen", monospace',
+      })
+      .setScrollFactor(0)
+      .setDepth(1000);
   }
 
   update(time, delta) {
     const { scrollX, scrollY } = this.cameras.main;
     this.ground.setTilePosition(scrollX, scrollY);
     this.car.update(delta, this.keys, time);
+  }
+
+  showCheckpointHint(text) {
+    this.checkpointText.setText(text);
+    this.checkpointText.setAlpha(1);
+
+    this.tweens.add({
+      targets: this.checkpointText,
+      alpha: 0,
+      duration: 2000,
+      ease: "Sine.easeOut",
+      delay: 1500,
+    });
   }
 
   handleGameOver() {
