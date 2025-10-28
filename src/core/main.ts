@@ -8,6 +8,6 @@ import StartCarGameScene from "../engine/ui/StartCarGameScene.js";
 
 const config = {
   ...GAME_CONFIG,
-  scene: [StartCarGameScene, CarGameScene, EndCarGameScene],
+  scene: [GameScene, StartCarGameScene, CarGameScene, EndCarGameScene],
 };
 new Phaser.Game(config);
