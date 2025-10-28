@@ -16,15 +16,17 @@ export function setupInteractiveObject(scene, config) {
     hintText = "Aproxime-se e aperte E",
   } = config;
 
-  // cria texto de dica
   const hint = scene.add
     .text(object.x, object.y * 0.75, hintText, {
-      fontFamily: "sans-serif",
-      fontSize: "15px",
-      color: "#ffffffff",
+      fontFamily: '"Silkscreen", monospace',
+      padding: { x: 12, y: 8 },
+      fontSize: "12px",
+      color: "#000000",
+      backgroundColor: "#FFFFFF", 
     })
     .setOrigin(0.5)
-    .setAlpha(0);
+    .setAlpha(0)
+    .setDepth(1000);
 
   if (!scene.interactiveObjects) scene.interactiveObjects = [];
 
@@ -124,17 +126,14 @@ function progressDialog(scene, entry) {
  * Mostra ou oculta o texto de “Aproxime-se e aperte E”
  */
 function toggleHint(scene, hint, visible) {
-  if (!hint || !scene.tweens) return;
-  const targetAlpha = visible ? 1 : 0;
-  if (hint.alpha !== targetAlpha) {
+  if (!hint) return;
+  const targetAlpha = visible ? 0.8 : 0;
+  
+  if (scene.tweens) {
     scene.tweens.killTweensOf(hint);
-    scene.tweens.add({
-      targets: hint,
-      alpha: targetAlpha,
-      duration: 200,
-      ease: "Linear",
-    });
   }
+
+  hint.setAlpha(targetAlpha);
 }
 
 export function clearInteractions(scene) {

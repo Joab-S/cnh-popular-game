@@ -2,6 +2,65 @@ import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
 
+function createCarCutscene(scene) {
+  const existingCar = scene.interactiveObjects.find(obj => obj.key === "car_final");
+  
+  if (!existingCar) {
+    console.error('Carro final não encontrado na cena!');
+    return;
+  }
+
+  if (!existingCar.object) {
+    console.error('Object do carro final não encontrado!', existingCar);
+    return;
+  }
+
+  scene.player.setVisible(false);
+  const startX = existingCar.object.x;
+  const startY = existingCar.object.y;
+  
+  existingCar.object.setVisible(false);
+  
+  const car = scene.add.sprite(startX, startY, "car_final")
+    .setScale(0.48)
+    .setDepth(10);
+
+  const drivingSound = scene.sound.add('driving_car', { 
+    volume: 0.6,
+    loop: true 
+  });
+  drivingSound.play();
+
+  scene.cameras.main.startFollow(car);
+  
+  scene.tweens.add({
+    targets: car,
+    x: startX + 100,
+    duration: 1000,
+    ease: 'Power1',
+    onComplete: () => {
+      scene.ui.showMessage("Vamos nessa!");
+      
+      scene.tweens.add({
+        targets: car,
+        x: scene.scale.width + 500,
+        duration: 3000,
+        ease: 'Linear',
+        onComplete: () => {
+          drivingSound.stop();
+          
+          scene.sound.play('success', { volume: 0.6 });
+          
+          car.destroy();
+          scene.cameras.main.stopFollow();
+          
+          scene.ui.showMessage("Nova estrada, novas aventuras!");
+        }
+      });
+    }
+  });
+}
+
 export function startPhase8(scene) {
   const { width, height } = scene.scale;
 
@@ -57,7 +116,7 @@ export function startPhase8(scene) {
       "Estou orgulhosa de você, filho(a)!",
       "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
     ],
-    hintText: "",
+    hintText: 'Pressione a tecla E para interagir',
   });
 
   const car_final = new InteractiveObject(scene, {
@@ -74,12 +133,12 @@ export function startPhase8(scene) {
     ],
     onInteract: () => {
       if (scene.playerState.hasLicense) {
-        scene.ui.showMessage('Agora você está devidamente habilitado para dirigir!');
+        createCarCutscene(scene);
       } else {
         scene.ui.showMessage('Opa, você precisa pegar sua habilitação na caixa de correios para dirigir!');
       }
-  },
-    hintText: "",
+    },
+    hintText: 'Pressione a tecla E para interagir',
   });
 
   const brother = new InteractiveObject(scene, {
@@ -92,7 +151,7 @@ export function startPhase8(scene) {
     dialogs: [
       "Finalmente meu(inha) irmã(o) vai poder me levar até meu restaurante preferido, o 'Comida Boa'! Nunca fui tão feliz!",
     ],
-    hintText: "",
+    hintText: 'Pressione a tecla E para interagir',
   });
 
   const grandpa = new InteractiveObject(scene, {
@@ -108,7 +167,7 @@ export function startPhase8(scene) {
       "Mas nenhum mel tem a doçura de te ver conquistando sua habilitação.",
       "Meus dias serão muito mais adocicados pela felicidade do seu sucesso!",
     ],
-    hintText: "",
+    hintText: 'Pressione a tecla E para interagir',
   });
 
   const mail = new InteractiveObject(scene, {
@@ -124,7 +183,7 @@ export function startPhase8(scene) {
     onInteract: () => {
       scene.addLicenseToInventory();
     },
-    hintText: "",
+    hintText: 'Pressione a tecla E para interagir',
   });
 
   mother.sprite.setDepth(-2);
