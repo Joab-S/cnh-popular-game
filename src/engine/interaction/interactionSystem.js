@@ -26,7 +26,7 @@ export function setupInteractiveObject(scene, config) {
     })
     .setOrigin(0.5)
     .setAlpha(0)
-    .setDepth(1000);
+    .setDepth(5);
 
   if (!scene.interactiveObjects) scene.interactiveObjects = [];
 
