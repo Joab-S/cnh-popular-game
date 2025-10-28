@@ -5,26 +5,20 @@ import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
 function createCarCutscene(scene) {
   const existingCar = scene.interactiveObjects.find(obj => obj.key === "car_final");
   
-  if (!existingCar) {
+  if (!existingCar || !existingCar.object) {
     console.error('Carro final não encontrado na cena!');
     return;
   }
 
-  if (!existingCar.object) {
-    console.error('Object do carro final não encontrado!', existingCar);
-    return;
-  }
-
+  const car = existingCar.object;
+  
   scene.player.setVisible(false);
-  const startX = existingCar.object.x;
-  const startY = existingCar.object.y;
+  scene.playerState.inDialog = true;
+  scene.playerState.canMove = false;
   
-  existingCar.object.setVisible(false);
+  scene.player.x = car.x;
+  scene.player.y = car.y;
   
-  const car = scene.add.sprite(startX, startY, "car_final")
-    .setScale(0.48)
-    .setDepth(10);
-
   const drivingSound = scene.sound.add('driving_car', { 
     volume: 0.6,
     loop: true 
@@ -32,33 +26,85 @@ function createCarCutscene(scene) {
   drivingSound.play();
 
   scene.cameras.main.startFollow(car);
-  
+
   scene.tweens.add({
     targets: car,
-    x: startX + 100,
+    x: car.x + 100,
     duration: 1000,
     ease: 'Power1',
+    onUpdate: function() {
+      scene.player.x = car.x;
+      scene.player.y = car.y;
+    },
     onComplete: () => {
       scene.ui.showMessage("Vamos nessa!");
-      
+
       scene.tweens.add({
         targets: car,
         x: scene.scale.width + 500,
         duration: 3000,
         ease: 'Linear',
+        onUpdate: function() {
+          scene.player.x = car.x;
+          scene.player.y = car.y;
+        },
         onComplete: () => {
           drivingSound.stop();
-          
           scene.sound.play('success', { volume: 0.6 });
-          
-          car.destroy();
+
           scene.cameras.main.stopFollow();
           
-          scene.ui.showMessage("Nova estrada, novas aventuras!");
+          scene.ui.hideMessage();
+          showEndGameModal(scene);
         }
       });
     }
   });
+}
+
+function showEndGameModal(scene) {
+  const { width, height } = scene.scale;
+
+  const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
+    .setScrollFactor(0)
+    .setDepth(1000);
+
+  const title = scene.add.text(width / 2, height / 2 - 50, 'PARABÉNS!', {
+    fontSize: "48px",
+    color: "#ffffff",
+    fontFamily: '"Silkscreen", "Courier New", monospace',
+    fontWeight: "bold",
+  }).setOrigin(0.5).setScrollFactor(0).setDepth(1002);
+
+  const message = scene.add.text(width / 2, height / 2 + 30, 'Você concluiu sua jornada rumo à CNH!', {
+    fontSize: "24px",
+    color: "#ffffff",
+    fontFamily: '"Silkscreen", "Courier New", monospace',
+    fontWeight: "bold",
+    align: 'center',
+    lineSpacing: 10
+  }).setOrigin(0.5).setScrollFactor(0).setDepth(1002);
+
+  title.setAlpha(0);
+  message.setAlpha(0);
+
+  scene.tweens.add({
+    targets: [title, message],
+    alpha: 1,
+    duration: 1000,
+    ease: 'Power2'
+  });
+
+  scene.tweens.add({
+    targets: title,
+    scale: { from: 0.5, to: 1 },
+    duration: 800,
+    ease: 'Back.easeOut'
+  });
+
+  scene.endGameModal = {
+    overlay, title, message
+  };
 }
 
 export function startPhase8(scene) {

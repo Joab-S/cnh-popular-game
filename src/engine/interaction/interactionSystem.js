@@ -127,6 +127,11 @@ function progressDialog(scene, entry) {
  */
 function toggleHint(scene, hint, visible) {
   if (!hint) return;
+
+  if (scene.playerState?.inDialog || scene.playerState?.quizActive || scene.playerState?.miniGameActive) {
+    visible = false;
+  }
+
   const targetAlpha = visible ? 0.8 : 0;
   
   if (scene.tweens) {
