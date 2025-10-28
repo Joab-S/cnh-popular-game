@@ -470,7 +470,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.time.delayedCall(800, () => {
-      this.events.emit("gameEnded", { victory: isVictory, score: this.score });
+      this.scene.get('GameScene').events.emit("trafficsigns:end", { victory: true });
     });
   }
 
