@@ -8,7 +8,10 @@ export default class TrafficLight {
 
     this.state = "red";
 
-    this.light = scene.add.circle(x, y + 80, 20, 0xff0000);
+    this.box = scene.add.rectangle(x + 170, y, 40, 90, 0x444444)
+    this.redLight = scene.add.circle(x + 170, y - 30, 10, 0xff0000);
+    this.yellowLight = scene.add.circle(x + 170, y, 10, 0x555500);
+    this.greenLight = scene.add.circle(x + 170, y + 30, 10, 0x005500);
 
     this.sensor = scene.matter.add.rectangle(x, y, width, height, {
       isStatic: true,
@@ -16,23 +19,52 @@ export default class TrafficLight {
       label: "trafficSensor",
     });
 
+    this.crosswalk = scene.add.graphics();
+    this.drawCrosswalk(x, y, width, height);
+
     scene.time.addEvent({
       delay: 4000,
       loop: true,
       callback: () => this.changeState(),
     });
+
+    this.updateLights();
+  }
+
+  drawCrosswalk(x, y, width, height) {
+    const stripeCount = 6;
+    const stripeWidth = width / stripeCount;
+    const stripeHeight = height;
+
+    this.crosswalk.fillStyle(0xffffff);
+
+    for (let i = 0; i < stripeCount; i += 2) {
+      this.crosswalk.fillRect(
+        x - width / 2 + i * stripeWidth,
+        y - height / 2,
+        stripeWidth,
+        stripeHeight
+      );
+    }
+  }
+
+  updateLights() {
+    this.redLight.setFillStyle(this.state === "red" ? 0xff0000 : 0x550000);
+    this.yellowLight.setFillStyle(
+      this.state === "yellow" ? 0xffff00 : 0x555500
+    );
+    this.greenLight.setFillStyle(this.state === "green" ? 0x00ff00 : 0x005500);
   }
 
   changeState() {
     if (this.state === "red") {
       this.state = "green";
-      this.light.setFillStyle(0x00ff00);
     } else if (this.state === "green") {
       this.state = "yellow";
-      this.light.setFillStyle(0xffff00);
     } else {
       this.state = "red";
-      this.light.setFillStyle(0xff0000);
     }
+
+    this.updateLights();
   }
 }

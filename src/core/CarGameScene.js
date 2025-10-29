@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import Racecar from "../engine/player/raceCar";
 import TrafficLight from "../engine/utils/trafficLight.js";
+import { PHYSICS_DEBUG } from "./config.js";
 
 const WORLD_WIDTH = 3840;
 const WORLD_HEIGHT = 2160;
@@ -13,7 +14,7 @@ export default class CarGameScene extends Phaser.Scene {
         default: "matter",
         matter: {
           gravity: { x: 0, y: 0 },
-          debug: true,
+          debug: PHYSICS_DEBUG,
         },
       },
     });
@@ -27,6 +28,12 @@ export default class CarGameScene extends Phaser.Scene {
     this.load.image("button_left", "./assets/images/button-left.png");
     this.load.image("button_right", "./assets/images/button-right.png");
     this.load.image("button_brake", "./assets/images/pedal-brake.png");
+    this.load.image("finish-line", "./assets/images/faixa_quadriculada.png");
+
+    this.load.image("arrow-up", "./assets/images/seta-cima.png");
+    this.load.image("arrow-right", "./assets/images/seta-direita.png");
+    this.load.image("arrow-left", "./assets/images/seta-esquerda.png");
+    this.load.image("arrow-down", "./assets/images/seta-baixo.png");
   }
 
   create() {
@@ -47,6 +54,15 @@ export default class CarGameScene extends Phaser.Scene {
       up: false,
       action: false,
     };
+
+    this.trafficLight = new TrafficLight(this, 140, 330, 270, 100);
+    this.matter.add
+      .image(3715, 500, "finish-line", 0, {
+        label: "destination",
+        isStatic: true,
+        isSensor: true,
+      })
+      .setScale(1.2);
 
     this.driftLayer = this.add.layer();
     this.car = new Racecar(this, 100, 460, "car");
@@ -103,6 +119,10 @@ export default class CarGameScene extends Phaser.Scene {
     });
     this.cameras.main.setBounds(0, 0, WORLD_WIDTH, WORLD_HEIGHT);
 
+    Object.values(this.matter.world.walls).forEach((wall) => {
+      wall.label = "boundary";
+    });
+
     this.hitboxes = [];
     const blockWidth = 1500;
     const blockHeight = 660;
@@ -134,18 +154,6 @@ export default class CarGameScene extends Phaser.Scene {
       },
     ];
 
-    const destination = {
-      x: 800,
-      y: 150,
-      radius: 50,
-    };
-
-    this.matter.add.circle(destination.x, destination.y, destination.radius, {
-      isStatic: true,
-      isSensor: true,
-      label: "destination",
-    });
-
     boxes.forEach((b) => {
       const body = this.matter.add.rectangle(b.x, b.y, b.width, b.height, {
         isStatic: true,
@@ -154,14 +162,13 @@ export default class CarGameScene extends Phaser.Scene {
       this.hitboxes.push(body);
     });
 
-    this.trafficLight = new TrafficLight(this, 140, 330, 270, 100);
-
     this.matter.world.on("collisionstart", (event) => {
       event.pairs.forEach((pair) => {
         if (pair.bodyA === this.car.body || pair.bodyB === this.car.body) {
           const other = pair.bodyA === this.car.body ? pair.bodyB : pair.bodyA;
 
           if (
+            other.label === "boundary" ||
             other.label === "hitbox" ||
             (other.label === "trafficSensor" &&
               this.trafficLight.state === "red")
@@ -173,15 +180,75 @@ export default class CarGameScene extends Phaser.Scene {
             console.log("Parabéns! Você chegou ao destino!");
             this.scene.start("EndScene", { victory: true });
           }
+
+          if (other.label === "checkpoint") {
+            const index = other.checkpointIndex;
+
+            if (!this.passedCheckpoints.has(index)) {
+              this.passedCheckpoints.add(index);
+              const hint = this.checkpoints[index].hint;
+
+              this.showCheckpointHint(hint);
+            }
+          }
         }
       });
     });
+
+    this.checkpoints = [
+      { x: 150, y: 300, width: 300, height: 140, hint: "arrow-right" },
+      { x: 1500, y: 120, width: 140, height: 300, hint: "arrow-right" },
+      { x: 3400, y: 120, width: 140, height: 300, hint: "arrow-down" },
+    ];
+
+    this.passedCheckpoints = new Set();
+
+    this.checkpoints.forEach((cp, index) => {
+      const sensor = this.matter.add.rectangle(
+        cp.x,
+        cp.y,
+        cp.width,
+        cp.height,
+        {
+          isStatic: true,
+          isSensor: true,
+          label: "checkpoint",
+        }
+      );
+      sensor.checkpointIndex = index;
+    });
+
+    this.checkpointText = this.add
+      .text(w / 2, 50, "", {
+        fontSize: "26px",
+        fill: "#fff",
+        backgroundColor: "rgba(0,0,0,0.4)",
+        fontFamily: '"Silkscreen", monospace',
+      })
+      .setScrollFactor(0)
+      .setDepth(1000);
   }
 
   update(time, delta) {
     const { scrollX, scrollY } = this.cameras.main;
     this.ground.setTilePosition(scrollX, scrollY);
     this.car.update(delta, this.keys, time);
+  }
+
+  showCheckpointHint(text) {
+    if (this.goalArrow) this.goalArrow.destroy();
+
+    this.goalArrow = this.add
+      .sprite(this.cameras.main.width - 100, 75, text)
+      .setScrollFactor(0)
+      .setScale(0.05)
+      .setInteractive({ useHandCursor: true });
+
+    this.goalArrow.postFX.addShine(2, 4, 5);
+
+    this.time.delayedCall(3000, () => {
+      this.goalArrow.destroy();
+    });
   }
 
   handleGameOver() {
