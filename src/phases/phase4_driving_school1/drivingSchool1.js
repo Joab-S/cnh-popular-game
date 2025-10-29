@@ -60,7 +60,7 @@ export function startPhase4(scene) {
         }
   },
     label: '',
-    hintText: '',
+    hintText: 'Pressione a tecla E para interagir',
   });
     
   instructor.sprite.setDepth(-2);

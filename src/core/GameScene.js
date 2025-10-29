@@ -128,6 +128,8 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("mother", "./assets/images/mae.png");
     this.load.image("brother", "./assets/images/irmao.png");
     this.load.image("grandpa", "./assets/images/avo.png");
+    this.load.audio("driving_car", "./assets/sounds/driving_car.wav");
+    this.load.audio("success", "./assets/sounds/success.wav");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
@@ -183,7 +185,7 @@ export default class GameScene extends Phaser.Scene {
           );
         }
       },
-      hintText: "",
+      hintText: "Pressione a tecla E para interagir",
     });
 
     this.pc.setScale(0.35);

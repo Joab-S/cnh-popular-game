@@ -50,21 +50,21 @@ export function startPhase5(scene) {
     scale: 0.27,
     width: 200,
     height: 100,
-    proximity: { x: 80, y: 120 }, 
+    proximity: { x: 200, y: 120 }, 
     dialogs: [
       'Olá! Você acaba de chegar na etapa de prova teórica do DETRAN.',
       'Vamos iniciar sua prova agora. Boa sorte!'
     ],
     onInteract: () => {
-      console.log('Interagindo com DETRAN'); // Debug
+      console.log('Interagindo com DETRAN');
       if (scene.playerState.quizActive) return;
       if (!scene.playerState.phase5Completed) {
-        console.log('Iniciando minigame...'); // Debug
+        console.log('Iniciando minigame...');
         startMiniGame(scene);
       }
     },
     label: '',
-    hintText: '',
+    hintText: 'Pressione a tecla E para interagir',
   });
 
   detran.sprite.setDepth(-2);
