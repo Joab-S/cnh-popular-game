@@ -13,7 +13,7 @@ export default class CarGameScene extends Phaser.Scene {
         default: "matter",
         matter: {
           gravity: { x: 0, y: 0 },
-          debug: false,
+          debug: true,
         },
       },
     });
@@ -27,6 +27,11 @@ export default class CarGameScene extends Phaser.Scene {
     this.load.image("button_left", "./assets/images/button-left.png");
     this.load.image("button_right", "./assets/images/button-right.png");
     this.load.image("button_brake", "./assets/images/pedal-brake.png");
+
+    this.load.image("arrow-up", "./assets/images/seta-cima.png");
+    this.load.image("arrow-right", "./assets/images/seta-direita.png");
+    this.load.image("arrow-left", "./assets/images/seta-esquerda.png");
+    this.load.image("arrow-down", "./assets/images/seta-baixo.png");
   }
 
   create() {
@@ -194,8 +199,9 @@ export default class CarGameScene extends Phaser.Scene {
     });
 
     this.checkpoints = [
-      { x: 1500, y: 120, width: 140, height: 300, hint: "↑" },
-      { x: 3400, y: 120, width: 140, height: 300, hint: "→" },
+      { x: 150, y: 300, width: 300, height: 140, hint: "arrow-right" },
+      { x: 1500, y: 120, width: 140, height: 300, hint: "arrow-right" },
+      { x: 3400, y: 120, width: 140, height: 300, hint: "arrow-down" },
     ];
 
     this.passedCheckpoints = new Set();
@@ -233,15 +239,18 @@ export default class CarGameScene extends Phaser.Scene {
   }
 
   showCheckpointHint(text) {
-    this.checkpointText.setText(text);
-    this.checkpointText.setAlpha(1);
+    if (this.goalArrow) this.goalArrow.destroy();
 
-    this.tweens.add({
-      targets: this.checkpointText,
-      alpha: 0,
-      duration: 2000,
-      ease: "Sine.easeOut",
-      delay: 1500,
+    this.goalArrow = this.add
+      .sprite(this.cameras.main.width - 100, 75, text)
+      .setScrollFactor(0)
+      .setScale(0.05)
+      .setInteractive({ useHandCursor: true });
+
+    this.goalArrow.postFX.addShine(2, 4, 5);
+
+    this.time.delayedCall(3000, () => {
+      this.goalArrow.destroy();
     });
   }
 

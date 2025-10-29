@@ -25,7 +25,7 @@ export default class StartCarGameScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     const instructionsText = [
-      "- Use os controles para dirigir o carro",
+      "- Use os controles para controlar o carro",
       "- Preste atenção ao semáforo",
       "- Respeite o espaço das ruas",
       '- Siga o indicado pelas setas'
