@@ -38,15 +38,32 @@ export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
     this.selectedCharacter = null;
+    this.showingCover = true;
+    this.showingInstructions = false;
+    this.currentInstruction = 0;
+    this.instructions = [
+      "Bem-vindo ao CNH Popular - O Jogo!",
+      "Neste jogo, você vai vivenciar a jornada para obter sua Carteira Nacional de Habilitação através do programa CNH Popular do Ceará.",
+      "Você precisará passar por todas as etapas: documentos, aulas teóricas, exames médicos, aulas práticas e as provas finais.",
+      "Use as teclas WASD ou setas para se mover e a tecla E para interagir com objetos e personagens.",
+      "Explore os ambientes, complete missões e boa sorte na sua jornada!"
+    ];
+    this.canAdvance = true;
   }
 
   init(data) {
-    // Recebe o personagem selecionado, se houver
     this.selectedCharacter = data?.selectedCharacter;
     this.playerTexture = data?.playerTexture;
+    this.showingCover = data?.showingCover ?? true;
+    this.showingInstructions = data?.showingInstructions ?? false;
+    this.canAdvance = true;
   }
 
   preload() {
+    // === IMAGEM DA CAPA ===
+    this.load.image("capa", "./assets/images/capa.png");
+    this.load.image("logo", "./assets/images/iris-logo-marca.png");
+
     // === IMAGENS PARA TELA DE SELEÇÃO ===
     this.load.image(
       "select_player_boy",
@@ -128,13 +145,23 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("mother", "./assets/images/mae.png");
     this.load.image("brother", "./assets/images/irmao.png");
     this.load.image("grandpa", "./assets/images/avo.png");
-    this.load.audio("driving_car", "./assets/sounds/driving_car.wav");
-    this.load.audio("success", "./assets/sounds/success.wav");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
 
   create() {
+    // === VERIFICA SE PRECISA MOSTRAR TELA DE CAPA ===
+    if (this.showingCover) {
+      this.showCoverScreen();
+      return;
+    }
+
+    // === VERIFICA SE PRECISA MOSTRAR INSTRUÇÕES ===
+    if (this.showingInstructions) {
+      this.showInstructionsScreen();
+      return;
+    }
+
     // === VERIFICA SE PRECISA MOSTRAR SELEÇÃO DE PERSONAGEM ===
     if (!this.selectedCharacter) {
       setupCharacterSelection(this, (character) => {
@@ -143,7 +170,242 @@ export default class GameScene extends Phaser.Scene {
       return;
     }
 
-    // === CONTINUA COM O JOGO NORMAL (personagem já selecionado) ===
+    // === CONTINUA COM O JOGO NORMAL ===
+    this.startMainGame();
+  }
+
+  showCoverScreen() {
+    const { width, height } = this.scale;
+
+    this.coverImage = this.add.image(width / 2, height / 2, "capa")
+      .setDisplaySize(width, height)
+      .setInteractive();
+
+    this.textures.get("capa").setFilter(Phaser.Textures.FilterMode.NEAREST);
+
+    this.overlayImage = this.add.image(width / 2, height / 3 - 120, "logo")
+      .setScale(0.5)
+      .setDepth(1);
+
+    this.titleText = this.add.text(width / 2, height / 3 + 170, 
+      "CNH POPULAR - O JOGO", 
+      {
+        fontFamily: '"Silkscreen", monospace',
+        fontSize: "48px",
+        color: "#ffffff",
+        fontStyle: "bold",
+      }
+    ).setOrigin(0.5).setDepth(2);
+
+    this.instructionText = this.add.text(width / 2, height - 80, 
+      "Pressione E ou clique na tela para continuar", 
+      {
+        fontFamily: '"Silkscreen", monospace',
+        fontSize: "20px",
+        color: "#ffffff",
+      }
+    ).setOrigin(0.5).setDepth(2).setAlpha(0.6);
+
+    this.keys = this.input.keyboard.addKeys({
+      E: Phaser.Input.Keyboard.KeyCodes.E,
+      SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      ENTER: Phaser.Input.Keyboard.KeyCodes.ENTER
+    });
+
+    this.coverImage.on("pointerdown", () => {
+      if (this.canAdvance) {
+        this.canAdvance = false;
+        this.advanceFromCover();
+      }
+    });
+
+    this.input.on("pointerdown", () => {
+      if (this.canAdvance) {
+        this.canAdvance = false;
+        this.advanceFromCover();
+      }
+    });
+
+    this.input.keyboard.target = this.game.canvas;
+    this.game.canvas.setAttribute("tabindex", "0");
+    this.game.canvas.focus();
+  }
+
+  showInstructionsScreen() {
+    const { width, height } = this.scale;
+
+    // Fundo com a mesma imagem da capa
+    this.instructionsBg = this.add.image(width / 2, height / 2, "capa")
+      .setDisplaySize(width, height)
+      .setInteractive();
+
+    this.textures.get("capa").setFilter(Phaser.Textures.FilterMode.NEAREST);
+
+    this.dialogBox = this.add.rectangle(width / 2, height - 230, width - 100, 200, 0xffffff, 0.9)
+      .setStrokeStyle(2, 0x000000)
+      .setDepth(1);
+
+    this.instructionDialog = this.add.text(width / 2, height - 230, 
+      this.instructions[this.currentInstruction], 
+      {
+        fontFamily: '"Silkscreen", monospace',
+        fontSize: "18px",
+        color: "#000000",
+        wordWrap: { width: width - 150 },
+        align: "center",
+        lineSpacing: 10
+      }
+    ).setOrigin(0.5).setDepth(2);
+
+    this.progressText = this.add.text(width / 2, height - 80, 
+      `Pressione E ou clique na tela para continuar`, 
+      {
+        fontFamily: '"Silkscreen", monospace',
+        fontSize: "16px",
+        color: "#ffffff",
+      }
+    ).setOrigin(0.5).setDepth(2);
+
+    this.keys = this.input.keyboard.addKeys({
+      E: Phaser.Input.Keyboard.KeyCodes.E,
+      SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      ENTER: Phaser.Input.Keyboard.KeyCodes.ENTER
+    });
+
+    this.instructionsBg.on("pointerdown", () => {
+      if (this.canAdvance) {
+        this.canAdvance = false;
+        this.nextInstruction();
+      }
+    });
+
+    this.input.on("pointerdown", () => {
+      if (this.canAdvance) {
+        this.canAdvance = false;
+        this.nextInstruction();
+      }
+    });
+
+    this.input.keyboard.target = this.game.canvas;
+    this.game.canvas.setAttribute("tabindex", "0");
+    this.game.canvas.focus();
+  }
+
+  nextInstruction() {
+    this.currentInstruction++;
+    
+    if (this.currentInstruction < this.instructions.length) {
+      this.instructionDialog.setText(this.instructions[this.currentInstruction]);
+      this.progressText.setText(`Pressione E ou clique na tela para continuar`);
+      
+      this.time.delayedCall(300, () => {
+        this.canAdvance = true;
+      });
+    } else {
+      this.advanceFromInstructions();
+    }
+  }
+
+  advanceFromCover() {
+    this.showingCover = false;
+    this.showingInstructions = true;
+    this.currentInstruction = 0;
+    this.canAdvance = true;
+    
+    this.cleanupCoverScreen();
+    this.time.delayedCall(100, () => {
+      this.showInstructionsScreen();
+    });
+  }
+
+  advanceFromInstructions() {
+    this.showingInstructions = false;
+    this.cleanupInstructionsScreen();
+    
+    this.time.delayedCall(100, () => {
+      setupCharacterSelection(this, (character) => {
+        startGameWithCharacter(this, character);
+      });
+    });
+  }
+
+  cleanupCoverScreen() {
+    if (this.coverImage) this.coverImage.destroy();
+    if (this.overlayImage) this.overlayImage.destroy();
+    if (this.titleText) this.titleText.destroy();
+    if (this.instructionText) this.instructionText.destroy();
+    this.input.off("pointerdown");
+  }
+
+  cleanupInstructionsScreen() {
+    if (this.instructionsBg) this.instructionsBg.destroy();
+    if (this.dialogBox) this.dialogBox.destroy();
+    if (this.instructionDialog) this.instructionDialog.destroy();
+    if (this.progressText) this.progressText.destroy();
+    this.input.off("pointerdown");
+  }
+
+  update() {
+    // Controles para tela de capa - apenas tecla E
+    if (this.showingCover && this.keys && this.keys.E.isDown && this.canAdvance) {
+      this.canAdvance = false;
+      this.advanceFromCover();
+      return;
+    }
+
+    // Controles para tela de instruções - apenas tecla E
+    // O clique já é tratado pelos eventos pointerdown configurados
+    if (this.showingInstructions && this.keys && this.keys.E.isDown && this.canAdvance) {
+      this.canAdvance = false;
+      this.nextInstruction();
+      return;
+    }
+
+    if (this.showingCover || this.showingInstructions) return;
+
+    if (!this.selectedCharacter) return;
+
+    if (this.playerState && this.playerState.transitioning) return;
+
+    if (this.player && this.player.body && this.player.body.touching.down && this.player.body.velocity.y === 0) {
+      this.bedBounceStrength = 380;
+    }
+
+    try {
+      if (this.player) {
+        updatePlayerMovement(this);
+      }
+
+      if (this.playerState?.currentArea === AREAS.home && this.documents) {
+        updateDocuments(this);
+      } else if (this.playerState?.currentArea === AREAS.city) {
+        this.player.body.setSize(120, 270);
+        updatePhase2(this);
+      } else if (this.playerState?.currentArea === AREAS.clinic) {
+        updatePhase3(this);
+      } else if (this.playerState?.currentArea === AREAS.drivingSchool1) {
+        updatePhase4(this);
+      } else if (this.playerState?.currentArea === AREAS.theoreticalTest) {
+        updatePhase5(this);
+      } else if (this.playerState?.currentArea === AREAS.drivingSchool2) {
+        updatePhase6(this);
+      } else if (this.playerState?.currentArea === AREAS.practicalTest) {
+        updatePhase7(this);
+      } else if (this.playerState?.currentArea === AREAS.finalScene) {
+        updatePhase8(this);
+      }
+
+      if (this.player) {
+        updateGenericInteractions(this);
+      }
+      checkTransitions(this);
+      updateUI(this);
+    } catch (err) {
+      console.error("Erro no clico de update:", err);
+    }
+  }
+
+  startMainGame() {
     const { width, height } = this.scale;
 
     this.add
@@ -185,10 +447,10 @@ export default class GameScene extends Phaser.Scene {
           );
         }
       },
-      hintText: "Pressione a tecla E para interagir",
+      hintText: "",
     });
 
-    this.pc.setScale(0.35);
+    pc.setScale(0.35);
     this.physics.add.collider(pc, this.ground.ground);
 
     // Player (usa o spritesheet correto baseado na seleção)
@@ -224,9 +486,9 @@ export default class GameScene extends Phaser.Scene {
 
     this.bed.setDepth(-1);
 
-    this.bedBounceStrength = 380; // força inicial do pulo
-    this.bedDamping = 0.75;       // redução da força a cada quique
-    this.minBounce = 120;         // mínimo antes de parar
+    this.bedBounceStrength = 380;
+    this.bedDamping = 0.75;
+    this.minBounce = 120;
     this.lastBounceTime = 0;
 
     this.physics.add.overlap(
@@ -278,45 +540,6 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  update() {
-    if (!this.selectedCharacter) return;
-
-    if (this.playerState.transitioning) return;
-
-    if (this.player.body.touching.down && this.player.body.velocity.y === 0) {
-      this.bedBounceStrength = 380;
-    }
-
-    try {
-      updatePlayerMovement(this);
-
-      if (this.playerState?.currentArea === AREAS.home && this.documents) {
-        updateDocuments(this);
-      } else if (this.playerState?.currentArea === AREAS.city) {
-        this.player.body.setSize(120, 270);
-        updatePhase2(this);
-      } else if (this.playerState?.currentArea === AREAS.clinic) {
-        updatePhase3(this);
-      } else if (this.playerState?.currentArea === AREAS.drivingSchool1) {
-        updatePhase4(this);
-      } else if (this.playerState?.currentArea === AREAS.theoreticalTest) {
-        updatePhase5(this);
-      } else if (this.playerState?.currentArea === AREAS.drivingSchool2) {
-        updatePhase6(this);
-      } else if (this.playerState?.currentArea === AREAS.practicalTest) {
-        updatePhase7(this);
-      } else if (this.playerState?.currentArea === AREAS.finalScene) {
-        updatePhase8(this);
-      }
-
-      updateGenericInteractions(this);
-      checkTransitions(this);
-      updateUI(this);
-    } catch (err) {
-      console.error("Erro no clico de update:", err);
-    }
-  }
-
   handleBedBounce() {
     const player = this.player;
     const bed = this.bed;
@@ -324,7 +547,6 @@ export default class GameScene extends Phaser.Scene {
 
     if (!player.body || !bed.body) return;
 
-    // só reage se o jogador estiver caindo (velocidade positiva)
     const playerFalling = player.body.velocity.y > 100;
     const touchingTop = player.body.bottom <= bed.body.top + 10;
 
@@ -332,16 +554,14 @@ export default class GameScene extends Phaser.Scene {
       if (now - this.lastBounceTime < 200) return;
       this.lastBounceTime = now;
 
-      // aplica impulso vertical
       player.setVelocityY(-this.bedBounceStrength);
 
-      // amortecimento
       this.bedBounceStrength *= this.bedDamping;
       if (this.bedBounceStrength < this.minBounce) {
         this.bedBounceStrength = 0;
       }
 
-      this.sound.play("boing");
+      this.sound.play("boing", { volume: 0.3 });
     }
   }
 
