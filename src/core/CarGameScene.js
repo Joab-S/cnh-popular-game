@@ -13,7 +13,7 @@ export default class CarGameScene extends Phaser.Scene {
         default: "matter",
         matter: {
           gravity: { x: 0, y: 0 },
-          debug: true,
+          debug: false,
         },
       },
     });
@@ -27,6 +27,7 @@ export default class CarGameScene extends Phaser.Scene {
     this.load.image("button_left", "./assets/images/button-left.png");
     this.load.image("button_right", "./assets/images/button-right.png");
     this.load.image("button_brake", "./assets/images/pedal-brake.png");
+    this.load.image("finish-line", "./assets/images/faixa_quadriculada.png");
 
     this.load.image("arrow-up", "./assets/images/seta-cima.png");
     this.load.image("arrow-right", "./assets/images/seta-direita.png");
@@ -54,6 +55,13 @@ export default class CarGameScene extends Phaser.Scene {
     };
 
     this.trafficLight = new TrafficLight(this, 140, 330, 270, 100);
+    this.matter.add
+      .image(3715, 500, "finish-line", 0, {
+        label: "destination",
+        isStatic: true,
+        isSensor: true,
+      })
+      .setScale(1.2);
 
     this.driftLayer = this.add.layer();
     this.car = new Racecar(this, 100, 460, "car");
@@ -144,18 +152,6 @@ export default class CarGameScene extends Phaser.Scene {
         height: blockHeight,
       },
     ];
-
-    const destination = {
-      x: 3700,
-      y: 1000,
-      radius: 50,
-    };
-
-    this.matter.add.circle(destination.x, destination.y, destination.radius, {
-      isStatic: true,
-      isSensor: true,
-      label: "destination",
-    });
 
     boxes.forEach((b) => {
       const body = this.matter.add.rectangle(b.x, b.y, b.width, b.height, {
