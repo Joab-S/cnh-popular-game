@@ -82,10 +82,13 @@ export function startPhase2(scene) {
       'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
     ],
     onInteract: () => {
-    scene.playerState.phase2Completed = true;
+      if (scene.playerState.quizActive) return;
+      if (!scene.playerState.phase2Completed && !scene.playerState.hasMission) {
+        startQuiz(scene);
+      }
     },
     label: '',
-    hintText: 'Pressione a tecla E para interagir',
+    hintText: '',
   });
 
   autoescola.sprite.setDepth(-2);
