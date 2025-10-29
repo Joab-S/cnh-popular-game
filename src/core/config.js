@@ -20,6 +20,7 @@ export const GAME_CONFIG = {
   height: GAME_HEIGHT,
   backgroundColor: '#0e0e0e',
   pixelArt: true,
+  transparent: true,
   physics: {
     default: "arcade",
     arcade: {

@@ -341,7 +341,7 @@ export default class GameScene extends Phaser.Scene {
         this.bedBounceStrength = 0;
       }
 
-      this.sound.play("boing", { volume: 0.3 });
+      this.sound.play("boing");
     }
   }
 
