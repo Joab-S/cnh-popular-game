@@ -47,7 +47,7 @@ export function startPhase3(scene) {
         }
     },
     label: '',
-    hintText: '',
+    hintText: 'Pressione a tecla E para interagir',
   });
 
   clinic.sprite.setDepth(-2);
