@@ -183,6 +183,8 @@ export default class GameScene extends Phaser.Scene {
 
     this.textures.get("capa").setFilter(Phaser.Textures.FilterMode.NEAREST);
 
+    this.textures.get("logo").setFilter(Phaser.Textures.FilterMode.LINEAR);
+    
     this.overlayImage = this.add.image(width / 2, height / 3 - 120, "logo")
       .setScale(0.5)
       .setDepth(1);
