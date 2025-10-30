@@ -40,7 +40,7 @@ export default class GameScene extends Phaser.Scene {
     super("GameScene");
     this.selectedCharacter = null;
     this.playerTexture = null;
-    this.intro = new IntroSystem(this); // NOVO: Sistema de intro
+    this.intro = new IntroSystem(this);
   }
 
   init(data) {
@@ -48,7 +48,6 @@ export default class GameScene extends Phaser.Scene {
     this.playerTexture = data?.playerTexture;
 
     if (this.selectedCharacter) {
-      // Se já tem personagem, pula a intro
       this.intro.showingCover = false;
       this.intro.showingInstructions = false;
     } else {
