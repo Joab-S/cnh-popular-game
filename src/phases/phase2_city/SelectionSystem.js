@@ -108,7 +108,6 @@ function startQuiz(scene) {
   scene.playerState.quizActive = true;
   scene.playerState.hasMission = true;
 
-  // pausa o movimento
   scene.playerState.canMove = false;
   scene.playerState.inDialog = true;
 
@@ -290,7 +289,7 @@ function startQuiz(scene) {
     
     if (buttons[btnIndex] && buttons[btnIndex].active) {
       buttons.forEach((b, index) => {
-        if (index % 2 === 0) { // É um btnBg
+        if (index % 2 === 0) {
           b.removeAllListeners();
           b.disableInteractive();
         }
@@ -314,7 +313,6 @@ function startQuiz(scene) {
         feedback.setText('✗ Incorreto. ' + q.explanation);
         feedback.setColor('#e74c3c');
         
-        // Destaca a resposta correta
         const correctBtnIndex = q.correct * 2;
         if (buttons[correctBtnIndex]) {
           buttons[correctBtnIndex].setFillStyle(0x27ae60);
