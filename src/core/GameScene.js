@@ -33,29 +33,36 @@ import { updatePhase6 } from "../phases/phase6_driving_school2/drivingSchool2.js
 import { updatePhase7 } from "../phases/phase7_practical_test/practicalTest.js";
 import { updatePhase8 } from "../phases/phase8_final_scene/finalScene.js";
 import { enableDebug, setupDebugToggle } from "../engine/utils/enableDebug.js";
+import { IntroSystem } from "../engine/intro/introSystem.js"; // NOVO IMPORT
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
     this.selectedCharacter = null;
+    this.playerTexture = null;
+    this.intro = new IntroSystem(this);
   }
 
   init(data) {
-    // Recebe o personagem selecionado, se houver
     this.selectedCharacter = data?.selectedCharacter;
     this.playerTexture = data?.playerTexture;
+
+    if (this.selectedCharacter) {
+      this.intro.showingCover = false;
+      this.intro.showingInstructions = false;
+    } else {
+      this.intro.init(data);
+    }
   }
 
   preload() {
+    // === IMAGENS DA INTRO ===
+    this.load.image("capa", "./assets/images/capa.png");
+    this.load.image("logo", "./assets/images/iris-logo-marca.png");
+
     // === IMAGENS PARA TELA DE SELEÇÃO ===
-    this.load.image(
-      "select_player_boy",
-      "./assets/images/select_player_boy.png"
-    );
-    this.load.image(
-      "select_player_girl",
-      "./assets/images/select_player_girl.png"
-    );
+    this.load.image("select_player_boy", "./assets/images/select_player_boy.png");
+    this.load.image("select_player_girl", "./assets/images/select_player_girl.png");
 
     // === SPRITESHEETS PARA O JOGO ===
     this.load.spritesheet("player_girl", "./assets/images/player_girl.png", {
@@ -90,10 +97,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
 
-    this.load.image(
-      "instrutor_exame_pratico",
-      "./assets/images/instrutor_exame_pratico.png"
-    );
+    this.load.image("instrutor_exame_pratico", "./assets/images/instrutor_exame_pratico.png");
     this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
     this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
     this.load.image("clinic", "./assets/images/clinica.png");
@@ -128,6 +132,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("mother", "./assets/images/mae.png");
     this.load.image("brother", "./assets/images/irmao.png");
     this.load.image("grandpa", "./assets/images/avo.png");
+
     this.load.audio("driving_car", "./assets/sounds/driving_car.wav");
     this.load.audio("success", "./assets/sounds/success.wav");
 
@@ -135,15 +140,99 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // === VERIFICA SE PRECISA MOSTRAR SELEÇÃO DE PERSONAGEM ===
+    this.keys = this.input.keyboard.addKeys({
+      E: Phaser.Input.Keyboard.KeyCodes.E,
+      SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      ENTER: Phaser.Input.Keyboard.KeyCodes.ENTER,
+      W: Phaser.Input.Keyboard.KeyCodes.W,
+      A: Phaser.Input.Keyboard.KeyCodes.A,
+      S: Phaser.Input.Keyboard.KeyCodes.S,
+      D: Phaser.Input.Keyboard.KeyCodes.D,
+      UP: Phaser.Input.Keyboard.KeyCodes.UP,
+      LEFT: Phaser.Input.Keyboard.KeyCodes.LEFT,
+      RIGHT: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+      DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
+    });
+
+    this.input.keyboard.target = this.game.canvas;
+    this.game.canvas.setAttribute("tabindex", "0");
+    this.game.canvas.focus();
+
+    if (this.intro.shouldShowIntro()) {
+      if (this.intro.showingCover) {
+        this.intro.showCoverScreen();
+      } else if (this.intro.showingInstructions) {
+        this.intro.showInstructionsScreen();
+      }
+      return;
+    }
+
     if (!this.selectedCharacter) {
-      setupCharacterSelection(this, (character) => {
-        startGameWithCharacter(this, character);
+      this.setupCharacterSelection((character) => {
+        this.startGameWithCharacter(character);
       });
       return;
     }
 
-    // === CONTINUA COM O JOGO NORMAL (personagem já selecionado) ===
+    this.startMainGame();
+  }
+
+  setupCharacterSelection(callback) {
+    setupCharacterSelection(this, callback);
+  }
+
+  startGameWithCharacter(character) {
+    startGameWithCharacter(this, character);
+  }
+
+  update() {
+    if (this.intro.update()) {
+      return;
+    }
+
+    if (!this.selectedCharacter) return;
+
+    if (this.playerState && this.playerState.transitioning) return;
+
+    if (this.player && this.player.body && this.player.body.touching.down && this.player.body.velocity.y === 0) {
+      this.bedBounceStrength = 380;
+    }
+
+    try {
+      if (this.player) {
+        updatePlayerMovement(this);
+      }
+
+      if (this.playerState?.currentArea === AREAS.home && this.documents) {
+        updateDocuments(this);
+      } else if (this.playerState?.currentArea === AREAS.city) {
+        this.player.body.setSize(120, 270);
+        updatePhase2(this);
+      } else if (this.playerState?.currentArea === AREAS.clinic) {
+        updatePhase3(this);
+      } else if (this.playerState?.currentArea === AREAS.drivingSchool1) {
+        updatePhase4(this);
+      } else if (this.playerState?.currentArea === AREAS.theoreticalTest) {
+        updatePhase5(this);
+      } else if (this.playerState?.currentArea === AREAS.drivingSchool2) {
+        updatePhase6(this);
+      } else if (this.playerState?.currentArea === AREAS.practicalTest) {
+        updatePhase7(this);
+      } else if (this.playerState?.currentArea === AREAS.finalScene) {
+        updatePhase8(this);
+      }
+
+      if (this.player) {
+        updateGenericInteractions(this);
+      }
+      checkTransitions(this);
+      updateUI(this);
+    } catch (err) {
+      console.error("Erro no ciclo de update:", err);
+    }
+  }
+
+  startMainGame() {
     const { width, height } = this.scale;
 
     this.add
@@ -186,9 +275,9 @@ export default class GameScene extends Phaser.Scene {
         }
       },
       hintText: "Pressione a tecla E para interagir",
+      scale: 0.35
     });
 
-    this.pc.setScale(0.35);
     this.physics.add.collider(pc, this.ground.ground);
 
     // Player (usa o spritesheet correto baseado na seleção)
@@ -224,9 +313,9 @@ export default class GameScene extends Phaser.Scene {
 
     this.bed.setDepth(-1);
 
-    this.bedBounceStrength = 380; // força inicial do pulo
-    this.bedDamping = 0.75;       // redução da força a cada quique
-    this.minBounce = 120;         // mínimo antes de parar
+    this.bedBounceStrength = 380;
+    this.bedDamping = 0.75;
+    this.minBounce = 120;
     this.lastBounceTime = 0;
 
     this.physics.add.overlap(
@@ -278,45 +367,6 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  update() {
-    if (!this.selectedCharacter) return;
-
-    if (this.playerState.transitioning) return;
-
-    if (this.player.body.touching.down && this.player.body.velocity.y === 0) {
-      this.bedBounceStrength = 380;
-    }
-
-    try {
-      updatePlayerMovement(this);
-
-      if (this.playerState?.currentArea === AREAS.home && this.documents) {
-        updateDocuments(this);
-      } else if (this.playerState?.currentArea === AREAS.city) {
-        this.player.body.setSize(120, 270);
-        updatePhase2(this);
-      } else if (this.playerState?.currentArea === AREAS.clinic) {
-        updatePhase3(this);
-      } else if (this.playerState?.currentArea === AREAS.drivingSchool1) {
-        updatePhase4(this);
-      } else if (this.playerState?.currentArea === AREAS.theoreticalTest) {
-        updatePhase5(this);
-      } else if (this.playerState?.currentArea === AREAS.drivingSchool2) {
-        updatePhase6(this);
-      } else if (this.playerState?.currentArea === AREAS.practicalTest) {
-        updatePhase7(this);
-      } else if (this.playerState?.currentArea === AREAS.finalScene) {
-        updatePhase8(this);
-      }
-
-      updateGenericInteractions(this);
-      checkTransitions(this);
-      updateUI(this);
-    } catch (err) {
-      console.error("Erro no clico de update:", err);
-    }
-  }
-
   handleBedBounce() {
     const player = this.player;
     const bed = this.bed;
@@ -324,7 +374,6 @@ export default class GameScene extends Phaser.Scene {
 
     if (!player.body || !bed.body) return;
 
-    // só reage se o jogador estiver caindo (velocidade positiva)
     const playerFalling = player.body.velocity.y > 100;
     const touchingTop = player.body.bottom <= bed.body.top + 10;
 
@@ -332,10 +381,8 @@ export default class GameScene extends Phaser.Scene {
       if (now - this.lastBounceTime < 200) return;
       this.lastBounceTime = now;
 
-      // aplica impulso vertical
       player.setVelocityY(-this.bedBounceStrength);
 
-      // amortecimento
       this.bedBounceStrength *= this.bedDamping;
       if (this.bedBounceStrength < this.minBounce) {
         this.bedBounceStrength = 0;

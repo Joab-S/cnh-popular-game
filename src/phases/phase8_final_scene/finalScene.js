@@ -20,7 +20,7 @@ function createCarCutscene(scene) {
   scene.player.y = car.y;
   
   const drivingSound = scene.sound.add('driving_car', { 
-    volume: 0.6,
+    volume: 0.3,
     loop: true 
   });
   drivingSound.play();
@@ -50,7 +50,7 @@ function createCarCutscene(scene) {
         },
         onComplete: () => {
           drivingSound.stop();
-          scene.sound.play('success', { volume: 0.6 });
+          scene.sound.play('success', { volume: 0.3 });
 
           scene.cameras.main.stopFollow();
           
