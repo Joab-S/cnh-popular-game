@@ -33,22 +33,14 @@ import { updatePhase6 } from "../phases/phase6_driving_school2/drivingSchool2.js
 import { updatePhase7 } from "../phases/phase7_practical_test/practicalTest.js";
 import { updatePhase8 } from "../phases/phase8_final_scene/finalScene.js";
 import { enableDebug, setupDebugToggle } from "../engine/utils/enableDebug.js";
+import { IntroSystem } from "../engine/intro/introSystem.js"; // NOVO IMPORT
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
     this.selectedCharacter = null;
-    this.showingCover = true;
-    this.showingInstructions = false;
-    this.currentInstruction = 0;
-    this.instructions = [
-      "Bem-vindo ao CNH Popular - O Jogo!",
-      "Neste jogo, você vai vivenciar a jornada para obter sua Carteira Nacional de Habilitação através do programa CNH Popular do Ceará.",
-      "Você precisará passar por todas as etapas: documentos, aulas teóricas, exames médicos, aulas práticas e as provas finais.",
-      "Use as teclas WASD ou setas para se mover e a tecla E para interagir com objetos e personagens.",
-      "Explore os ambientes, complete missões e boa sorte na sua jornada!"
-    ];
-    this.canAdvance = true;
+    this.playerTexture = null;
+    this.intro = new IntroSystem(this); // NOVO: Sistema de intro
   }
 
   init(data) {
@@ -56,30 +48,22 @@ export default class GameScene extends Phaser.Scene {
     this.playerTexture = data?.playerTexture;
 
     if (this.selectedCharacter) {
-      this.showingCover = false;
-      this.showingInstructions = false;
+      // Se já tem personagem, pula a intro
+      this.intro.showingCover = false;
+      this.intro.showingInstructions = false;
     } else {
-      this.showingCover = data?.showingCover ?? true;
-      this.showingInstructions = data?.showingInstructions ?? false;
+      this.intro.init(data);
     }
-    
-    this.canAdvance = true;
   }
 
   preload() {
-    // === IMAGEM DA CAPA ===
+    // === IMAGENS DA INTRO ===
     this.load.image("capa", "./assets/images/capa.png");
     this.load.image("logo", "./assets/images/iris-logo-marca.png");
 
     // === IMAGENS PARA TELA DE SELEÇÃO ===
-    this.load.image(
-      "select_player_boy",
-      "./assets/images/select_player_boy.png"
-    );
-    this.load.image(
-      "select_player_girl",
-      "./assets/images/select_player_girl.png"
-    );
+    this.load.image("select_player_boy", "./assets/images/select_player_boy.png");
+    this.load.image("select_player_girl", "./assets/images/select_player_girl.png");
 
     // === SPRITESHEETS PARA O JOGO ===
     this.load.spritesheet("player_girl", "./assets/images/player_girl.png", {
@@ -97,6 +81,7 @@ export default class GameScene extends Phaser.Scene {
       frameHeight: 224,
     });
 
+    // ... resto do carregamento (mantenha igual)
     this.load.image("doc_rg", "./assets/images/rg.png");
     this.load.image("doc_cpf", "./assets/images/cpf.png");
     this.load.image("doc_comprovante", "./assets/images/comprovante.png");
@@ -114,10 +99,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
 
-    this.load.image(
-      "instrutor_exame_pratico",
-      "./assets/images/instrutor_exame_pratico.png"
-    );
+    this.load.image("instrutor_exame_pratico", "./assets/images/instrutor_exame_pratico.png");
     this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
     this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
     this.load.image("clinic", "./assets/images/clinica.png");
@@ -157,216 +139,55 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // === VERIFICA SE PRECISA MOSTRAR TELA DE CAPA ===
-    if (this.showingCover) {
-      this.showCoverScreen();
+    this.keys = this.input.keyboard.addKeys({
+      E: Phaser.Input.Keyboard.KeyCodes.E,
+      SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE,
+      ENTER: Phaser.Input.Keyboard.KeyCodes.ENTER,
+      W: Phaser.Input.Keyboard.KeyCodes.W,
+      A: Phaser.Input.Keyboard.KeyCodes.A,
+      S: Phaser.Input.Keyboard.KeyCodes.S,
+      D: Phaser.Input.Keyboard.KeyCodes.D,
+      UP: Phaser.Input.Keyboard.KeyCodes.UP,
+      LEFT: Phaser.Input.Keyboard.KeyCodes.LEFT,
+      RIGHT: Phaser.Input.Keyboard.KeyCodes.RIGHT,
+      DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
+    });
+
+    this.input.keyboard.target = this.game.canvas;
+    this.game.canvas.setAttribute("tabindex", "0");
+    this.game.canvas.focus();
+
+    if (this.intro.shouldShowIntro()) {
+      if (this.intro.showingCover) {
+        this.intro.showCoverScreen();
+      } else if (this.intro.showingInstructions) {
+        this.intro.showInstructionsScreen();
+      }
       return;
     }
 
-    // === VERIFICA SE PRECISA MOSTRAR INSTRUÇÕES ===
-    if (this.showingInstructions) {
-      this.showInstructionsScreen();
-      return;
-    }
-
-    // === VERIFICA SE PRECISA MOSTRAR SELEÇÃO DE PERSONAGEM ===
     if (!this.selectedCharacter) {
-      setupCharacterSelection(this, (character) => {
-        startGameWithCharacter(this, character);
+      this.setupCharacterSelection((character) => {
+        this.startGameWithCharacter(character);
       });
       return;
     }
 
-    // === CONTINUA COM O JOGO NORMAL ===
     this.startMainGame();
   }
 
-  showCoverScreen() {
-    const { width, height } = this.scale;
-
-    this.coverImage = this.add.image(width / 2, height / 2, "capa")
-      .setDisplaySize(width, height)
-      .setInteractive();
-
-    this.textures.get("capa").setFilter(Phaser.Textures.FilterMode.NEAREST);
-
-    this.textures.get("logo").setFilter(Phaser.Textures.FilterMode.LINEAR);
-
-    this.overlayImage = this.add.image(width / 2, height / 3 - 120, "logo")
-      .setScale(0.5)
-      .setDepth(1);
-
-    this.titleText = this.add.text(width / 2, height / 3 + 170, 
-      "CNH POPULAR - O JOGO", 
-      {
-        fontFamily: '"Silkscreen", monospace',
-        fontSize: "48px",
-        color: "#ffffff",
-        fontStyle: "bold",
-      }
-    ).setOrigin(0.5).setDepth(2);
-
-    this.instructionText = this.add.text(width / 2, height - 80, 
-      "Pressione E ou clique na tela para continuar", 
-      {
-        fontFamily: '"Silkscreen", monospace',
-        fontSize: "20px",
-        color: "#ffffff",
-      }
-    ).setOrigin(0.5).setDepth(2).setAlpha(0.6);
-
-    this.keys = this.input.keyboard.addKeys({
-      E: Phaser.Input.Keyboard.KeyCodes.E,
-      SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE,
-      ENTER: Phaser.Input.Keyboard.KeyCodes.ENTER
-    });
-
-    this.coverImage.on("pointerdown", () => {
-      if (this.canAdvance) {
-        this.canAdvance = false;
-        this.advanceFromCover();
-      }
-    });
-
-    this.input.on("pointerdown", () => {
-      if (this.canAdvance) {
-        this.canAdvance = false;
-        this.advanceFromCover();
-      }
-    });
-
-    this.input.keyboard.target = this.game.canvas;
-    this.game.canvas.setAttribute("tabindex", "0");
-    this.game.canvas.focus();
+  setupCharacterSelection(callback) {
+    setupCharacterSelection(this, callback);
   }
 
-  showInstructionsScreen() {
-    const { width, height } = this.scale;
-
-    this.instructionsBg = this.add.image(width / 2, height / 2, "capa")
-      .setDisplaySize(width, height)
-      .setInteractive();
-
-    this.textures.get("capa").setFilter(Phaser.Textures.FilterMode.NEAREST);
-
-    this.dialogBox = this.add.rectangle(width / 2, height - 230, width - 100, 200, 0xffffff, 0.9)
-      .setStrokeStyle(2, 0x000000)
-      .setDepth(1);
-
-    this.instructionDialog = this.add.text(width / 2, height - 230, 
-      this.instructions[this.currentInstruction], 
-      {
-        fontFamily: '"Silkscreen", monospace',
-        fontSize: "18px",
-        color: "#000000",
-        wordWrap: { width: width - 150 },
-        align: "center",
-        lineSpacing: 10
-      }
-    ).setOrigin(0.5).setDepth(2);
-
-    this.progressText = this.add.text(width / 2, height - 80, 
-      `Pressione E ou clique na tela para continuar`, 
-      {
-        fontFamily: '"Silkscreen", monospace',
-        fontSize: "16px",
-        color: "#ffffff",
-      }
-    ).setOrigin(0.5).setDepth(2);
-
-    this.keys = this.input.keyboard.addKeys({
-      E: Phaser.Input.Keyboard.KeyCodes.E,
-      SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE,
-      ENTER: Phaser.Input.Keyboard.KeyCodes.ENTER
-    });
-
-    this.instructionsBg.on("pointerdown", () => {
-      if (this.canAdvance) {
-        this.canAdvance = false;
-        this.nextInstruction();
-      }
-    });
-
-    this.input.on("pointerdown", () => {
-      if (this.canAdvance) {
-        this.canAdvance = false;
-        this.nextInstruction();
-      }
-    });
-
-    this.input.keyboard.target = this.game.canvas;
-    this.game.canvas.setAttribute("tabindex", "0");
-    this.game.canvas.focus();
-  }
-
-  nextInstruction() {
-    this.currentInstruction++;
-    
-    if (this.currentInstruction < this.instructions.length) {
-      this.instructionDialog.setText(this.instructions[this.currentInstruction]);
-      this.progressText.setText(`Pressione E ou clique na tela para continuar`);
-      
-      this.time.delayedCall(300, () => {
-        this.canAdvance = true;
-      });
-    } else {
-      this.advanceFromInstructions();
-    }
-  }
-
-  advanceFromCover() {
-    this.showingCover = false;
-    this.showingInstructions = true;
-    this.currentInstruction = 0;
-    this.canAdvance = true;
-    
-    this.cleanupCoverScreen();
-    this.time.delayedCall(100, () => {
-      this.showInstructionsScreen();
-    });
-  }
-
-  advanceFromInstructions() {
-    this.showingInstructions = false;
-    this.cleanupInstructionsScreen();
-    
-    this.time.delayedCall(100, () => {
-      setupCharacterSelection(this, (character) => {
-        startGameWithCharacter(this, character);
-      });
-    });
-  }
-
-  cleanupCoverScreen() {
-    if (this.coverImage) this.coverImage.destroy();
-    if (this.overlayImage) this.overlayImage.destroy();
-    if (this.titleText) this.titleText.destroy();
-    if (this.instructionText) this.instructionText.destroy();
-    this.input.off("pointerdown");
-  }
-
-  cleanupInstructionsScreen() {
-    if (this.instructionsBg) this.instructionsBg.destroy();
-    if (this.dialogBox) this.dialogBox.destroy();
-    if (this.instructionDialog) this.instructionDialog.destroy();
-    if (this.progressText) this.progressText.destroy();
-    this.input.off("pointerdown");
+  startGameWithCharacter(character) {
+    startGameWithCharacter(this, character);
   }
 
   update() {
-    if (this.showingCover && this.keys && this.keys.E.isDown && this.canAdvance) {
-      this.canAdvance = false;
-      this.advanceFromCover();
+    if (this.intro.update()) {
       return;
     }
-
-    if (this.showingInstructions && this.keys && this.keys.E.isDown && this.canAdvance) {
-      this.canAdvance = false;
-      this.nextInstruction();
-      return;
-    }
-
-    if (this.showingCover || this.showingInstructions) return;
 
     if (!this.selectedCharacter) return;
 
@@ -406,7 +227,7 @@ export default class GameScene extends Phaser.Scene {
       checkTransitions(this);
       updateUI(this);
     } catch (err) {
-      console.error("Erro no clico de update:", err);
+      console.error("Erro no ciclo de update:", err);
     }
   }
 
