@@ -54,8 +54,15 @@ export default class GameScene extends Phaser.Scene {
   init(data) {
     this.selectedCharacter = data?.selectedCharacter;
     this.playerTexture = data?.playerTexture;
-    this.showingCover = data?.showingCover ?? true;
-    this.showingInstructions = data?.showingInstructions ?? false;
+
+    if (this.selectedCharacter) {
+      this.showingCover = false;
+      this.showingInstructions = false;
+    } else {
+      this.showingCover = data?.showingCover ?? true;
+      this.showingInstructions = data?.showingInstructions ?? false;
+    }
+    
     this.canAdvance = true;
   }
 
@@ -184,7 +191,7 @@ export default class GameScene extends Phaser.Scene {
     this.textures.get("capa").setFilter(Phaser.Textures.FilterMode.NEAREST);
 
     this.textures.get("logo").setFilter(Phaser.Textures.FilterMode.LINEAR);
-    
+
     this.overlayImage = this.add.image(width / 2, height / 3 - 120, "logo")
       .setScale(0.5)
       .setDepth(1);
@@ -236,7 +243,6 @@ export default class GameScene extends Phaser.Scene {
   showInstructionsScreen() {
     const { width, height } = this.scale;
 
-    // Fundo com a mesma imagem da capa
     this.instructionsBg = this.add.image(width / 2, height / 2, "capa")
       .setDisplaySize(width, height)
       .setInteractive();
@@ -348,15 +354,12 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update() {
-    // Controles para tela de capa - apenas tecla E
     if (this.showingCover && this.keys && this.keys.E.isDown && this.canAdvance) {
       this.canAdvance = false;
       this.advanceFromCover();
       return;
     }
 
-    // Controles para tela de instruções - apenas tecla E
-    // O clique já é tratado pelos eventos pointerdown configurados
     if (this.showingInstructions && this.keys && this.keys.E.isDown && this.canAdvance) {
       this.canAdvance = false;
       this.nextInstruction();
@@ -449,10 +452,10 @@ export default class GameScene extends Phaser.Scene {
           );
         }
       },
-      hintText: "",
+      hintText: "Pressione a tecla E para interagir",
+      scale: 0.35
     });
 
-    pc.setScale(0.35);
     this.physics.add.collider(pc, this.ground.ground);
 
     // Player (usa o spritesheet correto baseado na seleção)
