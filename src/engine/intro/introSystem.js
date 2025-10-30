@@ -68,6 +68,14 @@ export class IntroSystem {
       }
     ).setOrigin(0.5).setDepth(2).setAlpha(0.6);
 
+    this.scene.tweens.add({
+      targets: this.instructionText,
+      alpha: 0.2,
+      duration: 800,
+      yoyo: true,
+      repeat: -1
+    });
+
     this.coverImage.on("pointerdown", () => {
       if (this.canAdvance) {
         this.canAdvance = false;
@@ -116,6 +124,14 @@ export class IntroSystem {
         color: "#ffffff",
       }
     ).setOrigin(0.5).setDepth(2);
+
+    this.scene.tweens.add({
+      targets: this.progressText,
+      alpha: 0.2,
+      duration: 800,
+      yoyo: true,
+      repeat: -1
+    });
 
     this.instructionsBg.on("pointerdown", () => {
       if (this.canAdvance) {
