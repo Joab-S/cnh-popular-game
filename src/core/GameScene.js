@@ -80,7 +80,6 @@ export default class GameScene extends Phaser.Scene {
       frameHeight: 224,
     });
 
-    // ... resto do carregamento (mantenha igual)
     this.load.image("doc_rg", "./assets/images/rg.png");
     this.load.image("doc_cpf", "./assets/images/cpf.png");
     this.load.image("doc_comprovante", "./assets/images/comprovante.png");
