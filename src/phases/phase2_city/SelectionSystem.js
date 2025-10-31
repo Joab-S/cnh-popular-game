@@ -1,5 +1,4 @@
-import { setupObstacles, updateObstacles } from '../../engine/physics/obstacleSystem.js';
-import { clearScene } from '../../engine/utils/sceneUtils.js';
+import { setupObstacles } from '../../engine/physics/obstacleSystem.js';
 import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { updateGenericInteractions } from '../../engine/interaction/interactionSystem.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
@@ -109,7 +108,6 @@ function startQuiz(scene) {
   scene.playerState.quizActive = true;
   scene.playerState.hasMission = true;
 
-  // pausa o movimento
   scene.playerState.canMove = false;
   scene.playerState.inDialog = true;
 
@@ -173,6 +171,13 @@ function startQuiz(scene) {
 
   let current = 0;
   let correctCount = 0;
+  let canAdvance = false;
+  let advanceHint = null;
+  let advanceKey = null;
+  let clickZone = null;
+  let optionKeys = null;
+  let autoAdvanceTimer = null;
+  let countdownText = null;
 
   const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
     .setScrollFactor(0)
@@ -208,23 +213,215 @@ function startQuiz(scene) {
     wordWrap: { width: width - 120 }
   }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
 
+  function createAdvanceHint() {
+    if (advanceHint) {
+      advanceHint.destroy();
+    }
+    
+    advanceHint = scene.add.text(width / 2, height - 30, 'Clique na tela ou pressione ESPAÇO para avançar', {
+      fontSize: '14px',
+      color: '#ffffff',
+      fontFamily: '"Silkscreen", monospace',
+      align: 'center'
+    })
+    .setOrigin(0.5)
+    .setScrollFactor(0)
+    .setDepth(102)
+    .setAlpha(0);
+    
+    scene.tweens.add({
+      targets: advanceHint,
+      alpha: 0.8,
+      duration: 1000,
+      ease: 'Power2',
+      yoyo: true,
+      repeat: -1
+    });
+    
+    return advanceHint;
+  }
+
+  function startAutoAdvanceTimer(duration = 4000) {
+    if (autoAdvanceTimer) {
+      autoAdvanceTimer.remove();
+    }
+    
+    autoAdvanceTimer = scene.time.delayedCall(duration, () => {
+      if (canAdvance) {
+        advanceToNextQuestion();
+      }
+    });
+  }
+
+  function setupAdvanceControls() {
+    if (advanceKey) {
+      advanceKey.destroy();
+    }
+    
+    advanceKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    advanceKey.on('down', () => {
+      if (autoAdvanceTimer) {
+        autoAdvanceTimer.remove();
+      }
+      if (countdownText) {
+        countdownText.destroy();
+        countdownText = null;
+      }
+      advanceToNextQuestion();
+    });
+    
+    if (clickZone) {
+      clickZone.destroy();
+    }
+    
+    clickZone = scene.add.zone(width / 2, height / 2, width, height)
+      .setScrollFactor(0)
+      .setDepth(103)
+      .setInteractive();
+    
+    clickZone.on('pointerdown', () => {
+      if (autoAdvanceTimer) {
+        autoAdvanceTimer.remove();
+      }
+      if (countdownText) {
+        countdownText.destroy();
+        countdownText = null;
+      }
+      advanceToNextQuestion();
+    });
+
+    startAutoAdvanceTimer();
+  }
+
+  function setupOptionKeys() {
+    if (optionKeys) {
+      optionKeys.A.off('down');
+      optionKeys.B.off('down');
+      optionKeys.C.off('down');
+      optionKeys.D.off('down');
+    }
+    
+    optionKeys = {
+      A: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
+      B: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B),
+      C: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C),
+      D: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+    };
+    
+    optionKeys.A.on('down', () => selectOption(0));
+    optionKeys.B.on('down', () => selectOption(1));
+    optionKeys.C.on('down', () => selectOption(2));
+    optionKeys.D.on('down', () => selectOption(3));
+  }
+
+  function selectOption(optionIndex) {
+    if (canAdvance) return;
+    
+    const q = quiz[current];
+    
+    const btnIndex = optionIndex * 2;
+    
+    if (buttons[btnIndex] && buttons[btnIndex].active) {
+      buttons.forEach((b, index) => {
+        if (index % 2 === 0) {
+          b.removeAllListeners();
+          b.disableInteractive();
+        }
+      });
+
+      if (optionIndex === q.correct) {
+        buttons[btnIndex].setFillStyle(0x27ae60);
+        buttons[btnIndex].setStrokeStyle(2, 0x2ecc71);
+        if (buttons[btnIndex + 1]) {
+          buttons[btnIndex + 1].setColor('#ffffff');
+        }
+        feedback.setText('✓ Correto! ' + q.explanation);
+        feedback.setColor('#2ecc71');
+        correctCount++;
+      } else {
+        buttons[btnIndex].setFillStyle(0xe74c3c);
+        buttons[btnIndex].setStrokeStyle(2, 0xc0392b);
+        if (buttons[btnIndex + 1]) {
+          buttons[btnIndex + 1].setColor('#ffffff');
+        }
+        feedback.setText('✗ Incorreto. ' + q.explanation);
+        feedback.setColor('#e74c3c');
+        
+        const correctBtnIndex = q.correct * 2;
+        if (buttons[correctBtnIndex]) {
+          buttons[correctBtnIndex].setFillStyle(0x27ae60);
+          buttons[correctBtnIndex].setStrokeStyle(2, 0x2ecc71);
+          if (buttons[correctBtnIndex + 1]) {
+            buttons[correctBtnIndex + 1].setColor('#ffffff');
+          }
+        }
+      }
+
+      canAdvance = true;
+      
+      if (autoAdvanceTimer) {
+        autoAdvanceTimer.remove();
+      }
+      if (countdownText) {
+        countdownText.destroy();
+        countdownText = null;
+      }
+      
+      createAdvanceHint();
+      setupAdvanceControls();
+    }
+  }
+
+  function advanceToNextQuestion() {
+    if (!canAdvance) return;
+    
+    canAdvance = false;
+    current++;
+    
+    if (autoAdvanceTimer) {
+      autoAdvanceTimer.remove();
+      autoAdvanceTimer = null;
+    }
+    if (countdownText) {
+      countdownText.destroy();
+      countdownText = null;
+    }
+    
+    if (current < quiz.length) {
+      showQuestion();
+    } else {
+      finishQuiz();
+    }
+  }
+
   function showQuestion() {
     const q = quiz[current];
     
-    // Atualiza progresso
-    progress.setText(`Pergunta ${current + 1} de ${quiz.length}`);
+    progress.setText(`Clique no item ou pressione a letra correspondente para responder`);
     
     question.setText(q.text);
     feedback.setText('');
+    canAdvance = false;
     
-    // Limpa botões anteriores
+    if (advanceHint) {
+      advanceHint.destroy();
+      advanceHint = null;
+    }
+    if (clickZone) {
+      clickZone.destroy();
+      clickZone = null;
+    }
+    if (countdownText) {
+      countdownText.destroy();
+      countdownText = null;
+    }
+
     buttons.forEach(b => {
       if (b.destroy) b.destroy();
     });
     buttons.length = 0;
 
     q.options.forEach((opt, i) => {
-      // Posicionamento mais alto para as opções
       const yPos = height / 2 - 80 + (i * 55);
       
       const btnBg = scene.add.rectangle(width / 2, yPos, width - 150, 40, 0x000000)
@@ -259,57 +456,30 @@ function startQuiz(scene) {
       });
 
       btnBg.on('pointerdown', () => {
-        // Remove listeners para prevenir múltiplos cliques
-        btnBg.removeAllListeners();
-        
-        // Desativa hover de todos os botões
-        buttons.forEach((b, index) => {
-          if (index % 2 === 0) { // É um btnBg
-            b.removeAllListeners();
-            b.disableInteractive();
-          }
-        });
-
-        if (i === q.correct) {
-          btnBg.setFillStyle(0x27ae60);
-          btnBg.setStrokeStyle(2, 0x2ecc71);
-          btnText.setColor('#ffffff');
-          feedback.setText('✓ Correto! ' + q.explanation);
-          feedback.setColor('#2ecc71');
-          correctCount++;
-        } else {
-          btnBg.setFillStyle(0xe74c3c);
-          btnBg.setStrokeStyle(2, 0xc0392b);
-          btnText.setColor('#ffffff');
-          feedback.setText('✗ Incorreto. ' + q.explanation);
-          feedback.setColor('#e74c3c');
-          
-          const correctBtnIndex = q.correct * 2;
-          if (buttons[correctBtnIndex]) {
-            buttons[correctBtnIndex].setFillStyle(0x27ae60);
-            buttons[correctBtnIndex].setStrokeStyle(2, 0x2ecc71);
-            if (buttons[correctBtnIndex + 1]) {
-              buttons[correctBtnIndex + 1].setColor('#ffffff');
-            }
-          }
-        }
-
-        scene.time.delayedCall(3500, () => {
-          current++;
-          if (current < quiz.length) {
-            showQuestion();
-          } else {
-            finishQuiz();
-          }
-        });
+        selectOption(i);
       });
 
       buttons.push(btnBg, btnText);
     });
+
+    setupOptionKeys();
   }
 
   function finishQuiz() {
-    [overlay, panel, progress, question, feedback].forEach(el => {
+    if (autoAdvanceTimer) {
+      autoAdvanceTimer.remove();
+    }
+    if (advanceKey) {
+      advanceKey.destroy();
+    }
+    if (optionKeys) {
+      optionKeys.A.off('down');
+      optionKeys.B.off('down');
+      optionKeys.C.off('down');
+      optionKeys.D.off('down');
+    }
+    
+    [overlay, panel, progress, question, feedback, advanceHint, clickZone, countdownText].forEach(el => {
       if (el && el.destroy) el.destroy();
     });
     
