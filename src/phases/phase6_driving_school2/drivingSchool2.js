@@ -39,6 +39,7 @@ export function startPhase6(scene) {
 
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "candidata" : "candidato";
+  const bemVindo = isGirl ? "Bem-vinda" : "Bem-vindo";
 
   const instructor = new InteractiveObject(scene, {
     key: 'instructor',
