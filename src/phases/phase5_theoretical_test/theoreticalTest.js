@@ -129,8 +129,11 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   scene.playerState.inDialog = false;
   scene.playerState.phase5Completed = true;
 
+  const isGirl = scene.playerState.character === "girl";
+  const pronome = isGirl ? "aprovada" : "aprovado";
+
   const theoreticalObject = scene.interactiveObjects.find(o => o.key === 'detran');
-  const dialog = 'Parabéns, você foi aprovado! Siga agora para as aulas práticas.';
+  const dialog = `Parabéns, você foi ${pronome}! Siga agora para as aulas práticas.`;
   theoreticalObject.dialogs = [
     dialog
   ];

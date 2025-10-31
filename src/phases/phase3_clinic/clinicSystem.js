@@ -132,5 +132,5 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
     ];
   }
 
-  scene.ui.showMessage("Foi descoberto que você é um gênio, siga em frente feliz!");
+  scene.ui.showMessage("Foi descoberto que você é altamente genial, siga em frente feliz!");
 }
