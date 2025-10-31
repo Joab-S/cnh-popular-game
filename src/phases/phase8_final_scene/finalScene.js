@@ -163,6 +163,7 @@ export function startPhase8(scene) {
       "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
     ],
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   const car_final = new InteractiveObject(scene, {
@@ -185,6 +186,7 @@ export function startPhase8(scene) {
       }
     },
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   const brother = new InteractiveObject(scene, {
@@ -198,6 +200,7 @@ export function startPhase8(scene) {
       "Finalmente meu(inha) irmã(o) vai poder me levar até meu restaurante preferido, o 'Comida Boa'! Nunca fui tão feliz!",
     ],
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   const grandpa = new InteractiveObject(scene, {
@@ -214,6 +217,7 @@ export function startPhase8(scene) {
       "Meus dias serão muito mais adocicados pela felicidade do seu sucesso!",
     ],
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   const mail = new InteractiveObject(scene, {
@@ -230,6 +234,7 @@ export function startPhase8(scene) {
       scene.addLicenseToInventory();
     },
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   mother.sprite.setDepth(-2);

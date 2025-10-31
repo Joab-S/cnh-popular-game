@@ -88,6 +88,7 @@ export function startPhase2(scene) {
     },
     label: '',
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   autoescola.sprite.setDepth(-2);

@@ -69,6 +69,7 @@ export function startPhase7(scene) {
     },
     label: '',
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
   
   instrutor_exame_pratico.sprite.setAlpha(0);

@@ -65,6 +65,7 @@ export function startPhase5(scene) {
     },
     label: '',
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   detran.sprite.setDepth(-2);

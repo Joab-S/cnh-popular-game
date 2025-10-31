@@ -20,7 +20,8 @@ export default class InteractiveObject {
       proximity = { x: 60, y: 40 },
       exposeToScene = true,
       label,
-      hintText = 'Aproxime-se e aperte E'
+      hintText = 'Aproxime-se e aperte E',
+      hintTexture = null,
     } = config;
 
     this.scene = scene;
@@ -57,7 +58,8 @@ export default class InteractiveObject {
       dialogs,
       onInteract,
       proximity,
-      hintText
+      hintText,
+      hintTexture,
     });
 
     // === Label (opcional) ===
