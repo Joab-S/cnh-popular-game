@@ -212,7 +212,7 @@ export function startPhase8(scene) {
     scale: 0.172,
     label: "",
     dialogs: [
-      `M${meu_minha} querido${pronome}, vou te falar uma coisa...`,
+      `M${meu_minha} querid${pronome}, vou te falar uma coisa...`,
       "Eu já vendi muito mel durante a minha vida...",
       "Mas nenhum mel tem a doçura de te ver conquistando sua habilitação.",
       "Meus dias serão muito mais adocicados pela felicidade do seu sucesso!",
