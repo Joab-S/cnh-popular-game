@@ -176,6 +176,8 @@ function startQuiz(scene) {
   let advanceKey = null;
   let clickZone = null;
   let optionKeys = null;
+  let autoAdvanceTimer = null;
+  let countdownText = null;
 
   const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
     .setScrollFactor(0)
@@ -239,13 +241,34 @@ function startQuiz(scene) {
     return advanceHint;
   }
 
+  function startAutoAdvanceTimer(duration = 4000) {
+    if (autoAdvanceTimer) {
+      autoAdvanceTimer.remove();
+    }
+    
+    autoAdvanceTimer = scene.time.delayedCall(duration, () => {
+      if (canAdvance) {
+        advanceToNextQuestion();
+      }
+    });
+  }
+
   function setupAdvanceControls() {
     if (advanceKey) {
       advanceKey.destroy();
     }
     
     advanceKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    advanceKey.on('down', advanceToNextQuestion);
+    advanceKey.on('down', () => {
+      if (autoAdvanceTimer) {
+        autoAdvanceTimer.remove();
+      }
+      if (countdownText) {
+        countdownText.destroy();
+        countdownText = null;
+      }
+      advanceToNextQuestion();
+    });
     
     if (clickZone) {
       clickZone.destroy();
@@ -256,7 +279,18 @@ function startQuiz(scene) {
       .setDepth(103)
       .setInteractive();
     
-    clickZone.on('pointerdown', advanceToNextQuestion);
+    clickZone.on('pointerdown', () => {
+      if (autoAdvanceTimer) {
+        autoAdvanceTimer.remove();
+      }
+      if (countdownText) {
+        countdownText.destroy();
+        countdownText = null;
+      }
+      advanceToNextQuestion();
+    });
+
+    startAutoAdvanceTimer();
   }
 
   function setupOptionKeys() {
@@ -324,6 +358,15 @@ function startQuiz(scene) {
       }
 
       canAdvance = true;
+      
+      if (autoAdvanceTimer) {
+        autoAdvanceTimer.remove();
+      }
+      if (countdownText) {
+        countdownText.destroy();
+        countdownText = null;
+      }
+      
       createAdvanceHint();
       setupAdvanceControls();
     }
@@ -334,6 +377,15 @@ function startQuiz(scene) {
     
     canAdvance = false;
     current++;
+    
+    if (autoAdvanceTimer) {
+      autoAdvanceTimer.remove();
+      autoAdvanceTimer = null;
+    }
+    if (countdownText) {
+      countdownText.destroy();
+      countdownText = null;
+    }
     
     if (current < quiz.length) {
       showQuestion();
@@ -358,6 +410,10 @@ function startQuiz(scene) {
     if (clickZone) {
       clickZone.destroy();
       clickZone = null;
+    }
+    if (countdownText) {
+      countdownText.destroy();
+      countdownText = null;
     }
 
     buttons.forEach(b => {
@@ -410,6 +466,9 @@ function startQuiz(scene) {
   }
 
   function finishQuiz() {
+    if (autoAdvanceTimer) {
+      autoAdvanceTimer.remove();
+    }
     if (advanceKey) {
       advanceKey.destroy();
     }
@@ -420,7 +479,7 @@ function startQuiz(scene) {
       optionKeys.D.off('down');
     }
     
-    [overlay, panel, progress, question, feedback, advanceHint, clickZone].forEach(el => {
+    [overlay, panel, progress, question, feedback, advanceHint, clickZone, countdownText].forEach(el => {
       if (el && el.destroy) el.destroy();
     });
     

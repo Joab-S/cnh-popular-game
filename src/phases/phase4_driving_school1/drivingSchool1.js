@@ -38,9 +38,9 @@ export function startPhase4(scene) {
   const instructor = new InteractiveObject(scene, {
     key: 'instructor',
     x: width - 310,
-    y: height - 130,
+    y: height - 132,
     texture: 'instructor',
-    scale: 0.24,
+    scale: 0.25,
     width: 100,
     height: 100,
     proximity: { x: 80, y: 120 }, 

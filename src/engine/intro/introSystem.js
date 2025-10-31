@@ -6,6 +6,7 @@ export class IntroSystem {
     this.currentInstruction = 0;
     this.canAdvance = true;
     this.eKeyJustPressed = false;
+    this.introCompleted = false;
     
     this.instructions = [
       "Bem-vindo ao CNH Popular - O Jogo!",
@@ -30,10 +31,11 @@ export class IntroSystem {
     this.showingInstructions = data?.showingInstructions ?? false;
     this.currentInstruction = 0;
     this.canAdvance = true;
+    this.introCompleted = false;
   }
 
   shouldShowIntro() {
-    return this.showingCover || this.showingInstructions;
+    return (this.showingCover || this.showingInstructions) && !this.introCompleted;
   }
 
   showCoverScreen() {
@@ -204,9 +206,28 @@ export class IntroSystem {
     if (this.progressText) this.progressText.destroy();
     this.scene.input.off("pointerdown");
   }
+  advanceFromInstructions() {
+    this.showingInstructions = false;
+    this.introCompleted = true;
+    this.cleanupInstructionsScreen();
+    
+    this.scene.time.delayedCall(100, () => {
+      if (this.scene.setupCharacterSelection) {
+        this.scene.setupCharacterSelection((character) => {
+          this.scene.startGameWithCharacter(character);
+        });
+      }
+    });
+  }
 
   update() {
-    if (!this.scene.keys) return;
+    if (this.introCompleted) {
+      return false;
+    }
+
+    if (!this.scene.keys || !this.scene.keys.E) {
+      return this.shouldShowIntro();
+    }
 
     const eKeyPressed = this.scene.keys.E.isDown;
     
@@ -234,7 +255,8 @@ export class IntroSystem {
   getCurrentState() {
     return {
       showingCover: this.showingCover,
-      showingInstructions: this.showingInstructions
+      showingInstructions: this.showingInstructions,
+      introCompleted: this.introCompleted
     };
   }
 }
