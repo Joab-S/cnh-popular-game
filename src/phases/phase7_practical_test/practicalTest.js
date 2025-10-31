@@ -44,6 +44,7 @@ export function startPhase7(scene) {
   scene.ui.showMessage('Encontre seu instrutor do exame prático logo mais a frente.');
 
   // === INSTRUTOR ===
+  const isGirl = scene.playerState.character === "girl";
   const instrutor_exame_pratico = new InteractiveObject(scene, {
     key: 'instrutor_exame_pratico',
     x: width - 150,
@@ -58,7 +59,7 @@ export function startPhase7(scene) {
       'Aqui, não é só sobre dirigir... é sobre respeito, controle e família.',
       'Você tem que aprender a sentir o carro, não só a pilotar.',
       'Respira fundo... acelera com calma... sente o motor.',
-      'Aqui não é filme, garoto. Cada manobra conta.',
+      `Aqui não é filme, ${isGirl ? "garota" : "garoto"}. Cada manobra conta.`,
       'Agora liga o motor. Vamos ver se você tem o que precisa pra passar.'
     ],
     onInteract: () => {

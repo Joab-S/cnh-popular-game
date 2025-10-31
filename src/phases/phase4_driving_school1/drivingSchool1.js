@@ -35,6 +35,20 @@ export function startPhase4(scene) {
     currentArea: AREAS.drivingSchool1
   };
 
+  const isGirl = scene.playerState.character === "girl";
+  const pronome = isGirl ? "futura motorista" : "futuro motorista";
+  const bemVindo = isGirl ? "Bem-vinda" : "Bem-vindo";
+  const aprovado = isGirl ? "aprovada" : "aprovado";
+
+  const dialogs = [
+    `Olá, ${pronome}! ${bemVindo} às aulas teóricas.`,
+    "Aqui você vai aprender as regras de trânsito, sinalização, direção defensiva e primeiros socorros.",
+    "São 45 horas/aula obrigatórias, divididas em conteúdo legislativo e prático.",
+    `Ao final, fará uma prova teórica no DETRAN. Precisa acertar pelo menos 70% para ser ${aprovado}.`,
+    "Preste atenção nas aulas e faça os simulados. Isso vai te ajudar muito!",
+    "Boa sorte nos estudos!"
+  ];
+
   const instructor = new InteractiveObject(scene, {
     key: 'instructor',
     x: width - 310,
@@ -44,18 +58,11 @@ export function startPhase4(scene) {
     width: 100,
     height: 100,
     proximity: { x: 80, y: 120 }, 
-    dialogs: [
-      'Olá, futuro(a) motorista! Bem-vindo às aulas teóricas.',
-      'Aqui você vai aprender as regras de trânsito, sinalização, direção defensiva e primeiros socorros.',
-      'São 45 horas/aula obrigatórias, divididas em conteúdo legislativo e prático.',
-      'Ao final, fará uma prova teórica no DETRAN. Precisa acertar pelo menos 70% para ser aprovado(a).',
-      'Preste atenção nas aulas e faça os simulados. Isso vai te ajudar muito!',
-      'Boa sorte nos estudos!'
-    ],
+    dialogs: dialogs,
     onInteract: () => {
         if (!scene.playerState.phase4Completed) {
           console.log('Iniciando aulas teóricas...');
-          scene.ui.showMessage('Pode seguir em frente, campeã(o)!');
+          scene.ui.showMessage(`Pode seguir em frente, campe${isGirl ? "ã" : "ão"}!`);
           scene.playerState.phase4Completed = true;
         }
   },

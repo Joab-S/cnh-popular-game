@@ -37,35 +37,39 @@ export function startPhase6(scene) {
     currentArea: AREAS.drivingSchool2
   };
 
-    const instructor = new InteractiveObject(scene, {
-      key: 'instructor',
-      x: width - 310,
-      y: height - 175,
-      texture: 'instructor_2',
-      scale: 0.24,
-      width: 150,
-      height: 100,
-      proximity: { x: 80, y: 120 }, 
-      dialogs: [
-        'Olá, futuro condutor! Bem-vindo às aulas práticas.',
-        'Aqui você vai aprender a controlar o veículo na prática: embreagem, câmbio, setas e espelhos.',
-        'São 20 horas/aula obrigatórias, começando no pátio e evoluindo para o trânsito real.',
-        'Você vai praticar: baliza, estacionamento, rampas, mudança de marcha e direção no trânsito.',
-        'O instrutor estará ao seu lado para orientar e garantir sua segurança durante todo o processo.',
-        'Lembre-se: sempre use cinto de segurança, ajuste os espelhos e verifique os pedais antes de iniciar.',
-        'Boa sorte nos estudos!'
-    ],
-      onInteract: () => {
-          if (!scene.playerState.phase6Completed) {
-            scene.ui.showMessage('Pode seguir em frente, campeã(o)!');
-            scene.playerState.phase6Completed = true;
-          }
-    },
-      label: '',
-      hintText: 'Pressione a tecla E para interagir',
-    });
-      
-    instructor.sprite.setDepth(-2);
+  const isGirl = scene.playerState.character === "girl";
+  const pronome = isGirl ? "candidata" : "candidato";
+  const bemVindo = isGirl ? "Bem-vinda" : "Bem-vindo";
+
+  const instructor = new InteractiveObject(scene, {
+    key: 'instructor',
+    x: width - 310,
+    y: height - 175,
+    texture: 'instructor_2',
+    scale: 0.24,
+    width: 150,
+    height: 100,
+    proximity: { x: 80, y: 120 }, 
+    dialogs: [
+      `Olá, ${pronome}! ${bemVindo} às aulas teóricas.`,
+      'Aqui você vai aprender a controlar o veículo na prática: embreagem, câmbio, setas e espelhos.',
+      'São 20 horas/aula obrigatórias, começando no pátio e evoluindo para o trânsito real.',
+      'Você vai praticar: baliza, estacionamento, rampas, mudança de marcha e direção no trânsito.',
+      'O instrutor estará ao seu lado para orientar e garantir sua segurança durante todo o processo.',
+      'Lembre-se: sempre use cinto de segurança, ajuste os espelhos e verifique os pedais antes de iniciar.',
+      'Boa sorte nos estudos!'
+  ],
+    onInteract: () => {
+        if (!scene.playerState.phase6Completed) {
+          scene.ui.showMessage(`Pode seguir em frente, campe${isGirl ? "ã" : "ão"}!`);
+          scene.playerState.phase6Completed = true;
+        }
+  },
+    label: '',
+    hintText: 'Pressione a tecla E para interagir',
+  });
+    
+  instructor.sprite.setDepth(-2);
 }
 
 export function updatePhase6(scene) {

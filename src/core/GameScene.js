@@ -270,7 +270,7 @@ export default class GameScene extends Phaser.Scene {
         if (!this.playerState.docsMissionCompleted) {
           this.playerState.hasMission = true;
           this.ui.showMessage(
-            "Missão: Encontre RG, CPF e comprovante de residência e de renda na sua casa!"
+            "Encontre RG, CPF e comprovante de residência e de renda na sua casa!"
           );
         }
       },

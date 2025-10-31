@@ -25,6 +25,8 @@ export function startPhase3(scene) {
   scene.ground = { ground: groundRect };
 
   // === CLÍNICA ===
+  const isGirl = scene.playerState.character === "girl";
+  const bemVindo = isGirl ? "bem-vinda" : "bem-vindo";
   const clinic = new InteractiveObject(scene, {
     key: 'clinic',
     x: width + 157,
@@ -35,7 +37,7 @@ export function startPhase3(scene) {
     height: 100,
     proximity: { x: 80, y: 120 }, 
     dialogs: [
-        'Olá, seja bem-vindo à clínica credenciada.',
+        `Olá, seja ${bemVindo} à clínica credenciada.`,
         'Vou realizar o exame psicotécnico, que avalia suas condições psicológicas para dirigir.',
         'É um teste rápido que verifica atenção, memória e habilidades necessárias para a CNH.',
         'Vamos dar início ao exame agora.'
@@ -132,5 +134,5 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
     ];
   }
 
-  scene.ui.showMessage("Foi descoberto que você é um gênio, siga em frente feliz!");
+  scene.ui.showMessage("Foi descoberto que você é altamente genial, siga em frente feliz!");
 }

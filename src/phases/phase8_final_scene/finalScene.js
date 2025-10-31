@@ -151,6 +151,10 @@ export function startPhase8(scene) {
     }
   };
 
+  const isGirl = scene.playerState.character === "girl";
+  const pronome = isGirl ? "a" : "o";
+  const meu_minha = isGirl ? "inha" : "eu";
+
   const mother = new InteractiveObject(scene, {
     key: "mother",
     x: width - 350,
@@ -159,9 +163,9 @@ export function startPhase8(scene) {
     texture: "mother",
     label: "",
     dialogs: [
-      "Estou orgulhosa de você, filho(a)!",
-      "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
-    ],
+    `Estou orgulhosa de você, filh${pronome}!`,
+    "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
+  ],
     hintText: 'Pressione a tecla E para interagir',
   });
 
@@ -173,9 +177,9 @@ export function startPhase8(scene) {
     scale: 0.48,
     label: "",
     dialogs: [
-      "Que vitória, hein, amigo(a)?",
+      `Que vitória, hein, amig${pronome}?`,
       "Lembra das três marchas da vida? Respeito, família e controle?",
-      "A quarta marcha, nós dois juntos construiremos, campeã(o)!",
+      `A quarta marcha, nós dois construiremos juntos, campe${isGirl ? 'ã' : 'ão'}!`,
     ],
     onInteract: () => {
       if (scene.playerState.hasLicense) {
@@ -195,7 +199,7 @@ export function startPhase8(scene) {
     scale: 0.17,
     label: "",
     dialogs: [
-      "Finalmente meu(inha) irmã(o) vai poder me levar até meu restaurante preferido, o 'Comida Boa'! Nunca fui tão feliz!",
+      `Finalmente m${meu_minha} irm${isGirl ? 'ã' : "ão"} vai poder me levar até meu restaurante preferido, o 'Comida Boa'! Nunca fui tão feliz!`,
     ],
     hintText: 'Pressione a tecla E para interagir',
   });
@@ -208,7 +212,7 @@ export function startPhase8(scene) {
     scale: 0.172,
     label: "",
     dialogs: [
-      "Meu(inha) querido(a), vou te falar uma coisa...",
+      `M${meu_minha} querid${pronome}, vou te falar uma coisa...`,
       "Eu já vendi muito mel durante a minha vida...",
       "Mas nenhum mel tem a doçura de te ver conquistando sua habilitação.",
       "Meus dias serão muito mais adocicados pela felicidade do seu sucesso!",
