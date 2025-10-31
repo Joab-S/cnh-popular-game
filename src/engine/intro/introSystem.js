@@ -5,6 +5,7 @@ export class IntroSystem {
     this.showingInstructions = false;
     this.currentInstruction = 0;
     this.canAdvance = true;
+    this.eKeyJustPressed = false;
     
     this.instructions = [
       "Bem-vindo ao CNH Popular - O Jogo!",
@@ -207,16 +208,24 @@ export class IntroSystem {
   update() {
     if (!this.scene.keys) return;
 
-    if (this.showingCover && this.scene.keys.E.isDown && this.canAdvance) {
+    const eKeyPressed = this.scene.keys.E.isDown;
+    
+    if (this.showingCover && eKeyPressed && this.canAdvance && !this.eKeyJustPressed) {
+      this.eKeyJustPressed = true;
       this.canAdvance = false;
       this.advanceFromCover();
       return true;
     }
 
-    if (this.showingInstructions && this.scene.keys.E.isDown && this.canAdvance) {
+    if (this.showingInstructions && eKeyPressed && this.canAdvance && !this.eKeyJustPressed) {
+      this.eKeyJustPressed = true;
       this.canAdvance = false;
       this.nextInstruction();
       return true;
+    }
+
+    if (!eKeyPressed) {
+      this.eKeyJustPressed = false;
     }
 
     return this.shouldShowIntro();
