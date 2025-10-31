@@ -181,7 +181,7 @@ export function startPhase8(scene) {
       if (scene.playerState.hasLicense) {
         createCarCutscene(scene);
       } else {
-        scene.ui.showMessage('Opa, você precisa pegar sua habilitação na caixa de correios para dirigir!');
+        scene.ui.showMessage('Espera aí! Você precisa pegar sua habilitação com o carteiro para dirigir!');
       }
     },
     hintText: 'Pressione a tecla E para interagir',
@@ -219,9 +219,9 @@ export function startPhase8(scene) {
   const mail = new InteractiveObject(scene, {
     key: "mail",
     x: width - 530,
-    y: height - 140,
+    y: height - 150,
+    scale: 0.17,
     texture: "mail",
-    scale: 0.22,
     label: "",
     dialogs: [
       "Opa! Sua carteira de motorista acaba de chegar!",
@@ -242,7 +242,7 @@ export function startPhase8(scene) {
   if (scene.ui) {
     scene.time.delayedCall(1000, () => {
       scene.ui.showMessage(
-        "Sua carteira de habilitação acaba de chegar! Interaja com a caixa de correios para pegá-la."
+        "Sua carteira de habilitação acaba de chegar! Interaja com o carteiro para pegá-la."
       );
     });
   }
