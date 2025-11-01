@@ -32,7 +32,7 @@ export function setupInteractiveObject(scene, config) {
       alpha: { from: 0.8, to: 1 },
       duration: 700,
       yoyo: true,
-      repeat: -1, // 🔁 loop infinito
+      repeat: -1,
       ease: "Sine.easeInOut",
     });
 
