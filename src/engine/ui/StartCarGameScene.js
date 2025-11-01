@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { CONFIG_SONG } from "../../core/config";
 
 export default class StartCarGameScene extends Phaser.Scene {
   constructor() {
@@ -14,7 +15,7 @@ export default class StartCarGameScene extends Phaser.Scene {
   create() {
     this.sound.stopAll();
 
-    this.sound.play("car_game_theme", { volume: 0.2, loop: true });
+    this.sound.play("car_game_theme", CONFIG_SONG);
 
     const { width, height } = this.scale;
 

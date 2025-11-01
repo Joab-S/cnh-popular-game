@@ -1,3 +1,4 @@
+import { CONFIG_EFFECT } from "../../core/config.js";
 import DialogBubble from "../ui/DialogBubble.js";
 
 /**
@@ -28,7 +29,7 @@ export function setupInteractiveObject(scene, config) {
 
     const pulseTween = scene.tweens.add({
       targets: hint,
-      scale: { from: 0.10, to: 0.15 },
+      scale: { from: 0.1, to: 0.15 },
       alpha: { from: 0.8, to: 1 },
       duration: 700,
       yoyo: true,
@@ -100,7 +101,7 @@ export function updateGenericInteractions(scene) {
  * Exibe e avança falas
  */
 function progressDialog(scene, entry) {
-  scene.sound.play("click", { volume: 0.4 });
+  scene.sound.play("click", CONFIG_EFFECT);
 
   // Garante que playerState exista
   if (!scene.playerState) {
@@ -176,7 +177,6 @@ function toggleHint(scene, hint, visible) {
     });
   }
 }
-
 
 export function clearInteractions(scene) {
   if (!scene.interactiveObjects) return;

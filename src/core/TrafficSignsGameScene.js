@@ -1,3 +1,5 @@
+import { CONFIG_SONG } from "./config";
+
 export default class TrafficSignsGameScene extends Phaser.Scene {
   constructor() {
     super("TrafficSignsGameScene");
@@ -37,7 +39,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   create() {
     this.sound.stopAll();
 
-    this.sound.play("sign_game_theme", { volume: 0.2, loop: true });
+    this.sound.play("sign_game_theme", CONFIG_SONG);
 
     const { width, height } = this.scale;
 
@@ -477,7 +479,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.time.delayedCall(800, () => {
       this.sound.stopAll();
 
-      this.sound.play("main_theme", { volume: 0.2, loop: true });
+      this.sound.play("main_theme", CONFIG_SONG);
 
       this.scene
         .get("GameScene")

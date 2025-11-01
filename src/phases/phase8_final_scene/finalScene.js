@@ -1,5 +1,5 @@
 import * as CameraSystem from "../../engine/camera/cameraSystem.js";
-import { AREAS, WORLD_SIZE } from "../../core/config.js";
+import { AREAS, CONFIG_EFFECT, WORLD_SIZE } from "../../core/config.js";
 import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
 
 function createCarCutscene(scene) {
@@ -54,7 +54,7 @@ function createCarCutscene(scene) {
         },
         onComplete: () => {
           drivingSound.stop();
-          scene.sound.play("success", { volume: 0.2 });
+          scene.sound.play("success", CONFIG_EFFECT);
 
           scene.cameras.main.stopFollow();
 
@@ -188,10 +188,10 @@ export function startPhase8(scene) {
     texture: "mother",
     label: "",
     dialogs: [
-    `Estou orgulhosa de você, filh${pronome}!`,
-    "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
-  ],
-    hintText: 'Pressione a tecla E para interagir',
+      `Estou orgulhosa de você, filh${pronome}!`,
+      "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
+    ],
+    hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",
   });
 
@@ -218,7 +218,7 @@ export function startPhase8(scene) {
         );
       }
     },
-    hintText: 'Pressione a tecla E para interagir',
+    hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",
   });
 
@@ -234,7 +234,7 @@ export function startPhase8(scene) {
         isGirl ? "ã" : "ão"
       } vai poder me levar até meu restaurante preferido, o 'Comida Boa'! Nunca fui tão feliz!`,
     ],
-    hintText: 'Pressione a tecla E para interagir',
+    hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",
   });
 
@@ -251,7 +251,7 @@ export function startPhase8(scene) {
       "Mas nenhum mel tem a doçura de te ver conquistando sua habilitação.",
       "Meus dias serão muito mais adocicados pela felicidade do seu sucesso!",
     ],
-    hintText: 'Pressione a tecla E para interagir',
+    hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",
   });
 
@@ -266,7 +266,7 @@ export function startPhase8(scene) {
     onInteract: () => {
       scene.addLicenseToInventory();
     },
-    hintText: 'Pressione a tecla E para interagir',
+    hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",
   });
 

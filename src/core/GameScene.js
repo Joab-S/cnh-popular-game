@@ -20,7 +20,7 @@ import {
 import { updatePhase2 } from "../phases/phase2_city/SelectionSystem.js";
 import InteractiveObject from "../engine/interaction/InteractiveObject.js";
 import { updateGenericInteractions } from "../engine/interaction/interactionSystem.js";
-import { AREAS, PHYSICS_DEBUG, WORLD_SIZE } from "./config.js";
+import { AREAS, CONFIG_SONG, PHYSICS_DEBUG, WORLD_SIZE } from "./config.js";
 
 import {
   setupCharacterSelection,
@@ -270,7 +270,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   startMainGame() {
-    this.music = this.sound.play("main_theme", { volume: 0.2, loop: true });
+    this.music = this.sound.play("main_theme", CONFIG_SONG);
 
     const { width, height } = this.scale;
 
@@ -315,7 +315,7 @@ export default class GameScene extends Phaser.Scene {
       },
       hintText: "Pressione a tecla E para interagir",
       hintTexture: "button_action",
-      scale: 0.35
+      scale: 0.35,
     });
 
     this.physics.add.collider(pc, this.ground.ground);

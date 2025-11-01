@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { CONFIG_SONG } from "../../core/config";
 
 export default class EndCarGameScene extends Phaser.Scene {
   constructor(x) {
@@ -84,14 +85,14 @@ export default class EndCarGameScene extends Phaser.Scene {
         this.game.events.emit("car:minigame:end", { victory: this.victory });
         this.scene.stop();
         this.sound.stopAll();
-        this.sound.play("main_theme", { volume: 0.2, loop: true });
+        this.sound.play("main_theme", CONFIG_SONG);
       });
 
       this.input.keyboard.once("keydown-SPACE", () => {
         this.game.events.emit("car:minigame:end", { victory: this.victory });
         this.scene.stop();
         this.sound.stopAll();
-        this.sound.play("main_theme", { volume: 0.2, loop: true });
+        this.sound.play("main_theme", CONFIG_SONG);
       });
     } else {
       this.input.once("pointerdown", () => {

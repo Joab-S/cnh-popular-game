@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { CONFIG_SONG } from "./config";
 
 const MAX_SEQUENCE_LENGTH = 5;
 
@@ -54,7 +55,7 @@ export default class MemoryGameScene extends Phaser.Scene {
       this.sound.add("beep4"),
     ];
 
-    this.sound.play("memory_game_theme", { loop: true, volume: 0.2 });
+    this.sound.play("memory_game_theme", CONFIG_SONG);
   }
 
   setUpStartScreen() {
@@ -449,7 +450,7 @@ export default class MemoryGameScene extends Phaser.Scene {
 
     this.time.delayedCall(3000, () => {
       this.sound.stopAll();
-      this.sound.play("main_theme", { volume: 0.2 });
+      this.sound.play("main_theme", CONFIG_SONG);
 
       this.scene
         .get("GameScene")
