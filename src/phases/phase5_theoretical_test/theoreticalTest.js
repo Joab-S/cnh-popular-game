@@ -39,7 +39,7 @@ export function startPhase5(scene) {
 
   scene.miniGameKey = 'TrafficSignsGameScene';
 
-  scene.ui.showMessage('Procure o prédio do Detran e aperte a tecla E para interagir.');
+  scene.ui.showMessage('Encontre o prédio do DETRAN logo mais a frente!');
 
   // === DETRAN ===
   const detran = new InteractiveObject(scene, {

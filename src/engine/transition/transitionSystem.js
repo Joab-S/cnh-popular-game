@@ -8,6 +8,7 @@ import { startPhase5 } from "../../phases/phase5_theoretical_test/theoreticalTes
 import { startPhase6 } from "../../phases/phase6_driving_school2/drivingSchool2.js";
 import { startPhase7 } from "../../phases/phase7_practical_test/practicalTest.js";
 import { startPhase8 } from "../../phases/phase8_final_scene/finalScene.js";
+import { showWarning } from "../utils/showWarning.js"; 
 
 /**
  * Define o limite de transição padrão (borda direita da casa).
@@ -32,6 +33,11 @@ export function checkTransitions(scene) {
   ) {
     if (playerState.docsMissionCompleted) {
       goToArea(scene, AREAS.city);
+    } else {
+      showWarning(
+        scene, 
+        "o computador", 
+      );
     }
   }
   if (
@@ -40,6 +46,11 @@ export function checkTransitions(scene) {
   ) {
     if (playerState.phase2Completed) {
       goToArea(scene, AREAS.clinic);
+    } else {
+      showWarning(
+        scene, 
+        "a autoescola", 
+      );
     }
   }
   if (
@@ -48,13 +59,25 @@ export function checkTransitions(scene) {
   ) {
     if (playerState.phase3Completed) {
       goToArea(scene, AREAS.drivingSchool1);
+    } else {
+      showWarning(
+        scene, 
+        "a clínica", 
+      );
     }
   }
   if (
     playerState.currentArea === AREAS.drivingSchool1 &&
     player.x >= transition.sceneEndX
   ) {
-    goToArea(scene, AREAS.theoreticalTest);
+    if (playerState.phase4Completed) {
+      goToArea(scene, AREAS.theoreticalTest);
+    } else {
+      showWarning(
+        scene, 
+        "seu professor", 
+      );
+    }
   }
   if (
     playerState.currentArea === AREAS.theoreticalTest &&
@@ -62,13 +85,25 @@ export function checkTransitions(scene) {
   ) {
     if (playerState.phase5Completed) {
       goToArea(scene, AREAS.drivingSchool2);
+    } else {
+      showWarning(
+        scene, 
+        "a funcionária do DETRAN", 
+      );
     }
   }
   if (
     playerState.currentArea === AREAS.drivingSchool2 &&
     player.x >= transition.sceneEndX
   ) {
-    goToArea(scene, AREAS.practicalTest);
+    if (playerState.phase6Completed) {
+      goToArea(scene, AREAS.practicalTest);
+    } else {
+      showWarning(
+        scene, 
+        "seu instrutor", 
+      );
+    }
   }
   if (
     playerState.currentArea === AREAS.practicalTest &&
@@ -76,6 +111,11 @@ export function checkTransitions(scene) {
   ) {
     if (playerState.phase7Completed) {
       goToArea(scene, AREAS.finalScene);
+    }  else {
+      showWarning(
+        scene, 
+        "seu instrutor", 
+      );
     }
   }
 }
