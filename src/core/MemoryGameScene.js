@@ -20,20 +20,29 @@ export default class MemoryGameScene extends Phaser.Scene {
     this.load.audio("beep2", "./assets/sounds/beep2.wav");
     this.load.audio("beep3", "./assets/sounds/beep3.wav");
     this.load.audio("beep4", "./assets/sounds/beep4.wav");
-    
+
     this.load.image("minigame_bg", "./assets/images/minigame_bg.png");
     this.load.image("arrow_up", "./assets/images/arrow_up.png");
     this.load.image("arrow_down", "./assets/images/arrow_down.png");
     this.load.image("arrow_left", "./assets/images/arrow_left.png");
     this.load.image("arrow_right", "./assets/images/arrow_right.png");
+
+    this.load.audio(
+      "memory_game_theme",
+      "./assets/sounds/memory_game_theme.mp3"
+    );
   }
 
   create() {
-    this.bg = this.add.image(0, 0, "minigame_bg")
+    this.sound.stopAll();
+
+    this.bg = this.add
+      .image(0, 0, "minigame_bg")
       .setOrigin(0)
       .setDisplaySize(this.scale.width, this.scale.height);
 
-    this.overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.3)
+    this.overlay = this.add
+      .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.3)
       .setOrigin(0);
 
     this.setUpStartScreen();
@@ -44,6 +53,8 @@ export default class MemoryGameScene extends Phaser.Scene {
       this.sound.add("beep3"),
       this.sound.add("beep4"),
     ];
+
+    this.sound.play("memory_game_theme", { loop: true, volume: 0.2 });
   }
 
   setUpStartScreen() {
@@ -96,19 +107,23 @@ export default class MemoryGameScene extends Phaser.Scene {
 
     this.input.once("pointerdown", this.startGame, this);
 
-    this.spaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    this.spaceKey.once('down', this.startGame, this);
+    this.spaceKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE
+    );
+    this.spaceKey.once("down", this.startGame, this);
   }
 
   startGame() {
     this.children.removeAll();
     this.currentLevel = 1;
-    
-    this.bg = this.add.image(0, 0, "minigame_bg")
+
+    this.bg = this.add
+      .image(0, 0, "minigame_bg")
       .setOrigin(0)
       .setDisplaySize(this.scale.width, this.scale.height);
-    
-    this.overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.3)
+
+    this.overlay = this.add
+      .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.3)
       .setOrigin(0);
 
     this.createGridButtons();
@@ -116,7 +131,7 @@ export default class MemoryGameScene extends Phaser.Scene {
 
     this.sequence = [];
     this.userSequence = [];
-    
+
     this.time.delayedCall(1000, () => {
       this.addToSequence();
       this.playSequence();
@@ -132,35 +147,35 @@ export default class MemoryGameScene extends Phaser.Scene {
 
   setUpKeyboardControls() {
     if (this.keyboardListener) {
-      this.input.keyboard.off('keydown', this.keyboardListener);
+      this.input.keyboard.off("keydown", this.keyboardListener);
     }
 
     this.keyboardListener = (event) => {
       if (!this.isPlayerTurn) return;
-      
+
       let buttonIndex = -1;
-      
-      switch(event.key) {
-        case 'ArrowUp':
+
+      switch (event.key) {
+        case "ArrowUp":
           buttonIndex = 1;
           break;
-        case 'ArrowDown':
+        case "ArrowDown":
           buttonIndex = 2;
           break;
-        case 'ArrowLeft':
+        case "ArrowLeft":
           buttonIndex = 0;
           break;
-        case 'ArrowRight':
+        case "ArrowRight":
           buttonIndex = 3;
           break;
       }
-      
+
       if (buttonIndex !== -1 && this.buttons[buttonIndex]) {
         this.handleButtonPress(buttonIndex);
       }
     };
-    
-    this.input.keyboard.on('keydown', this.keyboardListener);
+
+    this.input.keyboard.on("keydown", this.keyboardListener);
   }
 
   createGridButtons() {
@@ -175,8 +190,8 @@ export default class MemoryGameScene extends Phaser.Scene {
 
     for (let i = 0; i < 4; i++) {
       let x, y;
-      
-      switch(i) {
+
+      switch (i) {
         case 0:
           x = centerX - size - margin;
           y = centerY;
@@ -230,18 +245,20 @@ export default class MemoryGameScene extends Phaser.Scene {
       this.buttons.push(button);
     }
 
-    this.centerDisplay = this.add.circle(centerX, centerY, 70, 0xc42626, 1)
+    this.centerDisplay = this.add
+      .circle(centerX, centerY, 70, 0xc42626, 1)
       .setDepth(3)
       .setStrokeStyle(4, 0xffffff);
 
-    this.centerText = this.add.text(centerX, centerY, "Preste\natenção!", {
-      fontFamily: '"Silkscreen", monospace',
-      fontSize: "18px",
-      fill: "#ffffff",
-      align: "center",
-    })
-    .setOrigin(0.5)
-    .setDepth(4);
+    this.centerText = this.add
+      .text(centerX, centerY, "Preste\natenção!", {
+        fontFamily: '"Silkscreen", monospace',
+        fontSize: "18px",
+        fill: "#ffffff",
+        align: "center",
+      })
+      .setOrigin(0.5)
+      .setDepth(4);
   }
 
   handleButtonPress(buttonIndex) {
@@ -253,49 +270,49 @@ export default class MemoryGameScene extends Phaser.Scene {
 
   animateButtonPress(button) {
     this.tweens.add({
-        targets: button,
-        duration: 80,
-        scaleX: 1.1,
-        scaleY: 1.1,
-        yoyo: true,
-        onStart: () => {
-          button.setFillStyle(0x000000, 1);
-        },
-        onComplete: () => {
-          button.setFillStyle(button.originalColor, button.originalAlpha);
-          button.setScale(1);
-        },
-      });
+      targets: button,
+      duration: 80,
+      scaleX: 1.1,
+      scaleY: 1.1,
+      yoyo: true,
+      onStart: () => {
+        button.setFillStyle(0x000000, 1);
+      },
+      onComplete: () => {
+        button.setFillStyle(button.originalColor, button.originalAlpha);
+        button.setScale(1);
+      },
+    });
   }
 
   async playSequence() {
-  if (this.sequence.length === 0) {
-    this.addToSequence();
-  }
-  
-  this.isPlayerTurn = false;
-  this.centerText.setText("Preste\natenção!");
-  
-  this.centerDisplay.setFillStyle(0xc42626);
+    if (this.sequence.length === 0) {
+      this.addToSequence();
+    }
 
-  await this.sleep(800);
-  
-  for (let i = 0; i < this.sequence.length; i++) {
-    const index = this.sequence[i];
-    const button = this.buttons[index];
-    const sound = this.soundsArray[index];
-    
-    sound.play();
-    await this.flash(button);
-    await this.sleep(500);
-  }
+    this.isPlayerTurn = false;
+    this.centerText.setText("Preste\natenção!");
 
-  this.centerText.setText("Sua vez!");
-  
-  this.centerDisplay.setFillStyle(0x0f840f);
-  
-  this.isPlayerTurn = true;
-}
+    this.centerDisplay.setFillStyle(0xc42626);
+
+    await this.sleep(800);
+
+    for (let i = 0; i < this.sequence.length; i++) {
+      const index = this.sequence[i];
+      const button = this.buttons[index];
+      const sound = this.soundsArray[index];
+
+      sound.play();
+      await this.flash(button);
+      await this.sleep(500);
+    }
+
+    this.centerText.setText("Sua vez!");
+
+    this.centerDisplay.setFillStyle(0x0f840f);
+
+    this.isPlayerTurn = true;
+  }
 
   flash(button) {
     return new Promise((resolve) => {
@@ -329,7 +346,7 @@ export default class MemoryGameScene extends Phaser.Scene {
 
   handlePlayerInput(index) {
     if (!this.isPlayerTurn) return;
-    
+
     this.userSequence.push(index);
     const currentStep = this.userSequence.length - 1;
 
@@ -346,7 +363,7 @@ export default class MemoryGameScene extends Phaser.Scene {
       }
 
       this.isPlayerTurn = false;
-      
+
       this.time.delayedCall(1000, () => {
         this.addToSequence();
         this.playSequence();
@@ -374,14 +391,16 @@ export default class MemoryGameScene extends Phaser.Scene {
   restartGame() {
     this.children.removeAll();
 
-    this.bg = this.add.image(0, 0, "minigame_bg")
+    this.bg = this.add
+      .image(0, 0, "minigame_bg")
       .setOrigin(0)
       .setDisplaySize(this.scale.width, this.scale.height);
 
     this.createGridButtons();
     this.setUpKeyboardControls();
 
-    this.overlay = this.add.rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.3)
+    this.overlay = this.add
+      .rectangle(0, 0, this.scale.width, this.scale.height, 0x000000, 0.3)
       .setOrigin(0);
 
     this.sequence = [];
@@ -397,24 +416,20 @@ export default class MemoryGameScene extends Phaser.Scene {
   victory() {
     this.children.removeAll();
 
-    this.bg = this.add.image(0, 0, "minigame_bg")
+    this.bg = this.add
+      .image(0, 0, "minigame_bg")
       .setOrigin(0)
       .setDisplaySize(this.scale.width, this.scale.height);
 
     this.cameras.main.flash(300, 0, 255, 0);
-    
+
     this.add
-      .text(
-        this.scale.width / 2,
-        this.scale.height / 2 - 50,
-        "PARABÉNS!",
-        {
-          fontFamily: '"Silkscreen", "Courier New", monospace',
-          fontWeight: "bold",
-          fontSize: "48px",
-          fill: "#ffffff",
-        }
-      )
+      .text(this.scale.width / 2, this.scale.height / 2 - 50, "PARABÉNS!", {
+        fontFamily: '"Silkscreen", "Courier New", monospace',
+        fontWeight: "bold",
+        fontSize: "48px",
+        fill: "#ffffff",
+      })
       .setOrigin(0.5);
 
     this.add
@@ -433,7 +448,12 @@ export default class MemoryGameScene extends Phaser.Scene {
     this.isPlayerTurn = false;
 
     this.time.delayedCall(3000, () => {
-      this.scene.get('GameScene').events.emit("memorygame:end", { victory: true });
+      this.sound.stopAll();
+      this.sound.play("main_theme", { volume: 0.2 });
+
+      this.scene
+        .get("GameScene")
+        .events.emit("memorygame:end", { victory: true });
     });
   }
 }

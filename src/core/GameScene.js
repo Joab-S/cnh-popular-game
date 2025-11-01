@@ -168,8 +168,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // this.sound.play("main_theme", { volume: 0.2 });
-
     this.keys = this.input.keyboard.addKeys({
       E: Phaser.Input.Keyboard.KeyCodes.E,
       SPACE: Phaser.Input.Keyboard.KeyCodes.SPACE,
@@ -268,6 +266,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   startMainGame() {
+    this.music = this.sound.play("main_theme", { volume: 0.2, loop: true });
+
     const { width, height } = this.scale;
 
     this.add
