@@ -83,11 +83,15 @@ export default class EndCarGameScene extends Phaser.Scene {
       this.input.once("pointerdown", () => {
         this.game.events.emit("car:minigame:end", { victory: this.victory });
         this.scene.stop();
+        this.sound.stopAll();
+        this.sound.play("main_theme", { volume: 0.2, loop: true });
       });
 
       this.input.keyboard.once("keydown-SPACE", () => {
         this.game.events.emit("car:minigame:end", { victory: this.victory });
         this.scene.stop();
+        this.sound.stopAll();
+        this.sound.play("main_theme", { volume: 0.2, loop: true });
       });
     } else {
       this.input.once("pointerdown", () => {
