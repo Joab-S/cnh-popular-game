@@ -116,7 +116,7 @@ export function setupUI(scene) {
   const buttonLeft = scene.add
     .sprite(40, height - 40, "button_left")
     .setScrollFactor(0)
-    .setScale(0.05)
+    .setScale(0.2)
     .setInteractive();
 
   const buttonRight = scene.add
