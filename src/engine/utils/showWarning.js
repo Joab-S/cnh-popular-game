@@ -5,10 +5,10 @@ export function showWarning(scene, message) {
     scene.currentMessageContainer.destroy();
   }
 
-  const fullText = "🚫 Interaja com " + message + " e conclua sua missão antes de ir para a próxima etapa!";
+  const fullText = "Interaja com " + message + " e conclua sua missão antes de ir para a próxima etapa!";
 
   const text = scene.add.text(
-    0,
+    5,
     0,
     fullText,
     {
@@ -50,7 +50,13 @@ export function showWarning(scene, message) {
     0.3 
   ).setOrigin(0.5, 0.5);
 
-  container.add([shadow, bg, text]);
+  const warningIcon = scene.add.image(
+    -textWidth / 2 - 10,
+    -8,
+    "icon_alert"
+  ).setScale(0.06);
+
+  container.add([shadow, bg, warningIcon, text]);
   container.setDepth(1000);
 
   scene.currentMessageContainer = container;
