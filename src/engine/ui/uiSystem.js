@@ -134,7 +134,7 @@ export function setupUI(scene) {
   const buttonAction = scene.add
     .sprite(width - 120, height - 40, "button_action")
     .setScrollFactor(0)
-    .setScale(0.005)
+    .setScale(0.2)
     .setInteractive();
 
   const buttons = {
