@@ -109,26 +109,7 @@ export class IntroSystem {
       repeat: -1
     });
 
-    this.backButton = this.scene.add
-      .image(width / 2 - (width / 2.5), height - 153, "arrow_left")
-      .setOrigin(0.5)
-      .setDepth(3)
-      .setScale(0.05)
-      .setInteractive({ useHandCursor: true });
-
-    this.backButton.on("pointerover", () => {
-      if (this.currentInstruction > 0)
-        this.scene.tweens.add({ targets: this.backButton, scale: 0.045, duration: 150 });
-    });
-    this.backButton.on("pointerout", () => {
-      this.scene.tweens.add({ targets: this.backButton, scale: 0.05, duration: 150 });
-    });
-    this.backButton.on("pointerdown", () => {
-      if (this.canAdvance) {
-        this.canAdvance = false;
-        this.backInstruction();
-      }
-    });
+    this.createBackButton()
 
     const next = () => {
       if (this.canAdvance) {
@@ -170,13 +151,16 @@ export class IntroSystem {
   }
 
   nextInstruction() {
+    
     if (this.visualControls) {
       this.visualControls.forEach(el => el.destroy());
       this.visualControls = null;
     }
-
+    
     this.currentInstruction++;
     
+    this.createBackButton();
+
     if (this.currentInstruction < this.instructions.length) {
       const { width, height } = this.scene.scale;
       this.renderCurrentInstruction(width, height);
@@ -244,7 +228,10 @@ export class IntroSystem {
       this.visualControls.forEach(el => el.destroy());
       this.visualControls = null;
     }
-    if (this.backButton) this.backButton.destroy();
+    if (this.backButton) {
+      this.backButton.destroy();
+      this.backButton = null;
+    }
     this.scene.input.off("pointerdown");
   }
 
@@ -271,6 +258,13 @@ export class IntroSystem {
         repeat: -1,
         ease: "Sine.easeInOut",
       });
+
+      if (this.currentInstruction <= 0) {
+        if (this.backButton) {
+          this.backButton.destroy();
+          this.backButton = null;
+        }
+      }
     }
 
     this.scene.time.delayedCall(300, () => {
@@ -340,5 +334,32 @@ export class IntroSystem {
     }).setOrigin(0.5).setDepth(2);
 
     this.visualControls = [title, wasd, arrows, moveText, keyE, interactText];
+  }
+
+  createBackButton() {
+    const { width, height } = this.scene.scale;
+    
+    if (this.currentInstruction > 0 && !this.backButton) {
+      this.backButton = this.scene.add
+        .image(width / 2 - (width / 2.5), height - 153, "arrow_left")
+        .setOrigin(0.5)
+        .setDepth(3)
+        .setScale(0.05)
+        .setInteractive({ useHandCursor: true });
+
+      this.backButton.on("pointerover", () => {
+        if (this.currentInstruction > 0)
+          this.scene.tweens.add({ targets: this.backButton, scale: 0.045, duration: 150 });
+      });
+      this.backButton.on("pointerout", () => {
+        this.scene.tweens.add({ targets: this.backButton, scale: 0.05, duration: 150 });
+      });
+      this.backButton.on("pointerdown", () => {
+        if (this.canAdvance) {
+          this.canAdvance = false;
+          this.backInstruction();
+        }
+      });
+    }
   }
 }
