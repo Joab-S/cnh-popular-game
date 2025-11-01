@@ -22,7 +22,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       { key: "sign_curvy", name: "Via Sinuosa" },
     ];
   }
- 
+
   preload() {
     this.load.image("bg_game_1", "./assets/images/bg_game_1.png");
     this.load.image("sign_go", "./assets/images/placa_siga.png");
@@ -31,9 +31,14 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.load.image("sign_prohibited", "./assets/images/placa_proibido.png");
     this.load.image("sign_roundabout", "./assets/images/placa_rotatoria.png");
     this.load.image("sign_curvy", "./assets/images/placa_sinuoso.png");
+    this.load.audio("sign_game_theme", "./assets/sounds/quiz_theme.mp3");
   }
 
   create() {
+    this.sound.stopAll();
+
+    this.sound.play("sign_game_theme", { volume: 0.2, loop: true });
+
     const { width, height } = this.scale;
 
     this.add
@@ -470,7 +475,13 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.time.delayedCall(800, () => {
-      this.scene.get('GameScene').events.emit("trafficsigns:end", { victory: true });
+      this.sound.stopAll();
+
+      this.sound.play("main_theme", { volume: 0.2, loop: true });
+
+      this.scene
+        .get("GameScene")
+        .events.emit("trafficsigns:end", { victory: true });
     });
   }
 

@@ -163,6 +163,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.audio("main_theme", "./assets/sounds/main_theme.mp3");
     this.load.audio("jump", "./assets/sounds/jump.wav");
     this.load.audio("item", "./assets/sounds/item.wav");
+    this.load.audio("click", "./assets/sounds/click.wav");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }

@@ -22,7 +22,7 @@ export function setupInteractiveObject(scene, config) {
       padding: { x: 12, y: 8 },
       fontSize: "12px",
       color: "#000000",
-      backgroundColor: "#FFFFFF", 
+      backgroundColor: "#FFFFFF",
     })
     .setOrigin(0.5)
     .setAlpha(0)
@@ -76,6 +76,8 @@ export function updateGenericInteractions(scene) {
  * Exibe e avança falas
  */
 function progressDialog(scene, entry) {
+  scene.sound.play("click", { volume: 0.4 });
+
   // Garante que playerState exista
   if (!scene.playerState) {
     scene.playerState = { canMove: true, inDialog: false };
@@ -128,12 +130,16 @@ function progressDialog(scene, entry) {
 function toggleHint(scene, hint, visible) {
   if (!hint) return;
 
-  if (scene.playerState?.inDialog || scene.playerState?.quizActive || scene.playerState?.miniGameActive) {
+  if (
+    scene.playerState?.inDialog ||
+    scene.playerState?.quizActive ||
+    scene.playerState?.miniGameActive
+  ) {
     visible = false;
   }
 
   const targetAlpha = visible ? 0.8 : 0;
-  
+
   if (scene.tweens) {
     scene.tweens.killTweensOf(hint);
   }
