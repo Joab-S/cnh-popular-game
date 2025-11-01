@@ -278,6 +278,7 @@ export default class GameScene extends Phaser.Scene {
         }
       },
       hintText: "Pressione a tecla E para interagir",
+      hintTexture: "button_action",
       scale: 0.35
     });
 
