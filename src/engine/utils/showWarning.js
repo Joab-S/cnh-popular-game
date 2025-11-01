@@ -16,6 +16,8 @@ export function showWarning(scene, message) {
       fontSize: "14px",
       color: "#000000",
       align: "center",
+
+    mipmap: true, 
       fontWeight: "600",
       lineSpacing: 3,
       wordWrap: {
@@ -28,7 +30,7 @@ export function showWarning(scene, message) {
   const textWidth = text.width;
   const textHeight = text.height;
 
-  const container = scene.add.container(width, 50);
+  const container = scene.add.container(width / 2, 50);
   
   const bg = scene.add.rectangle(
     0, 
@@ -56,7 +58,10 @@ export function showWarning(scene, message) {
     "icon_alert"
   ).setScale(0.06);
 
+  scene.textures.get("icon_alert").setFilter(Phaser.Textures.FilterMode.LINEAR);
+
   container.add([shadow, bg, warningIcon, text]);
+  container.setScrollFactor(0);
   container.setDepth(1000);
 
   scene.currentMessageContainer = container;
