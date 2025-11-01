@@ -136,6 +136,8 @@ export default class GameScene extends Phaser.Scene {
     this.load.audio("driving_car", "./assets/sounds/driving_car.wav");
     this.load.audio("success", "./assets/sounds/success.wav");
 
+    this.load.image("arrow_left", "./assets/images/seta-esquerda.png");
+
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
 

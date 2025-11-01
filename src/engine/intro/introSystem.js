@@ -136,6 +136,40 @@ export class IntroSystem {
       repeat: -1
     });
 
+    this.backButton = this.scene.add
+      .image(width / 2 - (width / 2.5), height - 153, "arrow_left")
+      .setOrigin(0.5)
+      .setDepth(3)
+      .setScale(0.05)
+      .setInteractive({ useHandCursor: true });
+
+    this.backButton.on("pointerover", () => {
+      if (this.currentInstruction > 0) {
+        this.scene.tweens.add({
+          targets: this.backButton,
+          scale: 0.045,
+          duration: 150,
+          ease: "Sine.easeOut"
+        });
+      }
+    });
+
+    this.backButton.on("pointerout", () => {
+      this.scene.tweens.add({
+        targets: this.backButton,
+        scale: 0.05,
+        duration: 150,
+        ease: "Sine.easeInOut"
+      });
+    });
+
+    this.backButton.on("pointerdown", () => {
+      if (this.canAdvance) {
+        this.canAdvance = false;
+        this.backInstruction();
+      }
+    });
+
     this.instructionsBg.on("pointerdown", () => {
       if (this.canAdvance) {
         this.canAdvance = false;
@@ -204,6 +238,7 @@ export class IntroSystem {
     if (this.dialogBox) this.dialogBox.destroy();
     if (this.instructionDialog) this.instructionDialog.destroy();
     if (this.progressText) this.progressText.destroy();
+    if (this.backButton) this.backButton.destroy();
     this.scene.input.off("pointerdown");
   }
   advanceFromInstructions() {
@@ -217,6 +252,18 @@ export class IntroSystem {
           this.scene.startGameWithCharacter(character);
         });
       }
+    });
+  }
+
+  backInstruction() {
+    if (this.currentInstruction > 0) {
+      this.currentInstruction--;
+      this.instructionDialog.setText(this.instructions[this.currentInstruction]);
+      this.progressText.setText(`Pressione E ou clique na tela para continuar`);
+    }
+
+    this.scene.time.delayedCall(300, () => {
+      this.canAdvance = true;
     });
   }
 
