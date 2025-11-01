@@ -411,7 +411,7 @@ export class IntroSystem {
 
     if (this.currentInstruction > 0 && !this.backButton) {
       this.backButton = this.scene.add
-        .image(width / 2 - width / 2.5, height - 153, "arrow_left")
+        .image(width / 2 - width / 2.5, height - 153, "back_arrow_left")
         .setOrigin(0.5)
         .setDepth(3)
         .setScale(0.05)
