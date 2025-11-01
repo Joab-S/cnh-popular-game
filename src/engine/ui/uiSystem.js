@@ -224,7 +224,7 @@ export function setupUI(scene) {
         .setScrollFactor(0);
 
       inventory.add(icon);
-      scene.sound.play("item", { volume: 0.5 });
+      scene.sound.play("item", { volume: 0.2 });
 
       if (itemCount === 0) {
         scene.tweens.add({

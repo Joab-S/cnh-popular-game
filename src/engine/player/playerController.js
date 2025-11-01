@@ -59,7 +59,7 @@ export function updatePlayerMovement(scene) {
 
   // pulo
   if (jumpPressed && player.body.blocked.down) {
-    scene.sound.play("jump", { volume: 0.5 });
+    scene.sound.play("jump", { volume: 0.2 });
     player.setVelocityY(-400);
   }
 }

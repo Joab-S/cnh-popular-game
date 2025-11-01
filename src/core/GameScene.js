@@ -160,7 +160,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.audio("driving_car", "./assets/sounds/driving_car.wav");
     this.load.audio("success", "./assets/sounds/success.wav");
 
-    // this.load.audio("main_theme", "./assets/sounds/main_theme.mp3");
+    this.load.audio("main_theme", "./assets/sounds/main_theme.mp3");
     this.load.audio("jump", "./assets/sounds/jump.wav");
     this.load.audio("item", "./assets/sounds/item.wav");
 
@@ -168,7 +168,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    // this.sound.play("main_theme");
+    // this.sound.play("main_theme", { volume: 0.2 });
 
     this.keys = this.input.keyboard.addKeys({
       E: Phaser.Input.Keyboard.KeyCodes.E,
