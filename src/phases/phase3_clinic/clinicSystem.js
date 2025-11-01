@@ -50,6 +50,7 @@ export function startPhase3(scene) {
     },
     label: '',
     hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   clinic.sprite.setDepth(-2);

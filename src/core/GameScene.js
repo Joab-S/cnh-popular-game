@@ -164,6 +164,9 @@ export default class GameScene extends Phaser.Scene {
     this.load.audio("jump", "./assets/sounds/jump.wav");
     this.load.audio("item", "./assets/sounds/item.wav");
     this.load.audio("click", "./assets/sounds/click.wav");
+    this.load.image("arrow_keys", "./assets/images/arrow_keys.png");
+    this.load.image("wasd_keys", "./assets/images/wasd_keys.png");
+    this.load.image("arrow_left", "./assets/images/seta-esquerda.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
@@ -311,7 +314,8 @@ export default class GameScene extends Phaser.Scene {
         }
       },
       hintText: "Pressione a tecla E para interagir",
-      scale: 0.35,
+      hintTexture: "button_action",
+      scale: 0.35
     });
 
     this.physics.add.collider(pc, this.ground.ground);

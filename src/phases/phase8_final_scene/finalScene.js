@@ -188,10 +188,11 @@ export function startPhase8(scene) {
     texture: "mother",
     label: "",
     dialogs: [
-      `Estou orgulhosa de você, filh${pronome}!`,
-      "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
-    ],
-    hintText: "Pressione a tecla E para interagir",
+    `Estou orgulhosa de você, filh${pronome}!`,
+    "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
+  ],
+    hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   const car_final = new InteractiveObject(scene, {
@@ -217,7 +218,8 @@ export function startPhase8(scene) {
         );
       }
     },
-    hintText: "Pressione a tecla E para interagir",
+    hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   const brother = new InteractiveObject(scene, {
@@ -232,7 +234,8 @@ export function startPhase8(scene) {
         isGirl ? "ã" : "ão"
       } vai poder me levar até meu restaurante preferido, o 'Comida Boa'! Nunca fui tão feliz!`,
     ],
-    hintText: "Pressione a tecla E para interagir",
+    hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   const grandpa = new InteractiveObject(scene, {
@@ -248,7 +251,8 @@ export function startPhase8(scene) {
       "Mas nenhum mel tem a doçura de te ver conquistando sua habilitação.",
       "Meus dias serão muito mais adocicados pela felicidade do seu sucesso!",
     ],
-    hintText: "Pressione a tecla E para interagir",
+    hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   const mail = new InteractiveObject(scene, {
@@ -262,7 +266,8 @@ export function startPhase8(scene) {
     onInteract: () => {
       scene.addLicenseToInventory();
     },
-    hintText: "Pressione a tecla E para interagir",
+    hintText: 'Pressione a tecla E para interagir',
+    hintTexture: "button_action",
   });
 
   mother.sprite.setDepth(-2);

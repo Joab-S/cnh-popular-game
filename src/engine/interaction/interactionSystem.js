@@ -14,19 +14,42 @@ export function setupInteractiveObject(scene, config) {
     onInteract = null,
     proximity = { x: 60, y: 40 },
     hintText = "Aproxime-se e aperte E",
+    hintTexture = false,
   } = config;
 
-  const hint = scene.add
-    .text(object.x, object.y * 0.75, hintText, {
-      fontFamily: '"Silkscreen", monospace',
-      padding: { x: 12, y: 8 },
-      fontSize: "12px",
-      color: "#000000",
-      backgroundColor: "#FFFFFF",
-    })
-    .setOrigin(0.5)
-    .setAlpha(0)
-    .setDepth(5);
+  let hint;
+  if (hintTexture) {
+    hint = scene.add
+      .image(object.x, object.y - 70, hintTexture)
+      .setOrigin(0.5)
+      .setAlpha(0.8)
+      .setDepth(5)
+      .setScale(0.15);
+
+    const pulseTween = scene.tweens.add({
+      targets: hint,
+      scale: { from: 0.10, to: 0.15 },
+      alpha: { from: 0.8, to: 1 },
+      duration: 700,
+      yoyo: true,
+      repeat: -1,
+      ease: "Sine.easeInOut",
+    });
+
+    hint.pulseTween = pulseTween;
+  } else {
+    hint = scene.add
+      .text(object.x, object.y * 0.75, hintText, {
+        fontFamily: '"Silkscreen", monospace',
+        padding: { x: 12, y: 8 },
+        fontSize: "12px",
+        color: "#000000",
+        backgroundColor: "#FFFFFF",
+      })
+      .setOrigin(0.5)
+      .setAlpha(0)
+      .setDepth(5);
+  }
 
   if (!scene.interactiveObjects) scene.interactiveObjects = [];
 
@@ -34,6 +57,7 @@ export function setupInteractiveObject(scene, config) {
     key,
     object,
     hint,
+    hintTexture,
     dialogs,
     onInteract,
     dialog: null,
@@ -138,14 +162,21 @@ function toggleHint(scene, hint, visible) {
     visible = false;
   }
 
-  const targetAlpha = visible ? 0.8 : 0;
+  const targetAlpha = visible ? 1 : 0;
 
-  if (scene.tweens) {
-    scene.tweens.killTweensOf(hint);
+  if (hint.texture) {
+    hint.setAlpha(targetAlpha);
+  } else {
+    if (scene.tweens) scene.tweens.killTweensOf(hint);
+    scene.tweens.add({
+      targets: hint,
+      alpha: targetAlpha,
+      duration: 200,
+      ease: "Sine.easeOut",
+    });
   }
-
-  hint.setAlpha(targetAlpha);
 }
+
 
 export function clearInteractions(scene) {
   if (!scene.interactiveObjects) return;
