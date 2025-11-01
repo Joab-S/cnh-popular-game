@@ -74,19 +74,15 @@ export class IntroSystem {
       repeat: -1
     });
 
-    this.coverImage.on("pointerdown", () => {
+    const advance = () => {
       if (this.canAdvance) {
         this.canAdvance = false;
         this.advanceFromCover();
       }
-    });
+    };
 
-    this.scene.input.on("pointerdown", () => {
-      if (this.canAdvance) {
-        this.canAdvance = false;
-        this.advanceFromCover();
-      }
-    });
+    this.coverImage.on("pointerdown", advance);
+    this.scene.input.once("pointerdown", advance);
   }
 
   showInstructionsScreen() {
@@ -113,19 +109,35 @@ export class IntroSystem {
       repeat: -1
     });
 
-    this.instructionsBg.on("pointerdown", () => {
+    this.backButton = this.scene.add
+      .image(width / 2 - (width / 2.5), height - 153, "arrow_left")
+      .setOrigin(0.5)
+      .setDepth(3)
+      .setScale(0.05)
+      .setInteractive({ useHandCursor: true });
+
+    this.backButton.on("pointerover", () => {
+      if (this.currentInstruction > 0)
+        this.scene.tweens.add({ targets: this.backButton, scale: 0.045, duration: 150 });
+    });
+    this.backButton.on("pointerout", () => {
+      this.scene.tweens.add({ targets: this.backButton, scale: 0.05, duration: 150 });
+    });
+    this.backButton.on("pointerdown", () => {
       if (this.canAdvance) {
         this.canAdvance = false;
-        this.nextInstruction();
+        this.backInstruction();
       }
     });
 
-    this.scene.input.on("pointerdown", () => {
+    const next = () => {
       if (this.canAdvance) {
         this.canAdvance = false;
         this.nextInstruction();
       }
-    });
+    };
+    this.instructionsBg.on("pointerdown", next);
+    this.scene.input.on("pointerdown", next);
   }
 
   renderCurrentInstruction(width, height) {
@@ -232,7 +244,38 @@ export class IntroSystem {
       this.visualControls.forEach(el => el.destroy());
       this.visualControls = null;
     }
+    if (this.backButton) this.backButton.destroy();
     this.scene.input.off("pointerdown");
+  }
+
+  backInstruction() {
+    if (this.currentInstruction > 0) {
+      this.currentInstruction--;
+
+      const { width, height } = this.scene.scale;
+
+      this.renderCurrentInstruction(width, height);
+
+      if (this.instructionDialog) {
+        this.instructionDialog.setText(this.instructions[this.currentInstruction]);
+      }
+
+      if (this.progressText) this.progressText.destroy();
+      this.progressText = pressKeyIcon(this.scene, "Pressione", "ou clique na tela para continuar", width / 2, height - 80, "button_action", 0.15);
+
+      this.scene.tweens.add({
+        targets: this.progressText,
+        alpha: 0.2,
+        duration: 800,
+        yoyo: true,
+        repeat: -1,
+        ease: "Sine.easeInOut",
+      });
+    }
+
+    this.scene.time.delayedCall(300, () => {
+      this.canAdvance = true;
+    });
   }
 
   update() {
