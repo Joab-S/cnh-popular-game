@@ -20,7 +20,7 @@ import {
 import { updatePhase2 } from "../phases/phase2_city/SelectionSystem.js";
 import InteractiveObject from "../engine/interaction/InteractiveObject.js";
 import { updateGenericInteractions } from "../engine/interaction/interactionSystem.js";
-import { AREAS, PHYSICS_DEBUG, WORLD_SIZE } from "./config.js";
+import { AREAS, CONFIG_SONG, PHYSICS_DEBUG, WORLD_SIZE } from "./config.js";
 
 import {
   setupCharacterSelection,
@@ -61,8 +61,14 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("logo", "./assets/images/iris-logo-marca.png");
 
     // === IMAGENS PARA TELA DE SELEÇÃO ===
-    this.load.image("select_player_boy", "./assets/images/select_player_boy.png");
-    this.load.image("select_player_girl", "./assets/images/select_player_girl.png");
+    this.load.image(
+      "select_player_boy",
+      "./assets/images/select_player_boy.png"
+    );
+    this.load.image(
+      "select_player_girl",
+      "./assets/images/select_player_girl.png"
+    );
 
     // === SPRITESHEETS PARA O JOGO ===
     this.load.spritesheet("player_girl", "./assets/images/player_girl.png", {
@@ -83,7 +89,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("doc_rg", "./assets/images/rg.png");
     this.load.image("doc_cpf", "./assets/images/cpf.png");
     this.load.image("doc_comprovante", "./assets/images/comprovante.png");
-    this.load.image("doc_comprovante_renda", "./assets/images/comprovante_renda.png");
+    this.load.image(
+      "doc_comprovante_renda",
+      "./assets/images/comprovante_renda.png"
+    );
     this.load.image("habilitacao", "./assets/images/habilitacao.png");
     this.load.image("home_bg", "./assets/images/home_bg.png");
     this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
@@ -97,7 +106,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
     this.load.image("obstacle_3", "./assets/images/obstaculo_3.png");
 
-    this.load.image("instrutor_exame_pratico", "./assets/images/instrutor_exame_pratico.png");
+    this.load.image(
+      "instrutor_exame_pratico",
+      "./assets/images/instrutor_exame_pratico.png"
+    );
     this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
     this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
     this.load.image("clinic", "./assets/images/clinica.png");
@@ -118,11 +130,23 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("driving_2_bg_2", "./assets/images/driving_2_bg_2.png");
 
     this.load.image("detran", "./assets/images/detran.png");
-    this.load.image("detran_theoretical_bg", "./assets/images/detran_theoretical_bg.png");
-    this.load.image("detran_theoretical_bg_2", "./assets/images/detran_theoretical_bg_2.png");
+    this.load.image(
+      "detran_theoretical_bg",
+      "./assets/images/detran_theoretical_bg.png"
+    );
+    this.load.image(
+      "detran_theoretical_bg_2",
+      "./assets/images/detran_theoretical_bg_2.png"
+    );
 
-    this.load.image("detran_practical_bg", "./assets/images/detran_practical_bg.png");
-    this.load.image("detran_practical_bg_2", "./assets/images/detran_practical_bg_2.png");
+    this.load.image(
+      "detran_practical_bg",
+      "./assets/images/detran_practical_bg.png"
+    );
+    this.load.image(
+      "detran_practical_bg_2",
+      "./assets/images/detran_practical_bg_2.png"
+    );
 
     this.load.audio("boing", "./assets/sounds/boing.wav");
     this.load.image("final_bg", "./assets/images/final_bg.png");
@@ -136,6 +160,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.audio("driving_car", "./assets/sounds/driving_car.wav");
     this.load.audio("success", "./assets/sounds/success.wav");
 
+    this.load.audio("main_theme", "./assets/sounds/main_theme.mp3");
+    this.load.audio("jump", "./assets/sounds/jump.wav");
+    this.load.audio("item", "./assets/sounds/item.wav");
+    this.load.audio("click", "./assets/sounds/click.wav");
     this.load.image("arrow_keys", "./assets/images/arrow_keys.png");
     this.load.image("wasd_keys", "./assets/images/wasd_keys.png");
     this.load.image("back_arrow_left", "./assets/images/seta-esquerda.png");
@@ -198,7 +226,12 @@ export default class GameScene extends Phaser.Scene {
 
     if (this.playerState && this.playerState.transitioning) return;
 
-    if (this.player && this.player.body && this.player.body.touching.down && this.player.body.velocity.y === 0) {
+    if (
+      this.player &&
+      this.player.body &&
+      this.player.body.touching.down &&
+      this.player.body.velocity.y === 0
+    ) {
       this.bedBounceStrength = 380;
     }
 
@@ -237,6 +270,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   startMainGame() {
+    this.music = this.sound.play("main_theme", CONFIG_SONG);
+
     const { width, height } = this.scale;
 
     this.add
@@ -280,7 +315,7 @@ export default class GameScene extends Phaser.Scene {
       },
       hintText: "Pressione a tecla E para interagir",
       hintTexture: "button_action",
-      scale: 0.35
+      scale: 0.35,
     });
 
     this.physics.add.collider(pc, this.ground.ground);

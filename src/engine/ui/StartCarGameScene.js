@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { CONFIG_SONG } from "../../core/config";
 
 export default class StartCarGameScene extends Phaser.Scene {
   constructor() {
@@ -7,9 +8,15 @@ export default class StartCarGameScene extends Phaser.Scene {
 
   preload() {
     this.load.image("start-bg", "./assets/images/start_bg.png");
+
+    this.load.audio("car_game_theme", "./assets/sounds/car_game_theme.mp3");
   }
 
   create() {
+    this.sound.stopAll();
+
+    this.sound.play("car_game_theme", CONFIG_SONG);
+
     const { width, height } = this.scale;
 
     this.add
@@ -28,7 +35,7 @@ export default class StartCarGameScene extends Phaser.Scene {
       "- Use os controles para controlar o carro",
       "- Preste atenção ao semáforo",
       "- Respeite o espaço das ruas",
-      '- Siga o indicado pelas setas'
+      "- Siga o indicado pelas setas",
     ].join("\n");
 
     const textStyle = {

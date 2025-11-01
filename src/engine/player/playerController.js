@@ -1,3 +1,5 @@
+import { CONFIG_EFFECT } from "../../core/config";
+
 export function setupPlayer(scene, x, y, textureKey = "player_boy") {
   const player = scene.physics.add.sprite(x, y, textureKey, 0);
   player.setCollideWorldBounds(true);
@@ -59,6 +61,7 @@ export function updatePlayerMovement(scene) {
 
   // pulo
   if (jumpPressed && player.body.blocked.down) {
+    scene.sound.play("jump", CONFIG_EFFECT);
     player.setVelocityY(-400);
   }
 }

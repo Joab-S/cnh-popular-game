@@ -1,8 +1,13 @@
+import { CONFIG_EFFECT } from "../../core/config";
+
 export function setupUI(scene) {
   const { width, height } = scene.scale;
 
   // === INVENTÁRIO NO CANTO SUPERIOR ESQUERDO ===
-  const inventory = scene.add.container(45, 110).setScrollFactor(0).setDepth(10);
+  const inventory = scene.add
+    .container(45, 110)
+    .setScrollFactor(0)
+    .setDepth(10);
 
   const inventoryBg = scene.add.graphics();
   inventoryBg.setAlpha(0);
@@ -224,6 +229,7 @@ export function setupUI(scene) {
         .setScrollFactor(0);
 
       inventory.add(icon);
+      scene.sound.play("item", CONFIG_EFFECT);
 
       if (itemCount === 0) {
         scene.tweens.add({
