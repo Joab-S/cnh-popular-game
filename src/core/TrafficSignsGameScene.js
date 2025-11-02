@@ -1,4 +1,4 @@
-import { CONFIG_SONG } from "./config";
+import { CONFIG_EFFECT, CONFIG_SONG } from "./config";
 
 export default class TrafficSignsGameScene extends Phaser.Scene {
   constructor() {
@@ -34,6 +34,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.load.image("sign_roundabout", "./assets/images/placa_rotatoria.png");
     this.load.image("sign_curvy", "./assets/images/placa_sinuoso.png");
     this.load.audio("sign_game_theme", "./assets/sounds/quiz_theme.mp3");
+    this.load.audio("select_sign", "./assets/sounds/select_sign.wav");
   }
 
   create() {
@@ -311,6 +312,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   }
 
   handleCorrectSpacePress() {
+    this.sound.play("select_sign", CONFIG_EFFECT);
     const sign = this.targetSign;
     this.scoreForSign(sign);
   }
@@ -321,8 +323,12 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     const isTargetSign = gameObject.getData("isTargetSign");
 
     if (isTargetSign) {
+      this.sound.play("select_sign", CONFIG_EFFECT);
+
       this.scoreForSign(gameObject);
     } else {
+      this.sound.play("fail", CONFIG_EFFECT);
+
       this.handleWrongClick(gameObject);
     }
   }
@@ -367,6 +373,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.time.delayedCall(300, () => {
       this.spaceKeyCooldown = false;
     });
+
+    this.sound.play("fail", CONFIG_EFFECT);
 
     this.score = Math.max(0, this.score - 1);
     this.scoreText.setText(`${this.score}/${this.maxScore}`);

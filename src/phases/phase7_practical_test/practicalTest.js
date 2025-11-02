@@ -55,7 +55,7 @@ export function startPhase7(scene) {
     height: 100,
     proximity: { x: 80, y: 120 }, 
     dialogs: [
-      'Olá, sou o Tio Toretto, seu instrutor para o exame prático de direção.',
+      'Olá, sou o seu instrutor para o exame prático de direção.',
       'Aqui, não é só sobre dirigir... é sobre respeito, controle e família.',
       'Você tem que aprender a sentir o carro, não só a pilotar.',
       'Respira fundo... acelera com calma... sente o motor.',
