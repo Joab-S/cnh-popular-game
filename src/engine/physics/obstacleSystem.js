@@ -1,5 +1,8 @@
+import { controlHints } from "../utils/controlHints";
+
 export function setupObstacles(scene) {
   const obstacles = [];
+  const obstacleHints = [];
 
   const { width, height } = scene.scale;
 
@@ -21,8 +24,8 @@ export function setupObstacles(scene) {
     obs.setDisplaySize(size.w, size.h);
     obs.setOrigin(0.5);
     
-    const hitboxWidth = size.w * 0.7;
-    const hitboxHeight = size.h * 0.7;
+    const hitboxWidth = width;
+    const hitboxHeight = 10;
 
     obs.body.setSize(hitboxWidth, hitboxHeight);
     obs.body.setOffset(
@@ -32,12 +35,55 @@ export function setupObstacles(scene) {
 
     obs.refreshBody();
     
+    // Usando a nova função para duas teclas
+    const jumpHint = controlHints(
+      scene,
+      '',           // texto antes
+      'ou',         // texto entre as teclas
+      '',           // texto depois
+      width / 2, 
+      height - 25,
+      'button_w',   // primeira tecla
+      'button_up_2', // segunda tecla
+      0.15
+    );
+
+    jumpHint.setScrollFactor(0);
+    jumpHint.setDepth(100);
+    jumpHint.setAlpha(0);
+
+    obstacleHints.push({
+      container: jumpHint,
+      obstacle: obs,
+      shown: false
+    });
+
     obstacles.push(obs);
   });
 
-  return obstacles;
-}
+  if (scene.player) {
+    scene.physics.add.collider(scene.player, obstacles, (player, obstacle) => {
+      const hintData = obstacleHints.find(hint => hint.obstacle === obstacle);
+      
+      if (hintData) {
+        scene.tweens.add({
+          targets: hintData.container,
+          alpha: 1,
+          duration: 300,
+          ease: 'Linear'
+        });
 
-export function updateObstacles(scene) {
-  // futuro: mover ou animar obstáculos
+        scene.time.delayedCall(3000, () => {
+          scene.tweens.add({
+            targets: hintData.container,
+            alpha: 0,
+            duration: 500,
+            ease: 'Linear'
+          });
+        });
+      }
+    });
+  }
+
+  return obstacles;
 }

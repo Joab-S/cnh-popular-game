@@ -173,8 +173,10 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("button_action_2", "./assets/images/button-action-2.png");
     this.load.image("button_left_2", "./assets/images/button-left-2.png");
     this.load.image("button_right_2", "./assets/images/button-right-2.png");
+    this.load.image("button_up_2", "./assets/images/button-up-2.png");
     this.load.image("button_a", "./assets/images/button-a.png");
     this.load.image("button_d", "./assets/images/button-d.png");
+    this.load.image("button_w", "./assets/images/button-w.png");
 
     this.load.image("icon_alert", "./assets/images/icon_alert.png");
 
