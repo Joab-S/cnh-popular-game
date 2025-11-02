@@ -76,7 +76,7 @@ export function setupUI(scene) {
   const textWidth = 600;
   const textHeight = 80;
 
-  background.fillStyle(0x000000, 0.4);
+  background.fillStyle(0xffffff, 0.4);
   background.fillRect(
     -textWidth / 2 + 2,
     -textHeight / 2 + 2,
@@ -84,17 +84,26 @@ export function setupUI(scene) {
     textHeight
   );
 
-  background.fillStyle(0x000000, 0.95);
+  background.fillStyle(0xffffff, 0.95);
   background.fillRect(-textWidth / 2, -textHeight / 2, textWidth, textHeight);
 
-  background.lineStyle(1, 0x666666, 0.8);
+  background.lineStyle(2, 0x000000, 1);
   background.strokeRect(-textWidth / 2, -textHeight / 2, textWidth, textHeight);
 
+  const missionHint = scene.add
+    .text(0, -textHeight / 2 + 20, "MISSÃO!", {
+      fontFamily: '"Silkscreen", monospace',
+      fontSize: "12px",
+      color: "#000000",
+      fontStyle: "bold"
+    })
+    .setOrigin(0.5, 0.5);
+
   const messageText = scene.add
-    .text(0, 0, "", {
+    .text(0, 5, "", {
       fontFamily: '"Silkscreen", monospace',
       fontSize: "14px",
-      color: "#ffffff",
+      color: "#000000",
       align: "center",
       fontWeight: "600",
       lineSpacing: 3,
@@ -105,9 +114,7 @@ export function setupUI(scene) {
     })
     .setOrigin(0.5, 0.5);
 
-  messageBox.add([background, messageText]);
-
-  //BOTÕES DE CONTROLE
+  messageBox.add([background, missionHint, messageText]);
 
   const buttonsContainer = scene.add
     .container(0, 0)
