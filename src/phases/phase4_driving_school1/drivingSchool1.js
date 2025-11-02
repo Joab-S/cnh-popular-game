@@ -46,7 +46,7 @@ export function startPhase4(scene) {
     `Olá, ${pronome}! ${bemVindo} às aulas teóricas.`,
     "Aqui você vai aprender as regras de trânsito, sinalização, direção defensiva e primeiros socorros.",
     "São 45 horas/aula obrigatórias, divididas em conteúdo legislativo e prático.",
-    `Ao final, você fará uma prova teórica no DETRAN. Você precisa acertar pelo menos 70% para ser ${aprovado}.`,
+    `Após as aulas, você fará uma prova teórica no DETRAN. Você precisa acertar pelo menos 70% para ser ${aprovado}.`,
     "Preste atenção nas aulas e faça os simulados. Isso vai te ajudar muito!",
     "Boa sorte nos estudos!"
   ];
