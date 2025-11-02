@@ -139,6 +139,6 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
     dialog
   ];
 
-  const msg = "Você completou o exame teórico!";
+  const msg = "Você completou o exame teórico! Siga em frente para sua próxima missão.";
   scene.ui.showMessage(msg);
 }
