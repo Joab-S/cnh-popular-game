@@ -11,7 +11,7 @@ const config = {
     GameScene,
     CarGameScene,
     EndCarGameScene,
-    OrientationOverlay
+    OrientationOverlay,
   ],
 };
 new Phaser.Game(config);
