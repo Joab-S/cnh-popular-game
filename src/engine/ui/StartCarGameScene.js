@@ -16,10 +16,10 @@ export default class StartCarGameScene extends Phaser.Scene {
 
     this.instructions = [
       "Bem-vindo à prova prática!",
-      "Aqui você deve seguir as direções que aparecerão na tela e concluir o trajeto sem cometer infrações",
-      "Você precisará passar por todas as etapas: coleta de documentos, exame médico, aulas teóricas, aulas práticas e avaliações finais.",
+      "Aqui você deve seguir as direções indicadas pela seta laranja e concluir o trajeto sem cometer infrações",
+      "Você deve respeitar os semáforos e os limites da rua",
       "CONTROLS_SCREEN",
-      "Explore os ambientes, complete as missões e boa sorte na sua jornada!",
+      "Boa sorte na prova!",
     ];
 
     this.coverImage = null;
@@ -45,6 +45,12 @@ export default class StartCarGameScene extends Phaser.Scene {
     this.load.image("button_right_2", "./assets/images/button-right-2.png");
     this.load.image("button_a", "./assets/images/button-a.png");
     this.load.image("button_d", "./assets/images/button-d.png");
+
+    this.load.image("button_gas", "./assets/images/pedal-gas.png");
+    this.load.image("button_left", "./assets/images/button-left.png");
+    this.load.image("button_right", "./assets/images/button-right.png");
+    this.load.image("button_brake", "./assets/images/pedal-brake.png");
+    this.load.image("finish-line", "./assets/images/faixa_quadriculada.png");
   }
 
   create() {
@@ -291,7 +297,7 @@ export default class StartCarGameScene extends Phaser.Scene {
 
   renderControlsScreen(width, height) {
     const title = this.add
-      .text(width / 2, this.dialogBox.height - 50, "USE AS TECLAS", {
+      .text(width / 2, this.dialogBox.height - 50, "USE OS BOTÕES", {
         fontFamily: '"Silkscreen", monospace',
         fontSize: "22px",
         color: "#ffffff",
@@ -299,17 +305,32 @@ export default class StartCarGameScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(2);
 
-    const wasd = this.add
-      .image(width / 2 - 220, height - 230, "wasd_keys")
-      .setScale(0.35)
+    const arrowLeft = this.add
+      .image(width / 2 - 260, height - 230, "button_left")
+      .setScale(0.15)
       .setDepth(2);
-    const arrows = this.add
-      .image(width / 2 - 80, height - 230, "arrow_keys")
-      .setScale(0.35)
+
+    const arrowRight = this.add
+      .image(width / 2 - 180, height - 230, "button_right")
+      .setScale(0.15)
+      .setDepth(2);
+
+    const controls = this.add
+      .text(width / 2 - 220, height - 160, "para controlar", {
+        fontFamily: '"Silkscreen", monospace',
+        fontSize: "16px",
+        color: "#ffffff",
+      })
+      .setOrigin(0.5)
+      .setDepth(2);
+
+    const gas = this.add
+      .image(width / 2, height - 230, "button_gas")
+      .setScale(0.15)
       .setDepth(2);
 
     const moveText = this.add
-      .text(width / 2 - 150, height - 160, "para se movimentar", {
+      .text(width / 2, height - 160, "para acelerar", {
         fontFamily: '"Silkscreen", monospace',
         fontSize: "16px",
         color: "#ffffff",
@@ -317,13 +338,13 @@ export default class StartCarGameScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(2);
 
-    const keyE = this.add
-      .image(width / 2 + 180, height - 230, "button_action_2")
-      .setScale(0.2)
+    const brake = this.add
+      .image(width / 2 + 220, height - 230, "button_brake")
+      .setScale(0.15)
       .setDepth(2);
 
     const interactText = this.add
-      .text(width / 2 + 180, height - 160, "para interagir", {
+      .text(width / 2 + 220, height - 160, "para freiar/ré", {
         fontFamily: '"Silkscreen", monospace',
         fontSize: "16px",
         color: "#ffffff",
@@ -331,6 +352,6 @@ export default class StartCarGameScene extends Phaser.Scene {
       .setOrigin(0.5)
       .setDepth(2);
 
-    this.visualControls = [title, wasd, arrows, moveText, keyE, interactText];
+    this.visualControls = [title, gas, moveText, brake, interactText, arrowLeft, arrowRight, controls];
   }
 }
