@@ -1,3 +1,5 @@
+import { controlHints } from "../utils/controlHints";
+
 export function setupObstacles(scene) {
   const obstacles = [];
   const obstacleHints = [];
@@ -33,77 +35,25 @@ export function setupObstacles(scene) {
 
     obs.refreshBody();
     
-    const hintContainer = scene.add.container(width / 2, height - 25)
-      .setScrollFactor(0)
-      .setDepth(100);
+    // Usando a nova função para duas teclas
+    const jumpHint = controlHints(
+      scene,
+      '',           // texto antes
+      'ou',         // texto entre as teclas
+      '',           // texto depois
+      width / 2, 
+      height - 25,
+      'button_w',   // primeira tecla
+      'button_up_2', // segunda tecla
+      0.15
+    );
 
-        const bg = scene.add.graphics();
-    const bgWidth = 380;
-    const bgHeight = 35;
-    
-    bg.fillStyle(0x000000, 0.7);
-    bg.fillRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight);
-    
-    bg.lineStyle(1, 0xffffff, 1);
-    bg.strokeRect(-bgWidth/2, -bgHeight/2, bgWidth, bgHeight);
-
-    const hintText = scene.add.text(-135, 0, 'Pressione', {
-      fontFamily: '"Silkscreen", monospace',
-      fontSize: '14px',
-      color: '#ffffff',
-      fontWeight: 'bold'
-    }).setOrigin(0.5);
-
-    const keyD = scene.add.image(-75, 0, 'button_d')
-      .setDisplaySize(25, 25);
-
-    const plusSign1 = scene.add.text(-55, 0, '+', {
-      fontFamily: '"Silkscreen", monospace',
-      fontSize: '14px',
-      color: '#ffffff',
-      fontWeight: 'bold'
-    }).setOrigin(0.5);
-
-    const keyW = scene.add.image(-35, 0, 'button_w')
-      .setDisplaySize(25, 25);
-
-    const orText = scene.add.text(-10, 0, 'ou', {
-      fontFamily: '"Silkscreen", monospace',
-      fontSize: '14px',
-      color: '#ffffff',
-      fontWeight: 'bold'
-    }).setOrigin(0.5);
-
-    const arrowRight = scene.add.image(15, 0, 'button_right_2')
-      .setDisplaySize(25, 25);
-
-    const plusSign2 = scene.add.text(35, 0, '+', {
-      fontFamily: '"Silkscreen", monospace',
-      fontSize: '14px',
-      color: '#ffffff',
-      fontWeight: 'bold'
-    }).setOrigin(0.5);
-
-    const arrowUp = scene.add.image(55, 0, 'button_up_2')
-      .setDisplaySize(25, 25);
-
-    const jumpText = scene.add.text(125, 0, 'para pular', {
-      fontFamily: '"Silkscreen", monospace',
-      fontSize: '14px',
-      color: '#ffffff',
-      fontWeight: 'bold'
-    }).setOrigin(0.5);
-
-    hintContainer.add([
-      bg, 
-      hintText, keyD, plusSign1, keyW, orText, 
-      arrowRight, plusSign2, arrowUp, jumpText
-    ]);
-
-    hintContainer.setAlpha(0);
+    jumpHint.setScrollFactor(0);
+    jumpHint.setDepth(100);
+    jumpHint.setAlpha(0);
 
     obstacleHints.push({
-      container: hintContainer,
+      container: jumpHint,
       obstacle: obs,
       shown: false
     });
@@ -112,7 +62,7 @@ export function setupObstacles(scene) {
   });
 
   if (scene.player) {
-        scene.physics.add.collider(scene.player, obstacles, (player, obstacle) => {
+    scene.physics.add.collider(scene.player, obstacles, (player, obstacle) => {
       const hintData = obstacleHints.find(hint => hint.obstacle === obstacle);
       
       if (hintData) {
@@ -136,8 +86,4 @@ export function setupObstacles(scene) {
   }
 
   return obstacles;
-}
-
-export function updateObstacles(scene) {
-  // futuro: mover ou animar obstáculos
 }
