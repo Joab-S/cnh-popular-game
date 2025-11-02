@@ -306,17 +306,17 @@ export default class StartCarGameScene extends Phaser.Scene {
       .setDepth(2);
 
     const arrowLeft = this.add
-      .image(width / 2 - 260, height - 230, "button_left")
+      .image(width / 2 - 240, height - 230, "button_left")
       .setScale(0.15)
       .setDepth(2);
 
     const arrowRight = this.add
-      .image(width / 2 - 180, height - 230, "button_right")
+      .image(width / 2 - 160, height - 230, "button_right")
       .setScale(0.15)
       .setDepth(2);
 
     const controls = this.add
-      .text(width / 2 - 220, height - 160, "para controlar", {
+      .text(width / 2 - 200, height - 160, "para controlar", {
         fontFamily: '"Silkscreen", monospace',
         fontSize: "16px",
         color: "#ffffff",
@@ -344,7 +344,7 @@ export default class StartCarGameScene extends Phaser.Scene {
       .setDepth(2);
 
     const interactText = this.add
-      .text(width / 2 + 220, height - 160, "para freiar/ré", {
+      .text(width / 2 + 220, height - 160, "para frear/ré", {
         fontFamily: '"Silkscreen", monospace',
         fontSize: "16px",
         color: "#ffffff",
