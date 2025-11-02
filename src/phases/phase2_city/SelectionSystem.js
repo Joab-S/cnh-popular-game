@@ -1,8 +1,8 @@
-import { setupObstacles } from '../../engine/physics/obstacleSystem.js';
-import * as CameraSystem from '../../engine/camera/cameraSystem.js';
-import { updateGenericInteractions } from '../../engine/interaction/interactionSystem.js';
-import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
-import { AREAS, WORLD_SIZE } from '../../core/config.js';
+import { setupObstacles } from "../../engine/physics/obstacleSystem.js";
+import * as CameraSystem from "../../engine/camera/cameraSystem.js";
+import { updateGenericInteractions } from "../../engine/interaction/interactionSystem.js";
+import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
+import { AREAS, WORLD_SIZE } from "../../core/config.js";
 
 /**
  * FASE 2 — Corrida até o DETRAN + Interação com NPC
@@ -11,10 +11,10 @@ export function startPhase2(scene) {
   const { width, height } = scene.scale;
 
   if (scene.interactiveObjects) {
-    scene.interactiveObjects = scene.interactiveObjects.filter(obj => 
-      obj.key !== 'pc'
+    scene.interactiveObjects = scene.interactiveObjects.filter(
+      (obj) => obj.key !== "pc"
     );
-    
+
     if (scene.pc) {
       scene.pc.destroy();
       scene.pc = null;
@@ -25,15 +25,23 @@ export function startPhase2(scene) {
   CameraSystem.initCamera(scene, scene.player, WORLD_SIZE, height);
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
-  scene.add.image((width / 2), height / 2, "city_bg")
+  scene.add
+    .image(width / 2, height / 2, "city_bg")
     .setDepth(-3)
     .setScale(0.48);
 
-  scene.add.image(width / 2 + 620, height / 2, "city_bg_2")
+  scene.add
+    .image(width / 2 + 620, height / 2, "city_bg_2")
     .setDepth(-3)
     .setScale(0.48);
-    
-  const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
+
+  const groundRect = scene.add.rectangle(
+    WORLD_SIZE / 2,
+    height - 30,
+    WORLD_SIZE,
+    64,
+    0x444444
+  );
   groundRect.setVisible(false);
 
   scene.physics.add.existing(groundRect, true);
@@ -49,15 +57,15 @@ export function startPhase2(scene) {
   scene.playerState = {
     canMove: true,
     inDialog: false,
-    currentArea: AREAS.city
+    currentArea: AREAS.city,
   };
 
   // === INTERFACE ===
-  scene.ui.showMessage('Encontre a autoescola logo mais a frente!');
+  scene.ui.showMessage("Encontre a autoescola logo mais a frente!");
 
   // === OBSTÁCULOS ===
   scene.obstacles = setupObstacles(scene);
-  
+
   let collisionDebugged = false;
 
   scene.physics.add.collider(scene.player, scene.obstacles, () => {
@@ -68,17 +76,17 @@ export function startPhase2(scene) {
 
   // === AUTOESCOLA ===
   const autoescola = new InteractiveObject(scene, {
-    key: 'autoescola',
+    key: "autoescola",
     x: width + 160,
     y: height - 190,
-    texture: 'autoescola',
-    scale: 0.60,
+    texture: "autoescola",
+    scale: 0.6,
     width: 200,
     height: 100,
-    proximity: { x: 80, y: 120 }, 
+    proximity: { x: 80, y: 120 },
     dialogs: [
-      'Olá! Parabéns por chegar até aqui.',
-      'Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.'
+      "Olá! Parabéns por chegar até aqui.",
+      "Antes de confirmar sua inscrição, preciso fazer algumas perguntas sobre o programa CNH Popular.",
     ],
     onInteract: () => {
       if (scene.playerState.quizActive) return;
@@ -86,8 +94,8 @@ export function startPhase2(scene) {
         startQuiz(scene);
       }
     },
-    label: '',
-    hintText: 'Pressione a tecla E para interagir',
+    label: "",
+    hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",
   });
 
@@ -105,7 +113,7 @@ export function updatePhase2(scene) {
 
 function startQuiz(scene) {
   const { width, height } = scene.scale;
-  
+
   scene.playerState.quizActive = true;
   scene.playerState.hasMission = true;
 
@@ -114,60 +122,65 @@ function startQuiz(scene) {
 
   const quiz = [
     {
-      text: 'Qual é o principal objetivo do programa CNH Popular?',
+      text: "Qual é o principal objetivo do programa CNH Popular?",
       options: [
-        'A) Oferecer carteira de motorista gratuita para toda a população',
-        'B) Facilitar o acesso à CNH para pessoas de baixa renda',
-        'C) Substituir todas as autoescolas particulares',
-        'D) Aumentar a arrecadação do governo'
+        "A) Oferecer carteira de motorista gratuita para toda a população",
+        "B) Facilitar o acesso à CNH para pessoas de baixa renda",
+        "C) Substituir todas as autoescolas particulares",
+        "D) Aumentar a arrecadação do governo",
       ],
       correct: 1,
-      explanation: 'O CNH Popular tem como objetivo principal facilitar o acesso à Carteira Nacional de Habilitação para pessoas de baixa renda, reduzindo os custos do processo.'
+      explanation:
+        "O CNH Popular tem como objetivo principal facilitar o acesso à Carteira Nacional de Habilitação para pessoas de baixa renda, reduzindo os custos do processo.",
     },
     {
-      text: 'Quem tem prioridade no programa CNH Popular?',
+      text: "Quem tem prioridade no programa CNH Popular?",
       options: [
-        'A) Pessoas com ensino superior completo',
-        'B) Desempregados há mais de 6 meses',
-        'C) Beneficiários de programas sociais como Bolsa Família',
-        'D) Proprietários de veículos'
+        "A) Pessoas com ensino superior completo",
+        "B) Desempregados há mais de 6 meses",
+        "C) Beneficiários de programas sociais como Bolsa Família",
+        "D) Proprietários de veículos",
       ],
       correct: 2,
-      explanation: 'Beneficiários de programas sociais como Bolsa Família têm prioridade, pois o programa é voltado para pessoas em situação de vulnerabilidade social.'
+      explanation:
+        "Beneficiários de programas sociais como Bolsa Família têm prioridade, pois o programa é voltado para pessoas em situação de vulnerabilidade social.",
     },
     {
-      text: 'Quais documentos são normalmente exigidos para inscrição?',
+      text: "Quais documentos são normalmente exigidos para inscrição?",
       options: [
-        'A) RG, CPF, comprovante de residência e comprovante de renda',
-        'B) Passaporte e carteira de trabalho',
-        'C) Certidão de casamento e título de eleitor',
-        'D) Carteira de identidade profissional e CNH anterior'
+        "A) RG, CPF, comprovante de residência e comprovante de renda",
+        "B) Passaporte e carteira de trabalho",
+        "C) Certidão de casamento e título de eleitor",
+        "D) Carteira de identidade profissional e CNH anterior",
       ],
       correct: 0,
-      explanation: 'Os documentos básicos são: RG, CPF, comprovante de residência e comprovante de renda para comprovar elegibilidade.'
+      explanation:
+        "Os documentos básicos são: RG, CPF, comprovante de residência e comprovante de renda para comprovar elegibilidade.",
     },
     {
-      text: 'O que cobre o benefício do CNH Popular?',
+      text: "O que cobre o benefício do CNH Popular?",
       options: [
-        'A) Apenas as taxas do DETRAN',
-        'B) Somente as aulas teóricas',
-        'C) Taxas, exames e curso teórico-prático',
-        'D) Apenas a emissão da carteira'
+        "A) Apenas as taxas do DETRAN",
+        "B) Somente as aulas teóricas",
+        "C) Taxas, exames e curso teórico-prático",
+        "D) Apenas a emissão da carteira",
       ],
       correct: 2,
-      explanation: 'O programa geralmente cobre as taxas do DETRAN, exames médicos e psicológicos, e o curso teórico-prático nas autoescolas credenciadas.'
+      explanation:
+        "O programa geralmente cobre as taxas do DETRAN, exames médicos e psicológicos, e o curso teórico-prático nas autoescolas credenciadas.",
     },
     {
-      text: 'Como são divulgados os resultados da seleção?',
+      text: "Como são divulgados os resultados da seleção?",
       options: [
-        'A) Apenas por telefone',
-        'B) No Diário Oficial e site do órgão responsável',
-        'C) Nas redes sociais do prefeito',
-        'D) Nas autoescolas participantes'
+        "A) Apenas por telefone",
+        "B) No Diário Oficial e site do órgão responsável",
+        "C) Nas redes sociais do prefeito",
+        "D) Nas autoescolas participantes",
       ],
       correct: 1,
-      explanation: 'Os resultados são divulgados oficialmente no Diário Oficial e no site do órgão responsável, garantindo transparência.'
-    }
+      explanation:
+        "Os resultados são divulgados oficialmente no Diário Oficial e no site do órgão responsável, garantindo transparência.",
+    },
   ];
 
   let current = 0;
@@ -180,65 +193,85 @@ function startQuiz(scene) {
   let autoAdvanceTimer = null;
   let countdownText = null;
 
-  const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
+  const overlay = scene.add
+    .rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
     .setScrollFactor(0)
     .setDepth(100);
 
-  const panel = scene.add.rectangle(width / 2, height / 2, width - 100, height - 100, 0x000000)
+  const panel = scene.add
+    .rectangle(width / 2, height / 2, width - 100, height - 100, 0x000000)
     .setStrokeStyle(2, 0xffffff)
     .setScrollFactor(0)
     .setDepth(101);
 
-  const progress = scene.add.text(width / 2, height / 2 - 200, '', {
-    fontSize: '14px',
-    color: '#bdc3c7',
-    fontFamily: '"Silkscreen", monospace',
-  }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
+  const progress = scene.add
+    .text(width / 2, height / 2 - 200, "", {
+      fontSize: "14px",
+      color: "#bdc3c7",
+      fontFamily: '"Silkscreen", monospace',
+    })
+    .setOrigin(0.5)
+    .setScrollFactor(0)
+    .setDepth(102);
 
-  const question = scene.add.text(width / 2, height / 2 - 140, '', {
-    fontSize: '16px',
-    color: '#ecf0f1',
-    align: 'center',
-    fontStyle: 'bold',
-    fontFamily: '"Silkscreen", monospace',
-    wordWrap: { width: width - 150 },
-    lineSpacing: 8
-  }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
+  const question = scene.add
+    .text(width / 2, height / 2 - 140, "", {
+      fontSize: "16px",
+      color: "#ecf0f1",
+      align: "center",
+      fontStyle: "bold",
+      fontFamily: '"Silkscreen", monospace',
+      wordWrap: { width: width - 150 },
+      lineSpacing: 8,
+    })
+    .setOrigin(0.5)
+    .setScrollFactor(0)
+    .setDepth(102);
 
   const buttons = [];
-  const feedback = scene.add.text(width / 2, height / 2 + 130, '', {
-    fontSize: '12px',
-    color: '#f39c12',
-    align: 'center',
-    fontFamily: '"Silkscreen", monospace',
-    wordWrap: { width: width - 120 }
-  }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
+  const feedback = scene.add
+    .text(width / 2, height / 2 + 130, "", {
+      fontSize: "12px",
+      color: "#f39c12",
+      align: "center",
+      fontFamily: '"Silkscreen", monospace',
+      wordWrap: { width: width - 120 },
+    })
+    .setOrigin(0.5)
+    .setScrollFactor(0)
+    .setDepth(102);
 
   function createAdvanceHint() {
     if (advanceHint) {
       advanceHint.destroy();
     }
-    
-    advanceHint = scene.add.text(width / 2, height - 30, 'Clique na tela ou pressione ESPAÇO para avançar', {
-      fontSize: '14px',
-      color: '#ffffff',
-      fontFamily: '"Silkscreen", monospace',
-      align: 'center'
-    })
-    .setOrigin(0.5)
-    .setScrollFactor(0)
-    .setDepth(102)
-    .setAlpha(0);
-    
+
+    advanceHint = scene.add
+      .text(
+        width / 2,
+        height - 30,
+        "Clique na tela ou pressione ESPAÇO para avançar",
+        {
+          fontSize: "14px",
+          color: "#ffffff",
+          fontFamily: '"Silkscreen", monospace',
+          align: "center",
+        }
+      )
+      .setOrigin(0.5)
+      .setScrollFactor(0)
+      .setDepth(102)
+      .setAlpha(0);
+
     scene.tweens.add({
       targets: advanceHint,
       alpha: 0.8,
       duration: 1000,
-      ease: 'Power2',
+      ease: "Power2",
       yoyo: true,
-      repeat: -1
+      repeat: -1,
     });
-    
+
     return advanceHint;
   }
 
@@ -246,7 +279,7 @@ function startQuiz(scene) {
     if (autoAdvanceTimer) {
       autoAdvanceTimer.remove();
     }
-    
+
     autoAdvanceTimer = scene.time.delayedCall(duration, () => {
       if (canAdvance) {
         advanceToNextQuestion();
@@ -258,9 +291,11 @@ function startQuiz(scene) {
     if (advanceKey) {
       advanceKey.destroy();
     }
-    
-    advanceKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-    advanceKey.on('down', () => {
+
+    advanceKey = scene.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.SPACE
+    );
+    advanceKey.on("down", () => {
       if (autoAdvanceTimer) {
         autoAdvanceTimer.remove();
       }
@@ -270,17 +305,18 @@ function startQuiz(scene) {
       }
       advanceToNextQuestion();
     });
-    
+
     if (clickZone) {
       clickZone.destroy();
     }
-    
-    clickZone = scene.add.zone(width / 2, height / 2, width, height)
+
+    clickZone = scene.add
+      .zone(width / 2, height / 2, width, height)
       .setScrollFactor(0)
       .setDepth(103)
       .setInteractive();
-    
-    clickZone.on('pointerdown', () => {
+
+    clickZone.on("pointerdown", () => {
       if (autoAdvanceTimer) {
         autoAdvanceTimer.remove();
       }
@@ -296,32 +332,32 @@ function startQuiz(scene) {
 
   function setupOptionKeys() {
     if (optionKeys) {
-      optionKeys.A.off('down');
-      optionKeys.B.off('down');
-      optionKeys.C.off('down');
-      optionKeys.D.off('down');
+      optionKeys.A.off("down");
+      optionKeys.B.off("down");
+      optionKeys.C.off("down");
+      optionKeys.D.off("down");
     }
-    
+
     optionKeys = {
       A: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A),
       B: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.B),
       C: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.C),
-      D: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
+      D: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D),
     };
-    
-    optionKeys.A.on('down', () => selectOption(0));
-    optionKeys.B.on('down', () => selectOption(1));
-    optionKeys.C.on('down', () => selectOption(2));
-    optionKeys.D.on('down', () => selectOption(3));
+
+    optionKeys.A.on("down", () => selectOption(0));
+    optionKeys.B.on("down", () => selectOption(1));
+    optionKeys.C.on("down", () => selectOption(2));
+    optionKeys.D.on("down", () => selectOption(3));
   }
 
   function selectOption(optionIndex) {
     if (canAdvance) return;
-    
+
     const q = quiz[current];
-    
+
     const btnIndex = optionIndex * 2;
-    
+
     if (buttons[btnIndex] && buttons[btnIndex].active) {
       buttons.forEach((b, index) => {
         if (index % 2 === 0) {
@@ -331,35 +367,39 @@ function startQuiz(scene) {
       });
 
       if (optionIndex === q.correct) {
+        scene.sound.play("goal_complete");
+
         buttons[btnIndex].setFillStyle(0x27ae60);
         buttons[btnIndex].setStrokeStyle(2, 0x2ecc71);
         if (buttons[btnIndex + 1]) {
-          buttons[btnIndex + 1].setColor('#ffffff');
+          buttons[btnIndex + 1].setColor("#ffffff");
         }
-        feedback.setText('✓ Correto! ' + q.explanation);
-        feedback.setColor('#2ecc71');
+        feedback.setText("✓ Correto! " + q.explanation);
+        feedback.setColor("#2ecc71");
         correctCount++;
       } else {
+        scene.sound.play("fail");
+
         buttons[btnIndex].setFillStyle(0xe74c3c);
         buttons[btnIndex].setStrokeStyle(2, 0xc0392b);
         if (buttons[btnIndex + 1]) {
-          buttons[btnIndex + 1].setColor('#ffffff');
+          buttons[btnIndex + 1].setColor("#ffffff");
         }
-        feedback.setText('✗ Incorreto. ' + q.explanation);
-        feedback.setColor('#e74c3c');
-        
+        feedback.setText("✗ Incorreto. " + q.explanation);
+        feedback.setColor("#e74c3c");
+
         const correctBtnIndex = q.correct * 2;
         if (buttons[correctBtnIndex]) {
           buttons[correctBtnIndex].setFillStyle(0x27ae60);
           buttons[correctBtnIndex].setStrokeStyle(2, 0x2ecc71);
           if (buttons[correctBtnIndex + 1]) {
-            buttons[correctBtnIndex + 1].setColor('#ffffff');
+            buttons[correctBtnIndex + 1].setColor("#ffffff");
           }
         }
       }
 
       canAdvance = true;
-      
+
       if (autoAdvanceTimer) {
         autoAdvanceTimer.remove();
       }
@@ -367,7 +407,7 @@ function startQuiz(scene) {
         countdownText.destroy();
         countdownText = null;
       }
-      
+
       createAdvanceHint();
       setupAdvanceControls();
     }
@@ -375,10 +415,10 @@ function startQuiz(scene) {
 
   function advanceToNextQuestion() {
     if (!canAdvance) return;
-    
+
     canAdvance = false;
     current++;
-    
+
     if (autoAdvanceTimer) {
       autoAdvanceTimer.remove();
       autoAdvanceTimer = null;
@@ -387,7 +427,7 @@ function startQuiz(scene) {
       countdownText.destroy();
       countdownText = null;
     }
-    
+
     if (current < quiz.length) {
       showQuestion();
     } else {
@@ -397,13 +437,15 @@ function startQuiz(scene) {
 
   function showQuestion() {
     const q = quiz[current];
-    
-    progress.setText(`Clique no item ou pressione a letra correspondente para responder`);
-    
+
+    progress.setText(
+      `Clique no item ou pressione a letra correspondente para responder`
+    );
+
     question.setText(q.text);
-    feedback.setText('');
+    feedback.setText("");
     canAdvance = false;
-    
+
     if (advanceHint) {
       advanceHint.destroy();
       advanceHint = null;
@@ -417,46 +459,51 @@ function startQuiz(scene) {
       countdownText = null;
     }
 
-    buttons.forEach(b => {
+    buttons.forEach((b) => {
       if (b.destroy) b.destroy();
     });
     buttons.length = 0;
 
     q.options.forEach((opt, i) => {
-      const yPos = height / 2 - 80 + (i * 55);
-      
-      const btnBg = scene.add.rectangle(width / 2, yPos, width - 150, 40, 0x000000)
+      const yPos = height / 2 - 80 + i * 55;
+
+      const btnBg = scene.add
+        .rectangle(width / 2, yPos, width - 150, 40, 0x000000)
         .setStrokeStyle(1, 0xffffff)
         .setScrollFactor(0)
         .setDepth(101)
         .setInteractive();
 
-      const btnText = scene.add.text(width / 2, yPos, opt, {
-        fontSize: '13px',
-        fontFamily: '"Silkscreen", monospace',
-        color: '#ecf0f1',
-        align: 'start',
-        wordWrap: { width: width - 200 },
-        lineSpacing: 4
-      }).setOrigin(0.5).setScrollFactor(0).setDepth(102);
+      const btnText = scene.add
+        .text(width / 2, yPos, opt, {
+          fontSize: "13px",
+          fontFamily: '"Silkscreen", monospace',
+          color: "#ecf0f1",
+          align: "start",
+          wordWrap: { width: width - 200 },
+          lineSpacing: 4,
+        })
+        .setOrigin(0.5)
+        .setScrollFactor(0)
+        .setDepth(102);
 
       let isHovering = false;
 
-      btnBg.on('pointerover', () => {
+      btnBg.on("pointerover", () => {
         if (isHovering) return;
         isHovering = true;
         btnBg.setFillStyle(0xffffff);
-        btnText.setColor('#000000');
+        btnText.setColor("#000000");
       });
 
-      btnBg.on('pointerout', () => {
+      btnBg.on("pointerout", () => {
         if (!isHovering) return;
         isHovering = false;
         btnBg.setFillStyle(0x000000);
-        btnText.setColor('#ffffff');
+        btnText.setColor("#ffffff");
       });
 
-      btnBg.on('pointerdown', () => {
+      btnBg.on("pointerdown", () => {
         selectOption(i);
       });
 
@@ -474,25 +521,37 @@ function startQuiz(scene) {
       advanceKey.destroy();
     }
     if (optionKeys) {
-      optionKeys.A.off('down');
-      optionKeys.B.off('down');
-      optionKeys.C.off('down');
-      optionKeys.D.off('down');
+      optionKeys.A.off("down");
+      optionKeys.B.off("down");
+      optionKeys.C.off("down");
+      optionKeys.D.off("down");
     }
-    
-    [overlay, panel, progress, question, feedback, advanceHint, clickZone, countdownText].forEach(el => {
+
+    [
+      overlay,
+      panel,
+      progress,
+      question,
+      feedback,
+      advanceHint,
+      clickZone,
+      countdownText,
+    ].forEach((el) => {
       if (el && el.destroy) el.destroy();
     });
-    
-    buttons.forEach(b => {
+
+    buttons.forEach((b) => {
       if (b && b.destroy) b.destroy();
     });
 
     scene.playerState.phase2Completed = true;
     scene.playerState.hasMission = false;
-    
-    const npcObject = scene.interactiveObjects.find(o => o.key === 'autoescola');
-    const dialog = 'Parabéns! Sua inscrição foi confirmada. Dirija-se à Clínica para iniciar seus exames médicos.';
+
+    const npcObject = scene.interactiveObjects.find(
+      (o) => o.key === "autoescola"
+    );
+    const dialog =
+      "Parabéns! Sua inscrição foi confirmada. Dirija-se à Clínica para iniciar seus exames médicos.";
     npcObject.dialogs = [dialog];
 
     scene.time.delayedCall(1000, () => {
