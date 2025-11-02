@@ -62,8 +62,8 @@ export default class StartCarGameScene extends Phaser.Scene {
       .setOrigin(0.5);
 
     this.startInstructions = this.add
-      .text(width / 2, height - 50, "Clique em qualquer lugar para começar", {
-        fontSize: "28px",
+      .text(width / 2, height - 50, "Clique em qualquer lugar ou aperte E para começar", {
+        fontSize: "18px",
         color: "black",
         fontFamily: '"Silkscreen", "Courier New", monospace',
       })
@@ -81,7 +81,7 @@ export default class StartCarGameScene extends Phaser.Scene {
       this.scene.start("CarGameScene");
     });
 
-    this.input.keyboard.once("keydown-SPACE", () => {
+    this.input.keyboard.once("keydown-E", () => {
       this.scene.start("CarGameScene");
     });
   }

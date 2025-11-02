@@ -89,7 +89,7 @@ export default class MemoryGameScene extends Phaser.Scene {
       .text(
         this.scale.width / 2,
         this.scale.height / 2 + 140,
-        "Clique em qualquer canto ou pressione ESPAÇO para começar",
+        "Clique em qualquer lugar ou pressione E para começar",
         {
           fontFamily: '"Silkscreen", monospace',
           fontSize: "18px",
@@ -108,10 +108,10 @@ export default class MemoryGameScene extends Phaser.Scene {
 
     this.input.once("pointerdown", this.startGame, this);
 
-    this.spaceKey = this.input.keyboard.addKey(
-      Phaser.Input.Keyboard.KeyCodes.SPACE
+    this.eKey = this.input.keyboard.addKey(
+      Phaser.Input.Keyboard.KeyCodes.E
     );
-    this.spaceKey.once("down", this.startGame, this);
+    this.eKey.once("down", this.startGame, this);
   }
 
   startGame() {

@@ -108,7 +108,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       .text(
         width / 2,
         height / 2 + 200,
-        "Clique em qualquer lugar para começar",
+        "Clique em qualquer lugar ou aperte E para começar",
         {
           fontSize: "18px",
           color: "#000000",
@@ -129,6 +129,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     });
 
     this.input.once("pointerdown", this.startGame, this);
+
+    this.input.keyboard.once("keydown-E", this.startGame, this);
   }
 
   setupGameUI() {
