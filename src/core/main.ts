@@ -4,14 +4,16 @@ import GameScene from "./GameScene.js";
 import CarGameScene from "./CarGameScene.js";
 import EndCarGameScene from "../engine/ui/EndCarGameScene.js";
 import OrientationOverlay from "./OrientationOverlay.js";
+import CreditsScene from "./CreditsScene.js";
 
 const config = {
   ...GAME_CONFIG,
   scene: [
+    CreditsScene,
     GameScene,
     CarGameScene,
     EndCarGameScene,
-    OrientationOverlay
+    OrientationOverlay,
   ],
 };
 new Phaser.Game(config);
