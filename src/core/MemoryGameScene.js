@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { CONFIG_SONG } from "./config";
+import { CONFIG_EFFECT, CONFIG_SONG } from "./config";
 
 const MAX_SEQUENCE_LENGTH = 5;
 
@@ -49,10 +49,10 @@ export default class MemoryGameScene extends Phaser.Scene {
     this.setUpStartScreen();
 
     this.soundsArray = [
-      this.sound.add("beep1"),
-      this.sound.add("beep2"),
-      this.sound.add("beep3"),
-      this.sound.add("beep4"),
+      this.sound.add("beep1", CONFIG_EFFECT),
+      this.sound.add("beep2", CONFIG_EFFECT),
+      this.sound.add("beep3", CONFIG_EFFECT),
+      this.sound.add("beep4", CONFIG_EFFECT),
     ];
 
     this.sound.play("memory_game_theme", CONFIG_SONG);
