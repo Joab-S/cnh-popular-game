@@ -78,7 +78,7 @@ export class IntroSystem {
       "ou clique na tela para continuar",
       width / 2,
       height - 80,
-      "button_action",
+      "button_action_2",
       0.15
     );
 
@@ -114,8 +114,8 @@ export class IntroSystem {
       .setFilter(Phaser.Textures.FilterMode.NEAREST);
 
     this.dialogBox = this.scene.add
-      .rectangle(width / 2, height - 230, width - 100, 200, 0xffffff, 0.9)
-      .setStrokeStyle(2, 0x000000)
+      .rectangle(width / 2, height - 230, width - 100, 200, 0x000000, 0.7)
+      .setStrokeStyle(3, 0xffffff)
       .setDepth(1);
 
     this.renderCurrentInstruction(width, height);
@@ -125,7 +125,7 @@ export class IntroSystem {
       "ou clique na tela para continuar",
       width / 2,
       height - 80,
-      "button_action",
+      "button_action_2",
       0.15
     );
 
@@ -168,7 +168,7 @@ export class IntroSystem {
         .text(width / 2, height - 230, current, {
           fontFamily: '"Silkscreen", monospace',
           fontSize: "18px",
-          color: "#000000",
+          color: "#ffffff",
           wordWrap: { width: width - 150 },
           align: "center",
           lineSpacing: 10,
@@ -199,7 +199,7 @@ export class IntroSystem {
         "ou clique na tela para continuar",
         width / 2,
         height - 80,
-        "button_action",
+        "button_action_2",
         0.15
       );
 
@@ -291,7 +291,7 @@ export class IntroSystem {
         "ou clique na tela para continuar",
         width / 2,
         height - 80,
-        "button_action",
+        "button_action_2",
         0.15
       );
 
@@ -366,7 +366,7 @@ export class IntroSystem {
       .text(width / 2, this.dialogBox.height - 50, "USE AS TECLAS", {
         fontFamily: '"Silkscreen", monospace',
         fontSize: "22px",
-        color: "#000000",
+        color: "#ffffff",
       })
       .setOrigin(0.5)
       .setDepth(2);
@@ -384,13 +384,13 @@ export class IntroSystem {
       .text(width / 2 - 150, height - 160, "para se movimentar", {
         fontFamily: '"Silkscreen", monospace',
         fontSize: "16px",
-        color: "#000000",
+        color: "#ffffff",
       })
       .setOrigin(0.5)
       .setDepth(2);
 
     const keyE = this.scene.add
-      .image(width / 2 + 180, height - 230, "button_action")
+      .image(width / 2 + 180, height - 230, "button_action_2")
       .setScale(0.2)
       .setDepth(2);
 
@@ -398,7 +398,7 @@ export class IntroSystem {
       .text(width / 2 + 180, height - 160, "para interagir", {
         fontFamily: '"Silkscreen", monospace',
         fontSize: "16px",
-        color: "#000000",
+        color: "#ffffff",
       })
       .setOrigin(0.5)
       .setDepth(2);
