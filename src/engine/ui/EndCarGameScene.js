@@ -12,7 +12,7 @@ export default class EndCarGameScene extends Phaser.Scene {
 
   preload() {
     this.load.image("victory-bg", "./assets/images/car-victory.jpeg");
-    this.load.image("fail-bg", "./assets/images/car-fail.jpeg");
+    this.load.image("fail-bg", "./assets/images/car-fail.png");
   }
 
   create() {
@@ -62,7 +62,9 @@ export default class EndCarGameScene extends Phaser.Scene {
       .text(
         width / 2,
         height / 2 + 20,
-        this.victory ? "CLIQUE PARA CONTINUAR" : "CLIQUE PARA TENTAR NOVAMENTE",
+        this.victory
+          ? "CLIQUE OU APERTE E PARA CONTINUAR"
+          : "CLIQUE OU APERTE E PARA TENTAR NOVAMENTE",
         {
           fontSize: "28px",
           color: "white",
@@ -88,7 +90,7 @@ export default class EndCarGameScene extends Phaser.Scene {
         this.sound.play("main_theme", CONFIG_SONG);
       });
 
-      this.input.keyboard.once("keydown-SPACE", () => {
+      this.input.keyboard.once("keydown-E", () => {
         this.game.events.emit("car:minigame:end", { victory: this.victory });
         this.scene.stop();
         this.sound.stopAll();
@@ -99,7 +101,7 @@ export default class EndCarGameScene extends Phaser.Scene {
         this.scene.start("CarGameScene");
       });
 
-      this.input.keyboard.once("keydown-SPACE", () => {
+      this.input.keyboard.once("keydown-E", () => {
         this.scene.start("CarGameScene");
       });
     }

@@ -35,6 +35,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.load.image("sign_curvy", "./assets/images/placa_sinuoso.png");
     this.load.audio("sign_game_theme", "./assets/sounds/quiz_theme.mp3");
     this.load.audio("select_sign", "./assets/sounds/select_sign.wav");
+    this.load.audio("fail", "./assets/sounds/fail.wav");
+    this.load.audio("goal_complete", "./assets/sounds/goal_complete.wav");
   }
 
   create() {
@@ -109,7 +111,7 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       .text(
         width / 2,
         height / 2 + 200,
-        "Clique em qualquer lugar para começar",
+        "Clique em qualquer lugar ou aperte E para começar",
         {
           fontSize: "18px",
           color: "#000000",
@@ -130,6 +132,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     });
 
     this.input.once("pointerdown", this.startGame, this);
+
+    this.input.keyboard.once("keydown-E", this.startGame, this);
   }
 
   setupGameUI() {
@@ -447,6 +451,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   }
 
   endGame(isVictory) {
+    this.sound.play("goal_complete");
+
     this.isGameActive = false;
 
     if (this.spawnTimer) this.spawnTimer.remove();
