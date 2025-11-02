@@ -37,9 +37,9 @@ export function startPhase3(scene) {
     height: 100,
     proximity: { x: 80, y: 120 }, 
     dialogs: [
-        `Olá, seja ${bemVindo} à clínica credenciada.`,
-        'Vou realizar o exame psicotécnico, que avalia suas condições psicológicas para dirigir.',
-        'É um teste rápido que verifica atenção, memória e habilidades necessárias para a CNH.',
+        `Olá, seja ${bemVindo}!`,
+        'Vamos agora dar início ao exame psicotécnico.',
+        'É um teste rápido que verifica atenção, memória e habilidades necessárias para conduzir um veículo.',
         'Vamos dar início ao exame agora.'
     ],
     onInteract: () => {
@@ -69,7 +69,7 @@ export function startPhase3(scene) {
     currentArea: AREAS.clinic
   };
 
-  scene.ui.showMessage('Encontre a clínica do exame psicotécnico logo mais a frente!');
+  scene.ui.showMessage('Encontre a clínica logo mais a frente!');
 }
 
 export function updatePhase3(scene) {
@@ -130,12 +130,10 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   const clinic = scene.interactiveObjects.find(o => o.key === 'clinic');
   if (clinic) {
     clinic.dialogs = [
-      "Incrível...",
-      "Nem mesmo Salomão, em toda a sua sabedoria, teria se saído melhor!",
-      "Você passou no exame psicoténico com louvor!",
-      "Você é totalmente capaz, siga em frente!"
+      "Parabéns! Você passou no exame psicoténico com louvor!",
+      "Agora, siga em frente para sua próxima missão!"
     ];
   }
 
-  scene.ui.showMessage("Foi descoberto que você é altamente genial, siga em frente feliz!");
+  scene.ui.showMessage("Você concluiu o exame com sucesso! Siga em frente para sua próxima missão.");
 }

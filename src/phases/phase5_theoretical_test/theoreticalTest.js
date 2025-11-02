@@ -134,11 +134,11 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   const pronome = isGirl ? "aprovada" : "aprovado";
 
   const theoreticalObject = scene.interactiveObjects.find(o => o.key === 'detran');
-  const dialog = `Parabéns, você foi ${pronome}! Siga agora para as aulas práticas.`;
+  const dialog = `Parabéns, você foi ${pronome}! Siga em frente para sua próxima missão.`;
   theoreticalObject.dialogs = [
     dialog
   ];
 
-  const msg = "Você completou o exame teórico!";
+  const msg = "Você completou o exame teórico! Siga em frente para sua próxima missão.";
   scene.ui.showMessage(msg);
 }
