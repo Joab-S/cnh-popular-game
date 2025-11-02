@@ -23,6 +23,8 @@ function createCarCutscene(scene) {
 
   scene.sound.stopAll();
 
+  scene.input.keyboard.enabled = false;
+
   const drivingSound = scene.sound.add("driving_car", {
     volume: 0.2,
     loop: true,
@@ -205,8 +207,8 @@ export function startPhase8(scene) {
     dialogs: [
       `Que vitória, hein, amig${pronome}?`,
       "Lembra das três marchas da vida? Respeito, família e controle?",
-      `A quarta marcha, nós dois construiremos juntos, campe${
-        isGirl ? "ã" : "ão"
+      `A quarta marcha, nós dois construiremos juntos, conduto${
+        isGirl ? "ra" : "r"
       }!`,
     ],
     onInteract: () => {

@@ -37,7 +37,7 @@ export function startPhase6(scene) {
     currentArea: AREAS.drivingSchool2
   };
 
-  scene.ui.showMessage('Encontre seu instrutor das aulas práticas logo mais a frente!');
+  scene.ui.showMessage('Fale com seu instrutor das aulas práticas logo mais a frente!');
 
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "candidata" : "candidato";
