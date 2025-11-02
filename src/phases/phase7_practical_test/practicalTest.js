@@ -41,7 +41,7 @@ export function startPhase7(scene) {
 
   scene.miniGameKey = 'StartCarGameScene';
 
-  scene.ui.showMessage('Encontre seu instrutor do exame prático logo mais a frente.');
+  scene.ui.showMessage('Encontre seu instrutor do exame prático logo mais a frente!');
 
   // === INSTRUTOR ===
   const isGirl = scene.playerState.character === "girl";

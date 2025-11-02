@@ -171,6 +171,8 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("wasd_keys", "./assets/images/wasd_keys.png");
     this.load.image("back_arrow_left", "./assets/images/seta-esquerda.png");
 
+    this.load.image("icon_alert", "./assets/images/icon_alert.png");
+
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
   }
 

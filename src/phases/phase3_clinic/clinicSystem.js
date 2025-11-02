@@ -68,6 +68,8 @@ export function startPhase3(scene) {
     inDialog: false,
     currentArea: AREAS.clinic
   };
+
+  scene.ui.showMessage('Encontre a clínica do exame psicotécnico logo mais a frente!');
 }
 
 export function updatePhase3(scene) {
