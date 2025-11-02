@@ -36,6 +36,7 @@ export default class CarGameScene extends Phaser.Scene {
     this.load.image("arrow-down", "./assets/images/seta-baixo.png");
 
     this.load.audio("fail", "./assets/sounds/fail.wav");
+    this.load.audio("goal_complete", "./assets/sounds/goal_complete.wav");
   }
 
   create() {
@@ -179,6 +180,7 @@ export default class CarGameScene extends Phaser.Scene {
           }
 
           if (other.label === "destination") {
+            this.sound.play("goal_complete");
             console.log("Parabéns! Você chegou ao destino!");
             this.scene.start("EndScene", { victory: true });
           }
