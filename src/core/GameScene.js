@@ -164,6 +164,9 @@ export default class GameScene extends Phaser.Scene {
     this.load.audio("jump", "./assets/sounds/jump.wav");
     this.load.audio("item", "./assets/sounds/item.wav");
     this.load.audio("click", "./assets/sounds/click.wav");
+    this.load.audio("fail", "./assets/sounds/fail.wav");
+    this.load.audio("goal_complete", "./assets/sounds/goal_complete.wav");
+
     this.load.image("arrow_keys", "./assets/images/arrow_keys.png");
     this.load.image("wasd_keys", "./assets/images/wasd_keys.png");
     this.load.image("back_arrow_left", "./assets/images/seta-esquerda.png");
