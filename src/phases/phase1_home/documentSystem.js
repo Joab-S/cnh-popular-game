@@ -23,7 +23,7 @@ export function setupDocuments(scene) {
 
   const documentsData = [
     {
-      id: 'RG',
+      id: 'Documento de Identidade',
       key: 'doc_rg',
       x: 455,
       spawnY: 120,
@@ -39,7 +39,7 @@ export function setupDocuments(scene) {
       desc: 'Cadastro de Pessoa Física, usado em cadastros e registros.'
     },
     {
-      id: 'CR',
+      id: 'Comprovante de Residência',
       key: 'doc_comprovante',
       x: 200,
       spawnY: 80,
@@ -47,7 +47,7 @@ export function setupDocuments(scene) {
       desc: 'Comprovante de residência, usado para confirmar seu endereço.'
     },
     {
-      id: 'CRE',
+      id: 'Comprovante de Renda',
       key: 'doc_comprovante_renda',
       x: 660,
       spawnY: 80,
@@ -135,7 +135,7 @@ function collectDocument(scene, doc) {
   playerState.collectedDocs.push(doc.docId);
 
   // Feedback visual e inventário
-  scene.ui.showMessage(`Você encontrou o ${doc.docId}!\n${doc.docDesc}`);
+  scene.ui.showMessage(`Você encontrou o ${doc.docId}!`);
   scene.ui.addToInventory(doc.texture.key);
 
   // Checa progresso
@@ -158,12 +158,12 @@ function checkMissionProgress(scene) {
 
     const pcObject = scene.interactiveObjects.find(o => o.key === 'pc');
     pcObject.dialogs = [
-      'Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!'
+      'Etapa de coleta de documentos concluída! Agora, vamos em frente para a próxima missão!'
     ];
 
     // Feedback e encerramento
     scene.time.delayedCall(2000, () => {
-      scene.ui.showMessage("Você foi inscrito na CNH Popular! Agora, vamos em frente para a próxima etapa!");
+      scene.ui.showMessage("Etapa de coleta de documentos concluída! Agora, vamos em frente para a próxima missão!");
     });
   }
 }
