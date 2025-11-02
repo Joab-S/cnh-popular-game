@@ -35,6 +35,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
     this.load.image("sign_curvy", "./assets/images/placa_sinuoso.png");
     this.load.audio("sign_game_theme", "./assets/sounds/quiz_theme.mp3");
     this.load.audio("select_sign", "./assets/sounds/select_sign.wav");
+    this.load.audio("fail", "./assets/sounds/fail.wav");
+    this.load.audio("goal_complete", "./assets/sounds/goal_complete.wav");
   }
 
   create() {
@@ -449,6 +451,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
   }
 
   endGame(isVictory) {
+    this.sound.play("goal_complete");
+
     this.isGameActive = false;
 
     if (this.spawnTimer) this.spawnTimer.remove();

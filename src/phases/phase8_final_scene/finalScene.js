@@ -3,10 +3,6 @@ import { AREAS, CONFIG_EFFECT, WORLD_SIZE } from "../../core/config.js";
 import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
 
 function createCarCutscene(scene) {
-  if (scene.hasFinished === true) return;
-
-  scene.hasFinished = true;
-
   const existingCar = scene.interactiveObjects.find(
     (obj) => obj.key === "car_final"
   );
@@ -130,8 +126,6 @@ function showEndGameModal(scene) {
 
 export function startPhase8(scene) {
   const { width, height } = scene.scale;
-
-  scene.hasFinished = false;
 
   scene.playerState = {
     ...scene.playerState,
@@ -303,12 +297,4 @@ export function startPhase8(scene) {
 
 export function updatePhase8(scene) {
   if (scene.playerState.currentArea !== AREAS.finalScene) return;
-
-  if (scene.hasFinished) {
-    const existingCar = scene.interactiveObjects.find(
-      (obj) => obj.key === "car_final"
-    );
-
-    existingCar.disableInteractive();
-  }
 }

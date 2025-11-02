@@ -34,6 +34,8 @@ export default class CarGameScene extends Phaser.Scene {
     this.load.image("arrow-right", "./assets/images/seta-direita.png");
     this.load.image("arrow-left", "./assets/images/seta-esquerda.png");
     this.load.image("arrow-down", "./assets/images/seta-baixo.png");
+
+    this.load.audio("fail", "./assets/sounds/fail.wav");
   }
 
   create() {
@@ -253,6 +255,8 @@ export default class CarGameScene extends Phaser.Scene {
 
   handleGameOver() {
     this.cameras.main.shake(200, 0.01);
+
+    this.sound.play("fail");
 
     this.time.delayedCall(500, () => {
       this.cameras.main.fade(500, 0, 0, 0);
