@@ -170,6 +170,11 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("arrow_keys", "./assets/images/arrow_keys.png");
     this.load.image("wasd_keys", "./assets/images/wasd_keys.png");
     this.load.image("back_arrow_left", "./assets/images/seta-esquerda.png");
+    this.load.image("button_action_2", "./assets/images/button-action-2.png");
+    this.load.image("button_left_2", "./assets/images/button-left-2.png");
+    this.load.image("button_right_2", "./assets/images/button-right-2.png");
+    this.load.image("button_a", "./assets/images/button-a.png");
+    this.load.image("button_d", "./assets/images/button-d.png");
 
     this.load.image("icon_alert", "./assets/images/icon_alert.png");
 
