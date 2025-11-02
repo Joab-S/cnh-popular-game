@@ -306,7 +306,7 @@ export default class GameScene extends Phaser.Scene {
         "CNH Popular Ceará - Inscrições Abertas!",
         "O programa oferece a 1ª via da Carteira Nacional de Habilitação de forma gratuita para pessoas de baixa renda.",
         "Para se inscrever, você precisa ter entre 18 e 65 anos e morar no estado do Ceará há pelo menos 2 anos.",
-        "O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exame médico e provas.",
+        "O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exame médico e avaliações.",
         "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF, comprovante de residência e de renda.",
         "Encontre seus documentos para começar o processo!",
       ],
