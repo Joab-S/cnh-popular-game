@@ -303,7 +303,7 @@ export default class GameScene extends Phaser.Scene {
 
     const pc = new InteractiveObject(this, {
       key: "pc",
-      x: width - 235,
+      x: width - 234,
       y: height - 160,
       texture: "pc",
       label: "",
