@@ -31,7 +31,7 @@ export default class EndCarGameScene extends Phaser.Scene {
 
     if (this.victory) {
       this.add
-        .text(width / 2, height / 2 - 150, "VOCÊ GANHOU", {
+        .text(width / 2, height / 2 - 150, "VOCÊ PASSOU", {
           fontSize: "64px",
           color: "white",
           fontFamily: '"Silkscreen", "Courier New", monospace',

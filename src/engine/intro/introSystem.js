@@ -12,10 +12,10 @@ export class IntroSystem {
 
     this.instructions = [
       "Bem-vindo ao CNH Popular - O Jogo!",
-      "Neste jogo, você vai vivenciar a jornada para obter sua Carteira Nacional de Habilitação através do programa CNH Popular do Ceará.",
-      "Você precisará passar por todas as etapas: documentos, aulas teóricas, exames médicos, aulas práticas e as provas finais.",
+      "Neste jogo, você vai vivenciar a jornada para obter sua Carteira Nacional de Habilitação através do programa CNH popular do Governo do Estado do Ceará.",
+      "Você precisará passar por todas as etapas: coleta de documentos, exames médicos, aulas teóricas, aulas práticas e provas finais.",
       "CONTROLS_SCREEN",
-      "Explore os ambientes, complete missões e boa sorte na sua jornada!",
+      "Explore os ambientes, complete as missões e boa sorte na sua jornada!",
     ];
 
     this.coverImage = null;

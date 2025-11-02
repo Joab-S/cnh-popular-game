@@ -53,17 +53,17 @@ export function startPhase6(scene) {
     height: 100,
     proximity: { x: 80, y: 120 }, 
     dialogs: [
-      `Olá, ${pronome}! ${bemVindo} às aulas teóricas.`,
+      `Olá, ${pronome}! ${bemVindo} às aulas práticas.`,
       'Aqui você vai aprender a controlar o veículo na prática: embreagem, câmbio, setas e espelhos.',
-      'São 20 horas/aula obrigatórias, começando no pátio e evoluindo para o trânsito real.',
-      'Você vai praticar: baliza, estacionamento, rampas, mudança de marcha e direção no trânsito.',
+      'São 20h/aula obrigatórias em situação de trânsito real.',
+      'Você vai praticar: baliza, ladeiras, mudança de marcha e direção no trânsito.',
       'O instrutor estará ao seu lado para orientar e garantir sua segurança durante todo o processo.',
       'Lembre-se: sempre use cinto de segurança, ajuste os espelhos e verifique os pedais antes de iniciar.',
       'Boa sorte nos estudos!'
   ],
     onInteract: () => {
         if (!scene.playerState.phase6Completed) {
-          scene.ui.showMessage(`Pode seguir em frente, campe${isGirl ? "ã" : "ão"}!`);
+          scene.ui.showMessage(`Siga em frente para sua próxima missão.`);
           scene.playerState.phase6Completed = true;
         }
   },

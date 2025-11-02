@@ -41,7 +41,7 @@ export function startPhase7(scene) {
 
   scene.miniGameKey = 'StartCarGameScene';
 
-  scene.ui.showMessage('Encontre seu instrutor do exame prático logo mais a frente!');
+  scene.ui.showMessage('Fale com seu instrutor do exame prático logo mais a frente!');
 
   // === INSTRUTOR ===
   const isGirl = scene.playerState.character === "girl";
@@ -55,7 +55,7 @@ export function startPhase7(scene) {
     height: 100,
     proximity: { x: 80, y: 120 }, 
     dialogs: [
-      'Olá, sou o Tio Toretto, seu instrutor para o exame prático de direção.',
+      'Olá, sou o instrutor responsável por seu exame prático de direção.',
       'Aqui, não é só sobre dirigir... é sobre respeito, controle e família.',
       'Você tem que aprender a sentir o carro, não só a pilotar.',
       'Respira fundo... acelera com calma... sente o motor.',
@@ -138,11 +138,10 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
 
   const practicalObject = scene.interactiveObjects.find(o => o.key === 'instrutor_exame_pratico');
   const dialog = [
-    "Parabéns. Você passou.",
+    "Parabéns! Você concluiu essa etapa com sucesso.",
     "Mas a estrada de verdade começa agora.",
     "Na rua, ninguém te dá segunda chance. É você, o carro e suas escolhas.",
     "Família, respeito e controle... essas são as três marchas que nunca podem falhar.",
-    "E nunca esqueça: quem dirige com o coração, nunca perde o controle.",
     "Bem-vindo à família, piloto!"
   ]
   practicalObject.dialogs = dialog;

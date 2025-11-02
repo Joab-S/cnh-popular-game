@@ -189,7 +189,7 @@ export function startPhase8(scene) {
     label: "",
     dialogs: [
       `Estou orgulhosa de você, filh${pronome}!`,
-      "Nossa família sempre soube que você conseguiria concluir esse processo com muito respeito e controle!",
+      "Parabéns por ter concluído todas as suas missões com sucesso!",
     ],
     hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",
@@ -232,7 +232,7 @@ export function startPhase8(scene) {
     dialogs: [
       `Finalmente m${meu_minha} irm${
         isGirl ? "ã" : "ão"
-      } vai poder me levar até meu restaurante preferido, o 'Comida Boa'! Nunca fui tão feliz!`,
+      } vai poder me levar até meu restaurante preferido, que tem a comida muito boa!`,
     ],
     hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",
@@ -249,7 +249,7 @@ export function startPhase8(scene) {
       `M${meu_minha} querid${pronome}, vou te falar uma coisa...`,
       "Eu já vendi muito mel durante a minha vida...",
       "Mas nenhum mel tem a doçura de te ver conquistando sua habilitação.",
-      "Meus dias serão muito mais adocicados pela felicidade do seu sucesso!",
+      "Parabéns por sua conquista!",
     ],
     hintText: "Pressione a tecla E para interagir",
     hintTexture: "button_action",

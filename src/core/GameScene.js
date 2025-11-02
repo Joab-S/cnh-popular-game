@@ -302,8 +302,8 @@ export default class GameScene extends Phaser.Scene {
       dialogs: [
         "CNH Popular Ceará - Inscrições Abertas!",
         "O programa oferece a 1ª via da Carteira Nacional de Habilitação de forma gratuita para pessoas de baixa renda.",
-        "Para se inscrever, você precisa: Ter entre 18 e 65 anos, ser de família de baixa renda e morar no Ceará há pelo menos 2 anos.",
-        "O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exame médico e provas teórica e prática.",
+        "Para se inscrever, você precisa ter entre 18 e 65 anos e morar no estado do Ceará há pelo menos 2 anos.",
+        "O processo tem as etapas de inscrição, entrega de documentos, aulas teóricas e práticas, exame médico e provas.",
         "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF, comprovante de residência e de renda.",
         "Encontre seus documentos para começar o processo!",
       ],
@@ -399,7 +399,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.time.delayedCall(1000, () => {
       this.ui.showMessage(
-        "Aproxime-se do computador e aperte a TECLA E para começar sua jornada!"
+        "Interaja com o computador para começar sua jornada!"
       );
     });
 

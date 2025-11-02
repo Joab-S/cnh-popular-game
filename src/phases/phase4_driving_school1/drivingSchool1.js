@@ -35,7 +35,7 @@ export function startPhase4(scene) {
     currentArea: AREAS.drivingSchool1
   };
 
-  scene.ui.showMessage('Encontre seu professor das aulas teóricas logo mais a frente!');
+  scene.ui.showMessage('Fale com seu professor das aulas teóricas logo mais a frente!');
 
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "futura motorista" : "futuro motorista";
@@ -46,7 +46,7 @@ export function startPhase4(scene) {
     `Olá, ${pronome}! ${bemVindo} às aulas teóricas.`,
     "Aqui você vai aprender as regras de trânsito, sinalização, direção defensiva e primeiros socorros.",
     "São 45 horas/aula obrigatórias, divididas em conteúdo legislativo e prático.",
-    `Ao final, fará uma prova teórica no DETRAN. Precisa acertar pelo menos 70% para ser ${aprovado}.`,
+    `Ao final, você fará uma prova teórica no DETRAN. Você precisa acertar pelo menos 70% para ser ${aprovado}.`,
     "Preste atenção nas aulas e faça os simulados. Isso vai te ajudar muito!",
     "Boa sorte nos estudos!"
   ];
@@ -64,7 +64,7 @@ export function startPhase4(scene) {
     onInteract: () => {
         if (!scene.playerState.phase4Completed) {
           console.log('Iniciando aulas teóricas...');
-          scene.ui.showMessage(`Pode seguir em frente, campe${isGirl ? "ã" : "ão"}!`);
+          scene.ui.showMessage(`Siga em frente para sua próxima missão!`);
           scene.playerState.phase4Completed = true;
         }
   },
