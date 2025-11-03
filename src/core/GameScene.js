@@ -38,8 +38,6 @@ import { IntroSystem } from "../engine/intro/introSystem.js"; // NOVO IMPORT
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
-    this.selectedCharacter = null;
-    this.playerTexture = null;
     this.intro = new IntroSystem(this);
   }
 
