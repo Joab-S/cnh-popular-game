@@ -98,7 +98,7 @@ export default class CreditsScene extends Phaser.Scene {
     });
 
     let elapsed = 0;
-    const duration = 60000;
+    const duration = 30000;
     const startOffset = height + 250;
     const endOffset = -height * 0.8;
     const fadeHeight = height * 0.25;
@@ -112,7 +112,7 @@ export default class CreditsScene extends Phaser.Scene {
         const baseY = Phaser.Math.Interpolation.Linear([startOffset, endOffset], t);
 
         // Acúmulo de altura visual ajustado conforme escala
-        let accumulatedY = baseY * 0.5;
+        let accumulatedY = baseY * 0.6;
 
         texts.forEach((text, i) => {
           const distance = height - accumulatedY;

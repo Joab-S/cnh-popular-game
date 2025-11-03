@@ -32,7 +32,7 @@ export function checkTransitions(scene) {
     player.x >= transition.sceneEndX
   ) {
     if (playerState.docsMissionCompleted) {
-      goToArea(scene, AREAS.city);
+      goToArea(scene, AREAS.finalScene);
     } else {
       showWarning(
         scene, 

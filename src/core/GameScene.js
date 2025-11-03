@@ -337,21 +337,23 @@ export default class GameScene extends Phaser.Scene {
 
     this.physics.add.collider(this.player, this.ground.ground);
 
-    this.playerState = createPlayerState();
-    const _stateRef = getPlayerStateInstance();
+    const _stateRef = createPlayerState();
 
-    Object.defineProperty(this, "playerState", {
-      configurable: false,
-      enumerable: true,
-      get() {
-        return _stateRef;
-      },
-      set(newVal) {
-        if (newVal && typeof newVal === "object") {
-          Object.assign(_stateRef, newVal);
-        }
-      },
-    });
+    // Define a propriedade apenas se ainda não existir
+    if (!Object.getOwnPropertyDescriptor(this, "playerState")) {
+      Object.defineProperty(this, "playerState", {
+        configurable: false,
+        enumerable: true,
+        get() {
+          return _stateRef;
+        },
+        set(newVal) {
+          if (newVal && typeof newVal === "object") {
+            Object.assign(_stateRef, newVal);
+          }
+        },
+      });
+    }
 
     const bedY = this.scale.height - 130;
     this.bed = this.add

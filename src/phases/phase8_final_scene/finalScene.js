@@ -1,6 +1,7 @@
 import * as CameraSystem from "../../engine/camera/cameraSystem.js";
 import { AREAS, CONFIG_EFFECT, WORLD_SIZE } from "../../core/config.js";
 import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
+import { resetPlayerState } from "../../engine/player/playerState.js";
 
 function createCarCutscene(scene) {
   const existingCar = scene.interactiveObjects.find(
@@ -122,6 +123,10 @@ function showEndGameModal(scene) {
     title,
     message,
   };
+
+  scene.time.delayedCall(3000, () => {
+    scene.scene.start("CreditsScene", { restart: true });
+  });
 }
 
 export function startPhase8(scene) {
