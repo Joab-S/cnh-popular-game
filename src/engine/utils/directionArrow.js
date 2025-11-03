@@ -117,6 +117,39 @@ export class DirectionArrow {
     }
   }
 
+  shouldHideNearCar() {
+    if (!this.scene || !this.scene.interactiveObjects) return false;
+    
+    const car = this.scene.interactiveObjects.find(obj => obj.key === "car_final");
+    if (!car || !car.object) return false;
+
+    const distance = Phaser.Math.Distance.Between(
+      this.scene.player.x,
+      this.scene.player.y,
+      car.object.x,
+      car.object.y
+    );
+    
+    const proximityDistance = 200;
+    
+    return distance < proximityDistance;
+  }
+
+  update() {
+    if (!this.arrow) return;
+    
+    if (this.shouldHideNearCar()) {
+      this.arrow.setVisible(false);
+    } else {
+      const shouldShow = this.shouldShow() && !this.scene.playerState.inDialog;
+      this.arrow.setVisible(shouldShow);
+    }
+
+    if (this.arrow.visible && this.target) {
+      this.updateArrowPosition();
+    }
+  }
+
   destroy() {
     this.stopReappear();
     this.hide();

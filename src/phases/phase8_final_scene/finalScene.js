@@ -321,5 +321,9 @@ export function startPhase8(scene) {
 }
 
 export function updatePhase8(scene) {
+  if (scene.directionArrow) {
+    scene.directionArrow.update();
+  }
+
   if (scene.playerState.currentArea !== AREAS.finalScene) return;
 }
