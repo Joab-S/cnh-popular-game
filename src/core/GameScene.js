@@ -34,6 +34,7 @@ import { updatePhase7 } from "../phases/phase7_practical_test/practicalTest.js";
 import { updatePhase8 } from "../phases/phase8_final_scene/finalScene.js";
 import { enableDebug, setupDebugToggle } from "../engine/utils/enableDebug.js";
 import { IntroSystem } from "../engine/intro/introSystem.js"; // NOVO IMPORT
+import { DirectionArrow } from "../engine/utils/directionArrow.js";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -41,6 +42,12 @@ export default class GameScene extends Phaser.Scene {
     this.selectedCharacter = null;
     this.playerTexture = null;
     this.intro = new IntroSystem(this);
+
+    this.arrow = null;
+    this.arrowTimer = null;
+    this.arrowTween = null;
+    this.shouldShowArrow = false;
+    this.arrowCooldown = false;
   }
 
   init(data) {
@@ -178,6 +185,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("button_d", "./assets/images/button-d.png");
     this.load.image("button_w", "./assets/images/button-w.png");
 
+    this.load.image("arrow_forward", "./assets/images/seta-direita.png");
     this.load.image("icon_alert", "./assets/images/icon_alert.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
@@ -218,7 +226,15 @@ export default class GameScene extends Phaser.Scene {
       return;
     }
 
+    this.directionArrow = new DirectionArrow(this);
+
     this.startMainGame();
+  }
+
+  onDocumentsCollected() {
+    this.time.delayedCall(1000, () => {
+      this.directionArrow.scheduleReappear(10000, AREAS.home);
+    });
   }
 
   setupCharacterSelection(callback) {
@@ -328,6 +344,10 @@ export default class GameScene extends Phaser.Scene {
       hintText: "Pressione a tecla E para interagir",
       hintTexture: "button_action",
       scale: 0.35,
+    });
+
+    this.time.delayedCall(2000, () => {
+      this.directionArrow.showRight();
     });
 
     this.physics.add.collider(pc, this.ground.ground);

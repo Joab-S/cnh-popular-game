@@ -1,6 +1,7 @@
 import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
+import { DirectionArrow } from '../../engine/utils/directionArrow.js';
 
 export function startPhase4(scene) {
   const { width, height } = scene.scale;
@@ -37,6 +38,12 @@ export function startPhase4(scene) {
 
   scene.ui.showMessage('Fale com seu professor das aulas teóricas logo mais a frente!');
 
+  scene.directionArrow = new DirectionArrow(scene);
+  
+  scene.time.delayedCall(1000, () => {
+    scene.directionArrow.showRight();
+  });
+
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "futura motorista" : "futuro motorista";
   const bemVindo = isGirl ? "Bem-vinda" : "Bem-vindo";
@@ -66,6 +73,8 @@ export function startPhase4(scene) {
           console.log('Iniciando aulas teóricas...');
           scene.ui.showMessage(`Siga em frente para sua próxima missão!`);
           scene.playerState.phase4Completed = true;
+
+          scene.directionArrow.scheduleReappear(5000, AREAS.drivingSchool1);
         }
   },
     label: '',

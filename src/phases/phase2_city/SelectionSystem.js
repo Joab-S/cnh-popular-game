@@ -3,6 +3,7 @@ import * as CameraSystem from "../../engine/camera/cameraSystem.js";
 import { updateGenericInteractions } from "../../engine/interaction/interactionSystem.js";
 import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
 import { AREAS, WORLD_SIZE } from "../../core/config.js";
+import { DirectionArrow } from "../../engine/utils/directionArrow.js";
 
 /**
  * FASE 2 — Corrida até o DETRAN + Interação com NPC
@@ -54,12 +55,6 @@ export function startPhase2(scene) {
   scene.playerState.canMove = true;
   scene.playerState.currentArea = AREAS.city;
 
-  scene.playerState = {
-    canMove: true,
-    inDialog: false,
-    currentArea: AREAS.city,
-  };
-
   // === INTERFACE ===
   scene.ui.showMessage("Encontre a autoescola logo mais a frente!");
 
@@ -72,6 +67,12 @@ export function startPhase2(scene) {
     if (!collisionDebugged) {
       collisionDebugged = true;
     }
+  });
+
+  scene.directionArrow = new DirectionArrow(scene);
+
+  scene.time.delayedCall(1000, () => {
+    scene.directionArrow.showRight();
   });
 
   // === AUTOESCOLA ===
@@ -513,6 +514,8 @@ function startQuiz(scene) {
   }
 
   function finishQuiz() {
+    scene.directionArrow.scheduleReappear(5000, AREAS.city);
+  
     if (autoAdvanceTimer) {
       autoAdvanceTimer.remove();
     }

@@ -2,6 +2,7 @@ import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
 import MemoryGameScene from '../../core/MemoryGameScene.js';
+import { DirectionArrow } from '../../engine/utils/directionArrow.js';
 
 export function startPhase3(scene) {
   const { width, height } = scene.scale;
@@ -23,6 +24,12 @@ export function startPhase3(scene) {
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
+
+  scene.directionArrow = new DirectionArrow(scene);
+  
+  scene.time.delayedCall(1000, () => {
+    scene.directionArrow.showRight();
+  });
 
   // === CLÍNICA ===
   const isGirl = scene.playerState.character === "girl";
@@ -128,12 +135,15 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   scene.playerState.phase3Completed = true;
 
   const clinic = scene.interactiveObjects.find(o => o.key === 'clinic');
+
   if (clinic) {
     clinic.dialogs = [
       "Parabéns! Você passou no exame psicoténico com louvor!",
       "Agora, siga em frente para sua próxima missão!"
     ];
   }
+
+  scene.directionArrow.scheduleReappear(5000, AREAS.clinic);
 
   scene.ui.showMessage("Você concluiu o exame com sucesso! Siga em frente para sua próxima missão.");
 }

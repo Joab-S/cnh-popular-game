@@ -1,6 +1,7 @@
 import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
+import { DirectionArrow } from '../../engine/utils/directionArrow.js';
 
 export function startPhase6(scene) {
   const { width, height } = scene.scale;
@@ -24,6 +25,12 @@ export function startPhase6(scene) {
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
+
+  scene.directionArrow = new DirectionArrow(scene);
+  
+  scene.time.delayedCall(1000, () => {
+    scene.directionArrow.showRight();
+  });
 
   // === PLAYER ===
   scene.player.setPosition(30, height - 305);
@@ -65,6 +72,8 @@ export function startPhase6(scene) {
         if (!scene.playerState.phase6Completed) {
           scene.ui.showMessage(`Siga em frente para sua próxima missão.`);
           scene.playerState.phase6Completed = true;
+
+          scene.directionArrow.scheduleReappear(5000, AREAS.drivingSchool2);
         }
   },
     label: '',

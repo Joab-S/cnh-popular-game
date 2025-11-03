@@ -1,6 +1,7 @@
 import * as CameraSystem from "../../engine/camera/cameraSystem.js";
 import { AREAS, CONFIG_EFFECT, WORLD_SIZE } from "../../core/config.js";
 import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
+import { DirectionArrow } from "../../engine/utils/directionArrow.js";
 
 function createCarCutscene(scene) {
   const existingCar = scene.interactiveObjects.find(
@@ -29,6 +30,7 @@ function createCarCutscene(scene) {
     volume: 0.2,
     loop: true,
   });
+
   drivingSound.play();
 
   scene.cameras.main.startFollow(car);
@@ -172,6 +174,9 @@ export function startPhase8(scene) {
       const mailObject = scene.interactiveObjects.find(
         (obj) => obj.key === "mail"
       );
+
+      scene.directionArrow.scheduleReappear(5000, AREAS.finalScene);
+
       if (mailObject) {
         mailObject.dialogs = ["Você já pegou sua carteira de habilitação!"];
       }
@@ -181,6 +186,12 @@ export function startPhase8(scene) {
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "a" : "o";
   const meu_minha = isGirl ? "inha" : "eu";
+
+  scene.directionArrow = new DirectionArrow(scene);
+  
+  scene.time.delayedCall(1000, () => {
+    scene.directionArrow.showRight();
+  });
 
   const mother = new InteractiveObject(scene, {
     key: "mother",
