@@ -48,6 +48,7 @@ export default class GameScene extends Phaser.Scene {
     this.arrowTween = null;
     this.shouldShowArrow = false;
     this.arrowCooldown = false;
+    this.reminderTimer = null;
   }
 
   init(data) {
@@ -334,25 +335,25 @@ export default class GameScene extends Phaser.Scene {
         "Encontre seus documentos para começar o processo!",
       ],
       onInteract: () => {
-        if (!this.playerState.docsMissionCompleted) {
-          this.playerState.hasMission = true;
-          this.ui.showMessage(
-            "Encontre RG, CPF, comprovante de residência e de renda na sua casa!"
-          );
+      if (!this.playerState.docsMissionCompleted) {
+        this.playerState.hasMission = true;
+        this.ui.showMessage(
+          "Encontre RG, CPF, comprovante de residência e de renda na sua casa!"
+        );
+        
+        if (this.reminderTimer) {
+          this.reminderTimer.remove();
+          this.reminderTimer = null;
         }
-      },
+      }
+    },
       hintText: "Pressione a tecla E para interagir",
       hintTexture: "button_action",
       scale: 0.35,
     });
 
-    this.time.delayedCall(2000, () => {
-      this.directionArrow.showRight();
-    });
-
     this.physics.add.collider(pc, this.ground.ground);
 
-    // Player (usa o spritesheet correto baseado na seleção)
     this.player = setupPlayer(this, 60, height - 305, this.playerTexture);
 
     this.physics.add.collider(this.player, this.ground.ground);
@@ -437,6 +438,21 @@ export default class GameScene extends Phaser.Scene {
       enableDebug(this, { initialOn: true });
       setupDebugToggle(this, "P");
     }
+
+    const scheduleReminder = () => {
+      if (!this.playerState.docsMissionCompleted && !this.playerState.hasMission) {
+        this.reminderTimer = this.time.delayedCall(20000, () => {
+          if (!this.playerState.docsMissionCompleted && !this.playerState.hasMission) {
+            this.ui.showMessage(
+              "Interaja com o computador para começar sua jornada!"
+            );
+            scheduleReminder();
+          }
+        });
+      }
+    };
+
+    scheduleReminder();
   }
 
   handleBedBounce() {

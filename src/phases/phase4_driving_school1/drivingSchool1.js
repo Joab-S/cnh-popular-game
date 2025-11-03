@@ -38,11 +38,20 @@ export function startPhase4(scene) {
 
   scene.ui.showMessage('Fale com seu professor das aulas teóricas logo mais a frente!');
 
+  function scheduleReminder() {
+    if (!scene.playerState.phase4Completed) {
+      scene.phase4ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase4Completed) {
+          scene.ui.showMessage('Fale com seu professor das aulas teóricas logo mais a frente!');
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder();
+
   scene.directionArrow = new DirectionArrow(scene);
-  
-  scene.time.delayedCall(1000, () => {
-    scene.directionArrow.showRight();
-  });
 
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "futura motorista" : "futuro motorista";
@@ -75,8 +84,13 @@ export function startPhase4(scene) {
           scene.playerState.phase4Completed = true;
 
           scene.directionArrow.scheduleReappear(5000, AREAS.drivingSchool1);
+
+          if (scene.phase4ReminderTimer) {
+            scene.phase4ReminderTimer.remove();
+            scene.phase4ReminderTimer = null;
+          }
         }
-  },
+    },
     label: '',
     hintText: 'Pressione a tecla E para interagir',
     hintTexture: "button_action",

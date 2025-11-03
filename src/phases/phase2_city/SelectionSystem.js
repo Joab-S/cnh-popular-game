@@ -71,9 +71,21 @@ export function startPhase2(scene) {
 
   scene.directionArrow = new DirectionArrow(scene);
 
-  scene.time.delayedCall(1000, () => {
-    scene.directionArrow.showRight();
-  });
+  scene.directionArrow.showRight();
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase2Completed) {
+      scene.phase2ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase2Completed) {
+          scene.ui.showMessage('Encontre a autoescola logo mais a frente!');
+          scene.directionArrow.showRight();
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 
   // === AUTOESCOLA ===
   const autoescola = new InteractiveObject(scene, {
@@ -515,6 +527,11 @@ function startQuiz(scene) {
 
   function finishQuiz() {
     scene.directionArrow.scheduleReappear(5000, AREAS.city);
+
+    if (scene.phase2ReminderTimer) {
+      scene.phase2ReminderTimer.remove();
+      scene.phase2ReminderTimer = null;
+    }
   
     if (autoAdvanceTimer) {
       autoAdvanceTimer.remove();

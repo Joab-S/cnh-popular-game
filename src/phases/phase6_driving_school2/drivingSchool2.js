@@ -27,10 +27,6 @@ export function startPhase6(scene) {
   scene.ground = { ground: groundRect };
 
   scene.directionArrow = new DirectionArrow(scene);
-  
-  scene.time.delayedCall(1000, () => {
-    scene.directionArrow.showRight();
-  });
 
   // === PLAYER ===
   scene.player.setPosition(30, height - 305);
@@ -49,6 +45,19 @@ export function startPhase6(scene) {
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "candidata" : "candidato";
   const bemVindo = isGirl ? "Bem-vinda" : "Bem-vindo";
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase6Completed) {
+      scene.phase6ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase6Completed) {
+          scene.ui.showMessage('Fale com seu instrutor das aulas práticas logo mais a frente!');
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 
   const instructor = new InteractiveObject(scene, {
     key: 'instructor',
@@ -74,6 +83,11 @@ export function startPhase6(scene) {
           scene.playerState.phase6Completed = true;
 
           scene.directionArrow.scheduleReappear(5000, AREAS.drivingSchool2);
+
+          if (scene.phase6ReminderTimer) {
+            scene.phase6ReminderTimer.remove();
+            scene.phase6ReminderTimer = null;
+          }
         }
   },
     label: '',

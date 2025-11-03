@@ -177,6 +177,11 @@ export function startPhase8(scene) {
 
       scene.directionArrow.scheduleReappear(5000, AREAS.finalScene);
 
+      if (scene.phase8ReminderTimer) {
+        scene.phase8ReminderTimer.remove();
+        scene.phase8ReminderTimer = null;
+      }
+
       if (mailObject) {
         mailObject.dialogs = ["Você já pegou sua carteira de habilitação!"];
       }
@@ -188,10 +193,6 @@ export function startPhase8(scene) {
   const meu_minha = isGirl ? "inha" : "eu";
 
   scene.directionArrow = new DirectionArrow(scene);
-  
-  scene.time.delayedCall(1000, () => {
-    scene.directionArrow.showRight();
-  });
 
   const mother = new InteractiveObject(scene, {
     key: "mother",
@@ -304,6 +305,19 @@ export function startPhase8(scene) {
 
   console.log("Fase 8 iniciada. PlayerState:", scene.playerState);
   console.log("UI disponível:", !!scene.ui);
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase8Completed) {
+      scene.phase8ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase8Completed) {
+          scene.ui.showMessage('Sua carteira de habilitação acaba de chegar! Interaja com o carteiro para pegá-la.');
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 }
 
 export function updatePhase8(scene) {

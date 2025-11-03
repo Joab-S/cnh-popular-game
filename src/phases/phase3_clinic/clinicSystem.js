@@ -26,10 +26,6 @@ export function startPhase3(scene) {
   scene.ground = { ground: groundRect };
 
   scene.directionArrow = new DirectionArrow(scene);
-  
-  scene.time.delayedCall(1000, () => {
-    scene.directionArrow.showRight();
-  });
 
   // === CLÍNICA ===
   const isGirl = scene.playerState.character === "girl";
@@ -77,6 +73,22 @@ export function startPhase3(scene) {
   };
 
   scene.ui.showMessage('Encontre a clínica logo mais a frente!');
+
+  scene.directionArrow.showRight();
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase3Completed) {
+      scene.phase3ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase3Completed) {
+          scene.ui.showMessage('Encontre a clínica logo mais a frente!');
+          scene.directionArrow.showRight();
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 }
 
 export function updatePhase3(scene) {
@@ -144,6 +156,11 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   }
 
   scene.directionArrow.scheduleReappear(5000, AREAS.clinic);
+
+  if (scene.phase3ReminderTimer) {
+    scene.phase3ReminderTimer.remove();
+    scene.phase3ReminderTimer = null;
+  }
 
   scene.ui.showMessage("Você concluiu o exame com sucesso! Siga em frente para sua próxima missão.");
 }
