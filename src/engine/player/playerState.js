@@ -32,6 +32,10 @@ function getDefaultState() {
     phase6Completed: false,
     phase7Completed: false,
     phase8Completed: false,
+
+    hasLicense: false,
+    selectedCharacter: null,
+    texture: null,
   };
 }
 
