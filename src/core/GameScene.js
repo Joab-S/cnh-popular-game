@@ -282,6 +282,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   startMainGame() {
+    this.input.keyboard.enabled = true;
     this.music = this.sound.play("main_theme", CONFIG_SONG);
 
     const { width, height } = this.scale;
