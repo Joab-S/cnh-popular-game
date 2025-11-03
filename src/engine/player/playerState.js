@@ -34,8 +34,8 @@ function getDefaultState() {
     phase8Completed: false,
 
     hasLicense: false,
-    selectedCharacter: null,
-    texture: null,
+    character: null,
+    playerTexture: null,
   };
 }
 

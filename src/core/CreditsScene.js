@@ -142,8 +142,7 @@ export default class CreditsScene extends Phaser.Scene {
         });
 
         if (elapsed >= duration) {
-          resetPlayerState();
-          this.scene.start("GameScene", { restart: true });
+          this.restartCnhGame();
         }
       },
     });
@@ -160,6 +159,11 @@ export default class CreditsScene extends Phaser.Scene {
 
     skipText.on("pointerover", () => skipText.setColor("#ffff00"));
     skipText.on("pointerout", () => skipText.setColor("#00ffff"));
-    skipText.on("pointerdown", () => this.scene.start("GameScene"));
+    skipText.on("pointerdown", () => this.restartCnhGame());
+  }
+
+  restartCnhGame() {
+    resetPlayerState();
+    this.scene.start("GameScene", { restart: true });
   }
 }
