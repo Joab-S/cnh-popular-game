@@ -44,6 +44,16 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
+    if(data?.restart){
+      this.selectedCharacter = null;
+      this.playerTexture = null;
+      this.intro = new IntroSystem(this);
+      this.intro.showingCover = true;
+      this.intro.showingInstructions = false;
+
+      return;
+    }
+
     this.selectedCharacter = data?.selectedCharacter;
     this.playerTexture = data?.playerTexture;
 
@@ -198,6 +208,9 @@ export default class GameScene extends Phaser.Scene {
       DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
     });
 
+    this.input.keyboard.enabled = true;
+    this.input.keyboard.manager.enabled = true;
+
     this.input.keyboard.target = this.game.canvas;
     this.game.canvas.setAttribute("tabindex", "0");
     this.game.canvas.focus();
@@ -282,7 +295,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   startMainGame() {
-    this.input.keyboard.enabled = true;
     this.music = this.sound.play("main_theme", CONFIG_SONG);
 
     const { width, height } = this.scale;
@@ -355,7 +367,7 @@ export default class GameScene extends Phaser.Scene {
         },
       });
     }
-
+    console.log(this.playerState);
     const bedY = this.scale.height - 130;
     this.bed = this.add
       .rectangle(152, bedY, 180, 10, 0x9966ff)

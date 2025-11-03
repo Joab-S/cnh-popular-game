@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { resetPlayerState } from "../engine/player/playerState";
 
 export default class CreditsScene extends Phaser.Scene {
   constructor() {
@@ -140,7 +141,10 @@ export default class CreditsScene extends Phaser.Scene {
           if (text.y < -80) text.destroy();
         });
 
-        if (elapsed >= duration) this.scene.start("GameScene");
+        if (elapsed >= duration) {
+          resetPlayerState();
+          this.scene.start("GameScene", { restart: true });
+        }
       },
     });
 

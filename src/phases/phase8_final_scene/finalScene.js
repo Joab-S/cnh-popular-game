@@ -24,7 +24,7 @@ function createCarCutscene(scene) {
 
   scene.sound.stopAll();
 
-  scene.input.keyboard.enabled = false;
+  scene.input.keyboard.enabled = false; 
 
   const drivingSound = scene.sound.add("driving_car", {
     volume: 0.2,
@@ -125,7 +125,7 @@ function showEndGameModal(scene) {
   };
 
   scene.time.delayedCall(3000, () => {
-    scene.scene.start("CreditsScene", { restart: true });
+    scene.scene.start("CreditsScene", scene);
   });
 }
 
