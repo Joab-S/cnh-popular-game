@@ -8,19 +8,16 @@ export default class TrafficLight {
 
     this.state = "red";
 
-    this.box = scene.add.rectangle(x + 170, y, 40, 90, 0x444444)
-    this.redLight = scene.add.circle(x + 170, y - 30, 10, 0xff0000);
-    this.yellowLight = scene.add.circle(x + 170, y, 10, 0x555500);
-    this.greenLight = scene.add.circle(x + 170, y + 30, 10, 0x005500);
+    this.box = scene.add.rectangle(x - 170, y, 40, 90, 0x444444);
+    this.redLight = scene.add.circle(x - 170, y - 30, 10, 0xff0000);
+    this.yellowLight = scene.add.circle(x - 170, y, 10, 0x555500);
+    this.greenLight = scene.add.circle(x - 170, y + 30, 10, 0x005500);
 
     this.sensor = scene.matter.add.rectangle(x, y, width, height, {
       isStatic: true,
       isSensor: true,
       label: "trafficSensor",
     });
-
-    this.crosswalk = scene.add.graphics();
-    this.drawCrosswalk(x, y, width, height);
 
     scene.time.addEvent({
       delay: 4000,
@@ -29,23 +26,6 @@ export default class TrafficLight {
     });
 
     this.updateLights();
-  }
-
-  drawCrosswalk(x, y, width, height) {
-    const stripeCount = 6;
-    const stripeWidth = width / stripeCount;
-    const stripeHeight = height;
-
-    this.crosswalk.fillStyle(0xffffff);
-
-    for (let i = 0; i < stripeCount; i += 2) {
-      this.crosswalk.fillRect(
-        x - width / 2 + i * stripeWidth,
-        y - height / 2,
-        stripeWidth,
-        stripeHeight
-      );
-    }
   }
 
   updateLights() {

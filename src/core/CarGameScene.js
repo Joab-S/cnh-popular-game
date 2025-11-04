@@ -58,7 +58,6 @@ export default class CarGameScene extends Phaser.Scene {
       action: false,
     };
 
-    this.trafficLight = new TrafficLight(this, 140, 330, 270, 100);
     this.matter.add
       .image(3715, 500, "finish-line", 0, {
         label: "destination",
@@ -68,7 +67,7 @@ export default class CarGameScene extends Phaser.Scene {
       .setScale(1.2);
 
     this.driftLayer = this.add.layer();
-    this.car = new Racecar(this, 100, 460, "car");
+    this.car = new Racecar(this, 200, 460, "car");
     this.keys = this.input.keyboard.addKeys({
       W: Phaser.Input.Keyboard.KeyCodes.W,
       A: Phaser.Input.Keyboard.KeyCodes.A,
@@ -80,6 +79,10 @@ export default class CarGameScene extends Phaser.Scene {
       RIGHT: Phaser.Input.Keyboard.KeyCodes.RIGHT,
       DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
     });
+
+    this.trafficLight = new TrafficLight(this, 1720, 140, 100, 270);
+
+    this.trafficLight = new TrafficLight(this, 2745, 140, 100, 270);
 
     const cam = this.cameras.main;
     const w = cam.width;
