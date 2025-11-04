@@ -21,7 +21,7 @@ export default class CarGameScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("soil", "./assets/images/cidade.png");
+    this.load.image("soil", "./assets/images/cenario.png");
     this.load.image("car", "./assets/images/carro.png");
     this.load.image("tire-mark", "./assets/images/tire_mark.png");
     this.load.image("button_gas", "./assets/images/pedal-gas.png");

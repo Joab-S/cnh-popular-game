@@ -9,8 +9,8 @@ import CreditsScene from "./CreditsScene.js";
 const config = {
   ...GAME_CONFIG,
   scene: [
-    GameScene,
     CarGameScene,
+    GameScene,
     EndCarGameScene,
     CreditsScene,
     OrientationOverlay,
