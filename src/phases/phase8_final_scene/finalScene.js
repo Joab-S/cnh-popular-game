@@ -1,6 +1,7 @@
 import * as CameraSystem from "../../engine/camera/cameraSystem.js";
 import { AREAS, CONFIG_EFFECT, WORLD_SIZE } from "../../core/config.js";
 import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
+import { DirectionArrow } from "../../engine/utils/directionArrow.js";
 
 function createCarCutscene(scene) {
   const carRef = scene.interactiveObjects.find(obj => obj.key === "car_final");
@@ -19,7 +20,11 @@ function createCarCutscene(scene) {
   scene.input.keyboard.enabled = false;
 
   sound.stopAll();
-  const drivingSound = sound.add("driving_car", { volume: 0.25, loop: true });
+  const drivingSound = sound.add("driving_car", {
+    volume: 0.2,
+    loop: true,
+  });
+
   drivingSound.play();
 
   cameras.main.startFollow(car);
@@ -128,11 +133,20 @@ export function startPhase8(scene) {
 
     const mailObj = scene.interactiveObjects.find(o => o.key === "mail");
     if (mailObj) mailObj.dialogs = ["Você já pegou sua carteira de habilitação!"];
+    
+    scene.directionArrow.scheduleReappear(5000, AREAS.finalScene);
+
+    if (scene.phase8ReminderTimer) {
+      scene.phase8ReminderTimer.remove();
+      scene.phase8ReminderTimer = null;
+    }
   };
 
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "a" : "o";
   const meu_minha = isGirl ? "inha" : "eu";
+
+  scene.directionArrow = new DirectionArrow(scene);
 
   const characters = [
     {
@@ -151,7 +165,7 @@ export function startPhase8(scene) {
       dialogs: [
         `Finalmente m${meu_minha} irm${
           isGirl ? "ã" : "ão"
-        } vai poder me levar até meu restaurante preferido!`,
+        } vai poder me levar até meu restaurante preferido, que tem a comida muito boa!`,
       ],
     },
     {
@@ -211,9 +225,27 @@ export function startPhase8(scene) {
   scene.player.setPosition(30, height - 305);
   scene.player.setVelocity(0);
 
-  console.log("[FinalScene] Fase 8 iniciada — Estado:", scene.playerState);
+  console.log("Fase 8 iniciada. PlayerState:", scene.playerState);
+  console.log("UI disponível:", !!scene.ui);
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase8Completed) {
+      scene.phase8ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase8Completed) {
+          scene.ui.showMessage('Sua carteira de habilitação acaba de chegar! Interaja com o carteiro para pegá-la.');
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 }
 
 export function updatePhase8(scene) {
+  if (scene.directionArrow) {
+    scene.directionArrow.update();
+  }
+
   if (scene.playerState.currentArea !== AREAS.finalScene) return;
 }

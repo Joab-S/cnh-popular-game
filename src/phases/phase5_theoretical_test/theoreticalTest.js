@@ -3,6 +3,7 @@ import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
 import { updateGenericInteractions } from '../../engine/interaction/interactionSystem.js';
 import TrafficSignsGameScene from '../../core/TrafficSignsGameScene.js';
+import { DirectionArrow } from '../../engine/utils/directionArrow.js';
 
 export function startPhase5(scene) {
   const { width, height } = scene.scale;
@@ -40,6 +41,21 @@ export function startPhase5(scene) {
   scene.miniGameKey = 'TrafficSignsGameScene';
 
   scene.ui.showMessage('Encontre o prédio do DETRAN logo mais a frente!');
+
+  scene.directionArrow = new DirectionArrow(scene);
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase5Completed) {
+      scene.phase5ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase5Completed) {
+          scene.ui.showMessage('Encontre o prédio do DETRAN logo mais a frente!');
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder();
 
   // === DETRAN ===
   const detran = new InteractiveObject(scene, {
@@ -140,7 +156,15 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
     dialog
   ];
 
+  scene.directionArrow.scheduleReappear(5000, AREAS.theoreticalTest);
+
   const msg = "Você completou o exame teórico! Siga em frente para sua próxima missão.";
   scene.ui.showMessage(msg);
+  
   scene.events.removeListener('trafficsigns:end');
+
+  if (scene.phase5ReminderTimer) {
+    scene.phase5ReminderTimer.remove();
+    scene.phase5ReminderTimer = null;
+  }
 }

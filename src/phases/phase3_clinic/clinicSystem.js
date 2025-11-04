@@ -2,6 +2,7 @@ import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
 import MemoryGameScene from '../../core/MemoryGameScene.js';
+import { DirectionArrow } from '../../engine/utils/directionArrow.js';
 
 export function startPhase3(scene) {
   const { width, height } = scene.scale;
@@ -23,6 +24,8 @@ export function startPhase3(scene) {
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
+
+  scene.directionArrow = new DirectionArrow(scene);
 
   // === CLÍNICA ===
   const isGirl = scene.playerState.character === "girl";
@@ -70,6 +73,22 @@ export function startPhase3(scene) {
   };
 
   scene.ui.showMessage('Encontre a clínica logo mais a frente!');
+
+  scene.directionArrow.showRight();
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase3Completed) {
+      scene.phase3ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase3Completed) {
+          scene.ui.showMessage('Encontre a clínica logo mais a frente!');
+          scene.directionArrow.showRight();
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 }
 
 export function updatePhase3(scene) {
@@ -129,11 +148,19 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   scene.playerState.phase3Completed = true;
 
   const clinic = scene.interactiveObjects.find(o => o.key === 'clinic');
+
   if (clinic) {
     clinic.dialogs = [
       "Parabéns! Você passou no exame psicoténico com louvor!",
       "Agora, siga em frente para sua próxima missão!"
     ];
+  }
+
+  scene.directionArrow.scheduleReappear(5000, AREAS.clinic);
+
+  if (scene.phase3ReminderTimer) {
+    scene.phase3ReminderTimer.remove();
+    scene.phase3ReminderTimer = null;
   }
 
   scene.ui.showMessage("Você concluiu o exame com sucesso! Siga em frente para sua próxima missão.");

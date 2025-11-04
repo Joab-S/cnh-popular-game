@@ -34,11 +34,19 @@ import { updatePhase7 } from "../phases/phase7_practical_test/practicalTest.js";
 import { updatePhase8 } from "../phases/phase8_final_scene/finalScene.js";
 import { enableDebug, setupDebugToggle } from "../engine/utils/enableDebug.js";
 import { IntroSystem } from "../engine/intro/introSystem.js"; // NOVO IMPORT
+import { DirectionArrow } from "../engine/utils/directionArrow.js";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
     this.intro = new IntroSystem(this);
+
+    this.arrow = null;
+    this.arrowTimer = null;
+    this.arrowTween = null;
+    this.shouldShowArrow = false;
+    this.arrowCooldown = false;
+    this.reminderTimer = null;
   }
 
   init(data) {
@@ -186,6 +194,7 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("button_d", "./assets/images/button-d.png");
     this.load.image("button_w", "./assets/images/button-w.png");
 
+    this.load.image("arrow_forward", "./assets/images/seta-direita.png");
     this.load.image("icon_alert", "./assets/images/icon_alert.png");
 
     this._makeRectTexture("background", 1600, 450, 0x1f2630);
@@ -229,7 +238,15 @@ export default class GameScene extends Phaser.Scene {
       return;
     }
 
+    this.directionArrow = new DirectionArrow(this);
+
     this.startMainGame();
+  }
+
+  onDocumentsCollected() {
+    this.time.delayedCall(1000, () => {
+      this.directionArrow.scheduleReappear(10000, AREAS.home);
+    });
   }
 
   setupCharacterSelection(callback) {
@@ -329,13 +346,18 @@ export default class GameScene extends Phaser.Scene {
         "Encontre seus documentos para começar o processo!",
       ],
       onInteract: () => {
-        if (!this.playerState.docsMissionCompleted) {
-          this.playerState.hasMission = true;
-          this.ui.showMessage(
-            "Encontre RG, CPF, comprovante de residência e de renda na sua casa!"
-          );
+      if (!this.playerState.docsMissionCompleted) {
+        this.playerState.hasMission = true;
+        this.ui.showMessage(
+          "Encontre RG, CPF, comprovante de residência e de renda na sua casa!"
+        );
+        
+        if (this.reminderTimer) {
+          this.reminderTimer.remove();
+          this.reminderTimer = null;
         }
-      },
+      }
+    },
       hintText: "Pressione a tecla E para interagir",
       hintTexture: "button_action",
       scale: 0.35,
@@ -343,7 +365,6 @@ export default class GameScene extends Phaser.Scene {
 
     this.physics.add.collider(pc, this.ground.ground);
 
-    // Player (usa o spritesheet correto baseado na seleção)
     this.player = setupPlayer(this, 60, height - 305, this.playerTexture);
 
     this.physics.add.collider(this.player, this.ground.ground);
@@ -430,6 +451,21 @@ export default class GameScene extends Phaser.Scene {
       enableDebug(this, { initialOn: true });
       setupDebugToggle(this, "P");
     }
+
+    const scheduleReminder = () => {
+      if (!this.playerState.docsMissionCompleted && !this.playerState.hasMission) {
+        this.reminderTimer = this.time.delayedCall(20000, () => {
+          if (!this.playerState.docsMissionCompleted && !this.playerState.hasMission) {
+            this.ui.showMessage(
+              "Interaja com o computador para começar sua jornada!"
+            );
+            scheduleReminder();
+          }
+        });
+      }
+    };
+
+    scheduleReminder();
   }
 
   handleBedBounce() {

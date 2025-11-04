@@ -3,6 +3,7 @@ import * as CameraSystem from "../../engine/camera/cameraSystem.js";
 import { updateGenericInteractions } from "../../engine/interaction/interactionSystem.js";
 import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
 import { AREAS, WORLD_SIZE } from "../../core/config.js";
+import { DirectionArrow } from "../../engine/utils/directionArrow.js";
 
 /**
  * FASE 2 — Corrida até o DETRAN + Interação com NPC
@@ -54,12 +55,6 @@ export function startPhase2(scene) {
   scene.playerState.canMove = true;
   scene.playerState.currentArea = AREAS.city;
 
-  scene.playerState = {
-    canMove: true,
-    inDialog: false,
-    currentArea: AREAS.city,
-  };
-
   // === INTERFACE ===
   scene.ui.showMessage("Encontre a autoescola logo mais a frente!");
 
@@ -73,6 +68,24 @@ export function startPhase2(scene) {
       collisionDebugged = true;
     }
   });
+
+  scene.directionArrow = new DirectionArrow(scene);
+
+  scene.directionArrow.showRight();
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase2Completed) {
+      scene.phase2ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase2Completed) {
+          scene.ui.showMessage('Encontre a autoescola logo mais a frente!');
+          scene.directionArrow.showRight();
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 
   // === AUTOESCOLA ===
   const autoescola = new InteractiveObject(scene, {
@@ -513,6 +526,13 @@ function startQuiz(scene) {
   }
 
   function finishQuiz() {
+    scene.directionArrow.scheduleReappear(5000, AREAS.city);
+
+    if (scene.phase2ReminderTimer) {
+      scene.phase2ReminderTimer.remove();
+      scene.phase2ReminderTimer = null;
+    }
+  
     if (autoAdvanceTimer) {
       autoAdvanceTimer.remove();
     }

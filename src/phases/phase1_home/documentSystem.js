@@ -15,8 +15,13 @@
  *   - scene.ground.ground (para colisão)
  */
 
+import { AREAS } from "../../core/config";
+import { DirectionArrow } from "../../engine/utils/directionArrow";
+
 export function setupDocuments(scene) {
-  if (scene.playerState.docsMissionCompleted) return;
+  if (scene.playerState.docsMissionCompleted) {
+    return
+  };
 
   const group = scene.physics.add.group({ allowGravity: true });
   group.runChildUpdate = true;
@@ -161,7 +166,10 @@ function checkMissionProgress(scene) {
       'Etapa de coleta de documentos concluída! Agora, vamos em frente para a próxima missão!'
     ];
 
-    // Feedback e encerramento
+    scene.directionArrow = new DirectionArrow(scene);
+
+    scene.directionArrow.scheduleReappear(5000, AREAS.home);
+
     scene.time.delayedCall(2000, () => {
       scene.ui.showMessage("Etapa de coleta de documentos concluída! Agora, vamos em frente para a próxima missão!");
     });
