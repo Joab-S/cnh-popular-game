@@ -2,6 +2,7 @@ import * as CameraSystem from '../../engine/camera/cameraSystem.js';
 import { AREAS, WORLD_SIZE } from '../../core/config.js';
 import InteractiveObject from '../../engine/interaction/InteractiveObject.js';
 import StartCarGameScene from '../../engine/ui/StartCarGameScene.js';
+import { DirectionArrow } from '../../engine/utils/directionArrow.js';
 
 export function startPhase7(scene) {
   const { width, height } = scene.scale;
@@ -27,6 +28,8 @@ export function startPhase7(scene) {
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
 
+  scene.directionArrow = new DirectionArrow(scene);
+
   // === PLAYER ===
   scene.player.setPosition(30, height - 305);
   scene.player.setVelocity(0);
@@ -42,6 +45,19 @@ export function startPhase7(scene) {
   scene.miniGameKey = 'StartCarGameScene';
 
   scene.ui.showMessage('Fale com seu instrutor do exame prático logo mais a frente!');
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase7Completed) {
+      scene.phase7ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase7Completed) {
+          scene.ui.showMessage('Fale com seu instrutor do exame prático logo mais a frente!');
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 
   // === INSTRUTOR ===
   const isGirl = scene.playerState.character === "girl";
@@ -148,5 +164,13 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
 
   // mensagem final
   const msg = "Excelente! Você completou o exame!";
+
+  scene.directionArrow.scheduleReappear(5000, AREAS.practicalTest);
+
+  if (scene.phase7ReminderTimer) {
+    scene.phase7ReminderTimer.remove();
+    scene.phase7ReminderTimer = null;
+  }
+
   scene.ui.showMessage(msg);
 }

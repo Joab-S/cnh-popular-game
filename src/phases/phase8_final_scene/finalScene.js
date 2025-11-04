@@ -1,6 +1,7 @@
 import * as CameraSystem from "../../engine/camera/cameraSystem.js";
 import { AREAS, CONFIG_EFFECT, WORLD_SIZE } from "../../core/config.js";
 import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
+import { DirectionArrow } from "../../engine/utils/directionArrow.js";
 
 function createCarCutscene(scene) {
   const existingCar = scene.interactiveObjects.find(
@@ -29,6 +30,7 @@ function createCarCutscene(scene) {
     volume: 0.2,
     loop: true,
   });
+
   drivingSound.play();
 
   scene.cameras.main.startFollow(car);
@@ -172,6 +174,14 @@ export function startPhase8(scene) {
       const mailObject = scene.interactiveObjects.find(
         (obj) => obj.key === "mail"
       );
+
+      scene.directionArrow.scheduleReappear(5000, AREAS.finalScene);
+
+      if (scene.phase8ReminderTimer) {
+        scene.phase8ReminderTimer.remove();
+        scene.phase8ReminderTimer = null;
+      }
+
       if (mailObject) {
         mailObject.dialogs = ["Você já pegou sua carteira de habilitação!"];
       }
@@ -181,6 +191,8 @@ export function startPhase8(scene) {
   const isGirl = scene.playerState.character === "girl";
   const pronome = isGirl ? "a" : "o";
   const meu_minha = isGirl ? "inha" : "eu";
+
+  scene.directionArrow = new DirectionArrow(scene);
 
   const mother = new InteractiveObject(scene, {
     key: "mother",
@@ -293,8 +305,25 @@ export function startPhase8(scene) {
 
   console.log("Fase 8 iniciada. PlayerState:", scene.playerState);
   console.log("UI disponível:", !!scene.ui);
+
+  function scheduleReminder() {
+    if (!scene.playerState.phase8Completed) {
+      scene.phase8ReminderTimer = scene.time.delayedCall(20000, () => {
+        if (!scene.playerState.phase8Completed) {
+          scene.ui.showMessage('Sua carteira de habilitação acaba de chegar! Interaja com o carteiro para pegá-la.');
+          scheduleReminder();
+        }
+      });
+    }
+  }
+
+  scheduleReminder()
 }
 
 export function updatePhase8(scene) {
+  if (scene.directionArrow) {
+    scene.directionArrow.update();
+  }
+
   if (scene.playerState.currentArea !== AREAS.finalScene) return;
 }
