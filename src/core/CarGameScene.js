@@ -162,6 +162,12 @@ export default class CarGameScene extends Phaser.Scene {
         width: blockWidth,
         height: blockHeight,
       },
+      {
+        x: 1900,
+        y: 400,
+        width: 300,
+        height: 200,
+      }
     ];
 
     boxes.forEach((b) => {
