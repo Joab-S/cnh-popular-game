@@ -2,28 +2,36 @@ import { CONFIG_EFFECT } from "../../core/config";
 
 export function setupPlayer(scene, x, y, textureKey = "player_boy") {
   const player = scene.physics.add.sprite(x, y, textureKey, 0);
+  player.setTexture(textureKey);
   player.setCollideWorldBounds(true);
   player.setBounce(0);
   player.setScale(0.45);
   scene.physics.add.collider(player, scene.ground.ground);
 
-  // animações - usa a textureKey fornecida
-  if (!scene.anims.exists("walk")) {
+  const walkKey = `${textureKey}_walk`;
+  const idleKey = `${textureKey}_idle`;
+
+  if (!scene.anims.exists(walkKey)) {
     scene.anims.create({
-      key: "walk",
-      frames: scene.anims.generateFrameNumbers(textureKey, {
-        start: 0,
-        end: 3,
-      }),
+      key: walkKey,
+      frames: scene.anims.generateFrameNumbers(textureKey, { start: 0, end: 3 }),
       frameRate: 6,
       repeat: -1,
     });
+  }
+
+  if (!scene.anims.exists(idleKey)) {
     scene.anims.create({
-      key: "idle",
+      key: idleKey,
       frames: [{ key: textureKey, frame: 0 }],
       frameRate: 1,
     });
   }
+
+  player.anims.play(idleKey);
+
+  player.animKeys = { walk: walkKey, idle: idleKey };
+  player.currentTextureKey = textureKey;
 
   return player;
 }
@@ -33,9 +41,11 @@ export function updatePlayerMovement(scene) {
 
   if (!player || !keys) return;
 
+  const { walk, idle } = player.animKeys || { walk: "walk", idle: "idle" };
+
   if (!playerState?.canMove) {
     player.setVelocityX(0);
-    player.play("idle", true);
+    player.play(idle, true);
     return;
   }
 
@@ -49,14 +59,14 @@ export function updatePlayerMovement(scene) {
   if (leftPressed) {
     player.setVelocityX(-speed);
     player.flipX = true;
-    player.play("walk", true);
+    player.play(walk, true);
   } else if (rightPressed) {
     player.setVelocityX(speed);
     player.flipX = false;
-    player.play("walk", true);
+    player.play(walk, true);
   } else {
     player.setVelocityX(0);
-    player.play("idle", true);
+    player.play(idle, true);
   }
 
   // pulo

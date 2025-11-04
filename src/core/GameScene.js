@@ -50,6 +50,16 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
+    if(data?.restart){
+      this.selectedCharacter = null;
+      this.playerTexture = null;
+      this.intro = new IntroSystem(this);
+      this.intro.showingCover = true;
+      this.intro.showingInstructions = false;
+
+      return;
+    }
+
     this.selectedCharacter = data?.selectedCharacter;
     this.playerTexture = data?.playerTexture;
 
@@ -205,6 +215,9 @@ export default class GameScene extends Phaser.Scene {
       DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
     });
 
+    this.input.keyboard.enabled = true;
+    this.input.keyboard.manager.enabled = true;
+
     this.input.keyboard.target = this.game.canvas;
     this.game.canvas.setAttribute("tabindex", "0");
     this.game.canvas.focus();
@@ -356,22 +369,24 @@ export default class GameScene extends Phaser.Scene {
 
     this.physics.add.collider(this.player, this.ground.ground);
 
-    this.playerState = createPlayerState();
-    const _stateRef = getPlayerStateInstance();
+    const _stateRef = createPlayerState();
 
-    Object.defineProperty(this, "playerState", {
-      configurable: false,
-      enumerable: true,
-      get() {
-        return _stateRef;
-      },
-      set(newVal) {
-        if (newVal && typeof newVal === "object") {
-          Object.assign(_stateRef, newVal);
-        }
-      },
-    });
-
+    // Define a propriedade apenas se ainda não existir
+    if (!Object.getOwnPropertyDescriptor(this, "playerState")) {
+      Object.defineProperty(this, "playerState", {
+        configurable: false,
+        enumerable: true,
+        get() {
+          return _stateRef;
+        },
+        set(newVal) {
+          if (newVal && typeof newVal === "object") {
+            Object.assign(_stateRef, newVal);
+          }
+        },
+      });
+    }
+    console.log(this.playerState);
     const bedY = this.scale.height - 130;
     this.bed = this.add
       .rectangle(152, bedY, 180, 10, 0x9966ff)

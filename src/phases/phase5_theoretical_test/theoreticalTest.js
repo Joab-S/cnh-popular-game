@@ -110,6 +110,7 @@ function startMiniGame(scene) {
     scene._theorreticalEndListenerSet = true;
     scene.events.once('trafficsigns:end', (data) => {
       closeMiniGame(scene, scene.overlay, scene.miniGameContainer, scene.miniGameKey, data);
+      scene._theorreticalEndListenerSet = false;
     });
   }
 
@@ -159,6 +160,8 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
 
   const msg = "Você completou o exame teórico! Siga em frente para sua próxima missão.";
   scene.ui.showMessage(msg);
+  
+  scene.events.removeListener('trafficsigns:end');
 
   if (scene.phase5ReminderTimer) {
     scene.phase5ReminderTimer.remove();

@@ -115,6 +115,7 @@ function startMiniGame(scene) {
     scene._memoryEndListenerSet = true;
     scene.events.once('memorygame:end', (data) => {
       closeMiniGame(scene, scene.overlay, scene.miniGameContainer, scene.miniGameKey, data);
+      scene._memoryEndListenerSet = false;
     });
   }
 
@@ -163,4 +164,6 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   }
 
   scene.ui.showMessage("Você concluiu o exame com sucesso! Siga em frente para sua próxima missão.");
+
+  scene.events.removeListener('memorygame:end');
 }

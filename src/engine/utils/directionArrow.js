@@ -135,6 +135,15 @@ export class DirectionArrow {
     return distance < proximityDistance;
   }
 
+  shouldShow() {
+    if (!this.scene?.playerState) return false;
+
+    if (this.scene.playerState.inDialog) return false;
+
+    const notHasLicense = !this.scene.playerState.hasLicense;
+    return this.isReappearMode || notHasLicense;
+  }
+
   update() {
     if (!this.arrow) return;
     

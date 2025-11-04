@@ -173,4 +173,6 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   }
 
   scene.ui.showMessage(msg);
+  
+  scene.events.removeListener('car:minigame:end');
 }
