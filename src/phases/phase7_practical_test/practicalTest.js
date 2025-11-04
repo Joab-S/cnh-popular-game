@@ -149,4 +149,6 @@ function closeMiniGame(scene, overlay, miniGameContainer, miniGameKey, result) {
   // mensagem final
   const msg = "Excelente! Você completou o exame!";
   scene.ui.showMessage(msg);
+  
+  scene.events.removeListener('car:minigame:end');
 }

@@ -498,6 +498,8 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
       this.scene
         .get("GameScene")
         .events.emit("trafficsigns:end", { victory: true });
+
+      this.score = 0;
     });
   }
 

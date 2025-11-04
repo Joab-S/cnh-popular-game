@@ -264,7 +264,7 @@ export function startGameWithCharacter(scene, character) {
     const playerTexture = character === 'girl' ? 'player_girl' : 'player_boy';
     
     scene.time.delayedCall(350, () => {
-        scene.scene.start('GameScene', { 
+        scene.scene.start('GameScene', {
             selectedCharacter: character,
             playerTexture: playerTexture 
         });
