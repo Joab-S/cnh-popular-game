@@ -35,6 +35,10 @@ export default class CarGameScene extends Phaser.Scene {
     this.load.image("arrow-left", "./assets/images/seta-esquerda.png");
     this.load.image("arrow-down", "./assets/images/seta-baixo.png");
 
+    this.load.image("traffic-go", "./assets/images/traffic-go.png");
+    this.load.image("traffic-wait", "./assets/images/traffic-wait.png");
+    this.load.image("traffic-stop", "./assets/images/traffic-stop.png");
+
     this.load.audio("fail", "./assets/sounds/fail.wav");
     this.load.audio("goal_complete", "./assets/sounds/goal_complete.wav");
   }
