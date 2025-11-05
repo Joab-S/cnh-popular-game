@@ -150,12 +150,12 @@ function startQuiz(scene) {
       options: [
         "A) Pessoas com ensino superior completo",
         "B) Desempregados há mais de 6 meses",
-        "C) Beneficiários de programas sociais como Bolsa Família",
+        "C) Pessoas inscritas no CadÚnico",
         "D) Proprietários de veículos",
       ],
       correct: 2,
       explanation:
-        "Beneficiários de programas sociais como Bolsa Família têm prioridade, pois o programa é voltado para pessoas em situação de vulnerabilidade social.",
+        "Pessoas inscritas no CadÚnico têm prioridade, pois o programa é voltado para pessoas em situação de vulnerabilidade social.",
     },
     {
       text: "Quais documentos são necessários para a inscrição no programa?",
@@ -185,13 +185,13 @@ function startQuiz(scene) {
       text: "Como são divulgados os resultados da seleção?",
       options: [
         "A) Apenas por telefone",
-        "B) No Diário Oficial e site do órgão responsável",
+        "B) No site oficial do DETRAN-CE",
         "C) Nas redes sociais do prefeito",
         "D) Nas autoescolas participantes",
       ],
       correct: 1,
       explanation:
-        "Os resultados são divulgados oficialmente no Diário Oficial e no site do órgão responsável, garantindo transparência.",
+        "Os resultados são divulgados oficialmente site oficial do DETRAN-CE, garantindo transparência.",
     },
   ];
 
