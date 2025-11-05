@@ -76,7 +76,7 @@ export function startPhase2(scene) {
     if (!scene.playerState.phase2Completed) {
       scene.phase2ReminderTimer = scene.time.delayedCall(20000, () => {
         if (!scene.playerState.phase2Completed) {
-          scene.ui.showMessage('Encontre a autoescola logo mais a frente!');
+          scene.ui.showMessage("Encontre a autoescola logo mais a frente!");
           scene.directionArrow.showRight();
           scheduleReminder();
         }
@@ -84,7 +84,7 @@ export function startPhase2(scene) {
     }
   }
 
-  scheduleReminder()
+  scheduleReminder();
 
   // === AUTOESCOLA ===
   const autoescola = new InteractiveObject(scene, {
@@ -142,10 +142,11 @@ function startQuiz(scene) {
         "D) Aumentar a arrecadação do governo",
       ],
       correct: 1,
-      explanation: 'A CNH Popular tem como objetivo principal facilitar o acesso à Carteira Nacional de Habilitação para pessoas de baixa renda, reduzindo os custos do processo.'
+      explanation:
+        "A CNH Popular tem como objetivo principal facilitar o acesso à Carteira Nacional de Habilitação para pessoas de baixa renda, reduzindo os custos do processo.",
     },
     {
-      text: 'Quem é o público-alvo do programa CNH Popular?',
+      text: "Quem é o público-alvo do programa CNH Popular?",
       options: [
         "A) Pessoas com ensino superior completo",
         "B) Desempregados há mais de 6 meses",
@@ -157,19 +158,19 @@ function startQuiz(scene) {
         "Beneficiários de programas sociais como Bolsa Família têm prioridade, pois o programa é voltado para pessoas em situação de vulnerabilidade social.",
     },
     {
-      text: 'Quais documentos são necessários para a inscrição no programa?',
+      text: "Quais documentos são necessários para a inscrição no programa?",
       options: [
-        "A) RG, CPF, comprovante de residência e comprovante de renda",
+        "A) RG, CPF e comprovante de residência",
         "B) Passaporte e carteira de trabalho",
         "C) Certidão de casamento e título de eleitor",
         "D) Carteira de identidade profissional e CNH anterior",
       ],
       correct: 0,
       explanation:
-        "Os documentos básicos são: RG, CPF, comprovante de residência e comprovante de renda para comprovar elegibilidade.",
+        "Os documentos básicos são: RG, CPF e comprovante de residência para comprovar elegibilidade.",
     },
     {
-      text: 'Quais custos são cobertos pela CNH Popular?',
+      text: "Quais custos são cobertos pela CNH Popular?",
       options: [
         "A) Apenas as taxas do DETRAN",
         "B) Somente as aulas teóricas",
@@ -531,7 +532,7 @@ function startQuiz(scene) {
       scene.phase2ReminderTimer.remove();
       scene.phase2ReminderTimer = null;
     }
-  
+
     if (autoAdvanceTimer) {
       autoAdvanceTimer.remove();
     }
@@ -564,9 +565,12 @@ function startQuiz(scene) {
 
     scene.playerState.phase2Completed = true;
     scene.playerState.hasMission = false;
-    
-    const npcObject = scene.interactiveObjects.find(o => o.key === 'autoescola');
-    const dialog = 'Parabéns! Sua inscrição foi confirmada. Siga em frente para sua próxima missão.';
+
+    const npcObject = scene.interactiveObjects.find(
+      (o) => o.key === "autoescola"
+    );
+    const dialog =
+      "Parabéns! Sua inscrição foi confirmada. Siga em frente para sua próxima missão.";
     npcObject.dialogs = [dialog];
 
     scene.time.delayedCall(1000, () => {
