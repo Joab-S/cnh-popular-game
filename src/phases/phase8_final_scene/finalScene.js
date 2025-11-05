@@ -4,7 +4,9 @@ import InteractiveObject from "../../engine/interaction/InteractiveObject.js";
 import { DirectionArrow } from "../../engine/utils/directionArrow.js";
 
 function createCarCutscene(scene) {
-  const carRef = scene.interactiveObjects.find(obj => obj.key === "car_final");
+  const carRef = scene.interactiveObjects.find(
+    (obj) => obj.key === "car_final"
+  );
   if (!carRef?.object) {
     console.error("[FinalScene] Carro final não encontrado!");
     return;
@@ -21,8 +23,7 @@ function createCarCutscene(scene) {
 
   sound.stopAll();
   const drivingSound = sound.add("driving_car", {
-    volume: 0.2,
-    loop: true,
+    volume: 0.03,
   });
 
   drivingSound.play();
@@ -45,8 +46,9 @@ function createCarCutscene(scene) {
         ease: "Linear",
         onUpdate: () => player.setPosition(car.x, car.y),
         onComplete: () => {
-          drivingSound.stop(); drivingSound.destroy();
-          sound.play("success", CONFIG_EFFECT);
+          drivingSound.stop();
+          drivingSound.destroy();
+          sound.play("success", { volume: 0.1 });
 
           cameras.main.stopFollow();
           ui?.hideMessage?.();
@@ -63,25 +65,36 @@ function showEndGameModal(scene) {
   const { width, height } = scene.scale;
   const modalDepth = 1000;
 
-  const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
+  const overlay = scene.add
+    .rectangle(width / 2, height / 2, width, height, 0x000000, 0.8)
     .setScrollFactor(0)
     .setDepth(modalDepth);
 
-  const title = scene.add.text(width / 2, height / 2 - 50, "PARABÉNS!", {
-    fontSize: "48px",
-    color: "#ffffff",
-    fontFamily: '"Silkscreen", "Courier New", monospace',
-    fontWeight: "bold",
-  }).setOrigin(0.5).setDepth(modalDepth + 2).setScrollFactor(0).setAlpha(0);
+  const title = scene.add
+    .text(width / 2, height / 2 - 50, "PARABÉNS!", {
+      fontSize: "48px",
+      color: "#ffffff",
+      fontFamily: '"Silkscreen", "Courier New", monospace',
+      fontWeight: "bold",
+    })
+    .setOrigin(0.5)
+    .setDepth(modalDepth + 2)
+    .setScrollFactor(0)
+    .setAlpha(0);
 
-  const message = scene.add.text(width / 2, height / 2 + 30, "Você concluiu sua jornada rumo à CNH!", {
-    fontSize: "24px",
-    color: "#ffffff",
-    fontFamily: '"Silkscreen", "Courier New", monospace',
-    fontWeight: "bold",
-    align: "center",
-    lineSpacing: 10,
-  }).setOrigin(0.5).setDepth(modalDepth + 2).setScrollFactor(0).setAlpha(0);
+  const message = scene.add
+    .text(width / 2, height / 2 + 30, "Você concluiu sua jornada rumo à CNH!", {
+      fontSize: "24px",
+      color: "#ffffff",
+      fontFamily: '"Silkscreen", "Courier New", monospace',
+      fontWeight: "bold",
+      align: "center",
+      lineSpacing: 10,
+    })
+    .setOrigin(0.5)
+    .setDepth(modalDepth + 2)
+    .setScrollFactor(0)
+    .setAlpha(0);
 
   scene.tweens.add({
     targets: [title, message],
@@ -98,7 +111,9 @@ function showEndGameModal(scene) {
   });
 
   scene.time.delayedCall(3000, () => {
-    overlay.destroy(); title.destroy(); message.destroy();
+    overlay.destroy();
+    title.destroy();
+    message.destroy();
     scene.scene.start("CreditsScene");
   });
 }
@@ -116,14 +131,26 @@ export function startPhase8(scene) {
   CameraSystem.initCamera(scene, scene.player, WORLD_SIZE, height);
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
-  const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
+  const groundRect = scene.add.rectangle(
+    WORLD_SIZE / 2,
+    height - 30,
+    WORLD_SIZE,
+    64,
+    0x444444
+  );
   scene.physics.add.existing(groundRect, true);
   scene.physics.add.collider(scene.player, groundRect);
   scene.ground = { ground: groundRect };
   groundRect.setVisible(false);
 
-  scene.add.image(width / 2, height / 2, "final_bg").setDepth(-2).setScale(0.46);
-  scene.add.image(width / 2 + 600, height / 2, "final_bg_2").setDepth(-2).setScale(0.46);
+  scene.add
+    .image(width / 2, height / 2, "final_bg")
+    .setDepth(-2)
+    .setScale(0.46);
+  scene.add
+    .image(width / 2 + 600, height / 2, "final_bg_2")
+    .setDepth(-2)
+    .setScale(0.46);
 
   scene.addLicenseToInventory = () => {
     if (scene.playerState.hasLicense) return;
@@ -131,9 +158,10 @@ export function startPhase8(scene) {
     scene.ui?.addToInventory?.("habilitacao");
     scene.ui?.showMessage("Carteira de habilitação adicionada ao inventário!");
 
-    const mailObj = scene.interactiveObjects.find(o => o.key === "mail");
-    if (mailObj) mailObj.dialogs = ["Você já pegou sua carteira de habilitação!"];
-    
+    const mailObj = scene.interactiveObjects.find((o) => o.key === "mail");
+    if (mailObj)
+      mailObj.dialogs = ["Você já pegou sua carteira de habilitação!"];
+
     scene.directionArrow.scheduleReappear(5000, AREAS.finalScene);
 
     if (scene.phase8ReminderTimer) {
@@ -151,7 +179,9 @@ export function startPhase8(scene) {
   const characters = [
     {
       key: "mother",
-      x: width - 350, y: height - 150, scale: 0.17,
+      x: width - 350,
+      y: height - 150,
+      scale: 0.17,
       texture: "mother",
       dialogs: [
         `Estou orgulhosa de você, filh${pronome}!`,
@@ -160,7 +190,9 @@ export function startPhase8(scene) {
     },
     {
       key: "brother",
-      x: width - 270, y: height - 140, scale: 0.17,
+      x: width - 270,
+      y: height - 140,
+      scale: 0.17,
       texture: "brother",
       dialogs: [
         `Finalmente m${meu_minha} irm${
@@ -170,7 +202,9 @@ export function startPhase8(scene) {
     },
     {
       key: "grandpa",
-      x: width - 130, y: height - 154, scale: 0.172,
+      x: width - 130,
+      y: height - 154,
+      scale: 0.172,
       texture: "grandpa",
       dialogs: [
         `M${meu_minha} querid${pronome}, vou te falar uma coisa...`,
@@ -181,14 +215,18 @@ export function startPhase8(scene) {
     },
     {
       key: "mail",
-      x: width - 530, y: height - 150, scale: 0.17,
+      x: width - 530,
+      y: height - 150,
+      scale: 0.17,
       texture: "mail",
       dialogs: ["Opa! Sua carteira de motorista acaba de chegar!"],
       onInteract: () => scene.addLicenseToInventory(),
     },
     {
       key: "car_final",
-      x: width + 200, y: height - 155, scale: 0.48,
+      x: width + 200,
+      y: height - 155,
+      scale: 0.48,
       texture: "car_final",
       dialogs: [
         `Que vitória, hein, amig${pronome}?`,
@@ -199,14 +237,15 @@ export function startPhase8(scene) {
       ],
       onInteract: () => {
         if (scene.playerState.hasLicense) createCarCutscene(scene);
-        else scene.ui?.showMessage(
-          "Espere! Pegue sua habilitação com o carteiro antes de dirigir!"
-        );
+        else
+          scene.ui?.showMessage(
+            "Espere! Pegue sua habilitação com o carteiro antes de dirigir!"
+          );
       },
     },
   ];
 
-  characters.forEach(cfg => {
+  characters.forEach((cfg) => {
     const npc = new InteractiveObject(scene, {
       ...cfg,
       label: "",
@@ -232,14 +271,16 @@ export function startPhase8(scene) {
     if (!scene.playerState.phase8Completed) {
       scene.phase8ReminderTimer = scene.time.delayedCall(20000, () => {
         if (!scene.playerState.phase8Completed) {
-          scene.ui.showMessage('Sua carteira de habilitação acaba de chegar! Interaja com o carteiro para pegá-la.');
+          scene.ui.showMessage(
+            "Sua carteira de habilitação acaba de chegar! Interaja com o carteiro para pegá-la."
+          );
           scheduleReminder();
         }
       });
     }
   }
 
-  scheduleReminder()
+  scheduleReminder();
 }
 
 export function updatePhase8(scene) {
