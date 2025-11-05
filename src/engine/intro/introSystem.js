@@ -87,12 +87,12 @@ export class IntroSystem {
     const { width, height } = this.scene.scale;
 
     this.instructionsBg = this.scene.add
-      .image(width / 2, height / 2, "capa")
+      .image(width / 2, height / 2, "instrucoes")
       .setDisplaySize(width, height)
       .setInteractive();
 
     this.scene.textures
-      .get("capa")
+      .get("instrucoes")
       .setFilter(Phaser.Textures.FilterMode.NEAREST);
 
     this.dialogBox = this.scene.add

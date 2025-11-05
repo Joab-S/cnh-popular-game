@@ -74,6 +74,7 @@ export default class GameScene extends Phaser.Scene {
   preload() {
     // === IMAGENS DA INTRO ===
     this.load.image("capa", "./assets/images/cnh-popular.png");
+    this.load.image("instrucoes", "./assets/images/instrucoes.png");
     this.load.image("logo", "./assets/images/iris-logo-marca.png");
 
     // === IMAGENS PARA TELA DE SELEÇÃO ===
