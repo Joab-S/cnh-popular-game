@@ -11,12 +11,12 @@ export function startPhase3(scene) {
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
   scene.add.image((width / 2), height / 2, "clinic_bg")
-    .setDepth(-3)
-    .setScale(0.48);
+    .setOrigin(0.33, 0.5)
+    .setDepth(-2)
+    .setScrollFactor(1)
+    .setScale(0.48)
 
-  scene.add.image(width / 2 + 590, height / 2, "clinic_bg_2")
-    .setDepth(-3)
-    .setScale(0.48);
+  scene.textures.get("clinic_bg").setFilter(Phaser.Textures.FilterMode.LINEAR);
 
   const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
   groundRect.setVisible(false);

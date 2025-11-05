@@ -11,12 +11,12 @@ export function startPhase7(scene) {
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
   scene.add.image((width / 2), height / 2 - 20, "detran_practical_bg")
-    .setDepth(-3)
-    .setScale(0.48);
+    .setOrigin(0.33, 0.5)
+    .setDepth(-2)
+    .setScrollFactor(1)
+    .setScale(0.48)
 
-  scene.add.image(width / 2 + 620, height / 2 - 20, "detran_practical_bg_2")
-    .setDepth(-3)
-    .setScale(0.48);
+  scene.textures.get("detran_practical_bg").setFilter(Phaser.Textures.FilterMode.LINEAR);
 
   const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
   scene.physics.add.existing(groundRect, true);

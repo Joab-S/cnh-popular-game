@@ -143,14 +143,13 @@ export function startPhase8(scene) {
   scene.ground = { ground: groundRect };
   groundRect.setVisible(false);
 
-  scene.add
-    .image(width / 2, height / 2, "final_bg")
+  scene.add.image(width / 2, height / 2, "final_bg")
+    .setOrigin(0.33, 0.5)
     .setDepth(-2)
-    .setScale(0.46);
-  scene.add
-    .image(width / 2 + 600, height / 2, "final_bg_2")
-    .setDepth(-2)
-    .setScale(0.46);
+    .setScrollFactor(1)
+    .setScale(0.46)
+
+  scene.textures.get("final_bg").setFilter(Phaser.Textures.FilterMode.LINEAR);
 
   scene.addLicenseToInventory = () => {
     if (scene.playerState.hasLicense) return;
@@ -190,9 +189,7 @@ export function startPhase8(scene) {
     },
     {
       key: "brother",
-      x: width - 270,
-      y: height - 140,
-      scale: 0.17,
+      x: width - 270, y: height - 136, scale: 0.17,
       texture: "brother",
       dialogs: [
         `Finalmente m${meu_minha} irm${

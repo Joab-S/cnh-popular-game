@@ -28,13 +28,12 @@ export function startPhase2(scene) {
 
   scene.add
     .image(width / 2, height / 2, "city_bg")
-    .setDepth(-3)
+    .setOrigin(0.33, 0.5)
+    .setDepth(-2)
+    .setScrollFactor(1)
     .setScale(0.48);
 
-  scene.add
-    .image(width / 2 + 620, height / 2, "city_bg_2")
-    .setDepth(-3)
-    .setScale(0.48);
+  scene.textures.get("city_bg").setFilter(Phaser.Textures.FilterMode.LINEAR);
 
   const groundRect = scene.add.rectangle(
     WORLD_SIZE / 2,

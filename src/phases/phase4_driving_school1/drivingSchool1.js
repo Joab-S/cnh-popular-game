@@ -10,12 +10,12 @@ export function startPhase4(scene) {
   scene.physics.world.setBounds(0, 0, WORLD_SIZE, height);
 
   scene.add.image((width / 2), height / 2, "driving_bg")
-    .setDepth(-3)
-    .setScale(0.48);
+    .setOrigin(0.33, 0.5)
+    .setDepth(-2)
+    .setScrollFactor(1)
+    .setScale(0.48)
 
-  scene.add.image((width / 2 + 600), height / 2, "driving_bg_2")
-    .setDepth(-3)
-    .setScale(0.48);
+  scene.textures.get("driving_bg").setFilter(Phaser.Textures.FilterMode.LINEAR);
 
   const groundRect = scene.add.rectangle(WORLD_SIZE / 2, height - 30, WORLD_SIZE, 64, 0x444444);
   groundRect.setVisible(false);
@@ -25,7 +25,7 @@ export function startPhase4(scene) {
   scene.ground = { ground: groundRect };
 
   // === PLAYER ===
-  scene.player.setPosition(30, height - 305);
+  scene.player.setPosition(30, height - 300);
   scene.player.setVelocity(0);
   scene.playerState.canMove = true;
   scene.playerState.currentArea = AREAS.drivingSchool1;
@@ -70,7 +70,7 @@ export function startPhase4(scene) {
   const instructor = new InteractiveObject(scene, {
     key: 'instructor',
     x: width - 310,
-    y: height - 132,
+    y: height - 135,
     texture: 'instructor',
     scale: 0.25,
     width: 100,
