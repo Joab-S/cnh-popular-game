@@ -106,10 +106,6 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("doc_rg", "./assets/images/rg.png");
     this.load.image("doc_cpf", "./assets/images/cpf.png");
     this.load.image("doc_comprovante", "./assets/images/comprovante.png");
-    this.load.image(
-      "doc_comprovante_renda",
-      "./assets/images/comprovante_renda.png"
-    );
     this.load.image("habilitacao", "./assets/images/habilitacao.png");
     this.load.image("home_bg", "./assets/images/home_bg.png");
 
@@ -327,14 +323,14 @@ export default class GameScene extends Phaser.Scene {
         "Também serão disponibilizadas vagas do programa para estudantes de graduação e ensino técnico",
         "Para se inscrever, você precisa ter entre 18 e 65 anos e morar no estado do Ceará há pelo menos 2 anos.",
         "O processo tem as etapas de coleta de documentos, inscrição, exame médico, aulas teóricas e práticas e avaliações.",
-        "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF, comprovante de residência e de renda.",
+        "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF e comprovante de residência.",
         "Encontre seus documentos para começar o processo!",
       ],
       onInteract: () => {
         if (!this.playerState.docsMissionCompleted) {
           this.playerState.hasMission = true;
           this.ui.showMessage(
-            "Encontre RG, CPF, comprovante de residência e de renda na sua casa!"
+            "Encontre RG, CPF e comprovante de residência na sua casa!"
           );
 
           if (this.reminderTimer) {

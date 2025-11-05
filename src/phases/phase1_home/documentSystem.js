@@ -20,45 +20,37 @@ import { DirectionArrow } from "../../engine/utils/directionArrow";
 
 export function setupDocuments(scene) {
   if (scene.playerState.docsMissionCompleted) {
-    return
-  };
+    return;
+  }
 
   const group = scene.physics.add.group({ allowGravity: true });
   group.runChildUpdate = true;
 
   const documentsData = [
     {
-      id: 'Documento de Identidade',
-      key: 'doc_rg',
+      id: "Documento de Identidade",
+      key: "doc_rg",
       x: 460,
       spawnY: 105,
       targetY: scene.scale.height - 235,
-      desc: 'Documento de identidade, necessário para se identificar.'
+      desc: "Documento de identidade, necessário para se identificar.",
     },
     {
-      id: 'CPF',
-      key: 'doc_cpf',
+      id: "CPF",
+      key: "doc_cpf",
       x: 990,
       spawnY: 140,
       targetY: scene.scale.height - 265,
-      desc: 'Cadastro de Pessoa Física, usado em cadastros e registros.'
+      desc: "Cadastro de Pessoa Física, usado em cadastros e registros.",
     },
     {
-      id: 'Comprovante de Residência',
-      key: 'doc_comprovante',
+      id: "Comprovante de Residência",
+      key: "doc_comprovante",
       x: 200,
       spawnY: 80,
       targetY: scene.scale.height - 160,
-      desc: 'Comprovante de residência, usado para confirmar seu endereço.'
+      desc: "Comprovante de residência, usado para confirmar seu endereço.",
     },
-    {
-      id: 'Comprovante de Renda',
-      key: 'doc_comprovante_renda',
-      x: 665,
-      spawnY: 80,
-      targetY: scene.scale.height - 181,
-      desc: 'Comprovante de renda, usado para confirmar sua renda mensal.'
-    }
   ];
 
   return {
@@ -87,7 +79,7 @@ export function updateDocuments(scene) {
   }
 
   // Congela os documentos quando atingem a posição Y desejada
-  documents.group.getChildren().forEach(doc => {
+  documents.group.getChildren().forEach((doc) => {
     if (doc.body && doc.active && doc.y >= doc.targetY) {
       doc.body.setVelocity(0, 0);
       doc.body.allowGravity = false;
@@ -110,7 +102,7 @@ function spawnDocuments(scene) {
   const { documentsData, group } = scene.documents;
 
   // cria sprite físico apenas quando a missão começa
-  documentsData.forEach(data => {
+  documentsData.forEach((data) => {
     // Spawna na posição alta (spawnY) para cair
     const doc = group.create(data.x, data.spawnY, data.key).setScale(0.08);
     doc.docId = data.id;
@@ -120,13 +112,12 @@ function spawnDocuments(scene) {
 
   // colisão com o chão
   scene.physics.add.collider(group, scene.ground.ground);
-  
+
   // overlap com o jogador
   scene.physics.add.overlap(scene.player, group, (_, doc) => {
     collectDocument(scene, doc);
   });
 }
-
 
 function collectDocument(scene, doc) {
   const { playerState } = scene;
@@ -161,9 +152,9 @@ function checkMissionProgress(scene) {
     playerState.docsMissionCompleted = true;
     playerState.hasMission = false;
 
-    const pcObject = scene.interactiveObjects.find(o => o.key === 'pc');
+    const pcObject = scene.interactiveObjects.find((o) => o.key === "pc");
     pcObject.dialogs = [
-      'Etapa de coleta de documentos concluída! Agora, vamos em frente para a próxima missão!'
+      "Etapa de coleta de documentos concluída! Agora, vamos em frente para a próxima missão!",
     ];
 
     scene.directionArrow = new DirectionArrow(scene);
@@ -171,7 +162,9 @@ function checkMissionProgress(scene) {
     scene.directionArrow.scheduleReappear(5000, AREAS.home);
 
     scene.time.delayedCall(2000, () => {
-      scene.ui.showMessage("Etapa de coleta de documentos concluída! Agora, vamos em frente para a próxima missão!");
+      scene.ui.showMessage(
+        "Etapa de coleta de documentos concluída! Agora, vamos em frente para a próxima missão!"
+      );
     });
   }
 }

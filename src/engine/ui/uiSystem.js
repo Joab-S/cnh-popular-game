@@ -5,7 +5,7 @@ export function setupUI(scene) {
 
   // === INVENTÁRIO NO CANTO SUPERIOR ESQUERDO ===
   const inventory = scene.add
-    .container(45, 110)
+    .container(45, 90)
     .setScrollFactor(0)
     .setDepth(10);
 
@@ -13,7 +13,7 @@ export function setupUI(scene) {
   inventoryBg.setAlpha(0);
 
   const bgWidth = 70;
-  const bgHeight = 195;
+  const bgHeight = 165;
 
   inventoryBg.fillStyle(0x000000, 0.5);
   inventoryBg.fillRoundedRect(
@@ -61,7 +61,7 @@ export function setupUI(scene) {
   );
 
   inventoryBg.fillStyle(0x000000, 0.7);
-  inventoryBg.fillRect(-5, -bgHeight / 2 + 10, 10, 4);
+  inventoryBg.fillRect(-5, -bgHeight / 2, 10, 4);
 
   inventory.add([inventoryBg]);
 
@@ -224,7 +224,7 @@ export function setupUI(scene) {
       const itemCount = items.length;
 
       const verticalSpacing = 35;
-      const maxItems = 5;
+      const maxItems = 4;
 
       const startY = -((maxItems - 1) * verticalSpacing - 8) / 2;
       const x = 0;
