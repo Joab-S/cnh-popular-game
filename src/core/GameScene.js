@@ -50,7 +50,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    if(data?.restart){
+    if (data?.restart) {
       this.selectedCharacter = null;
       this.playerTexture = null;
       this.intro = new IntroSystem(this);
@@ -73,7 +73,7 @@ export default class GameScene extends Phaser.Scene {
 
   preload() {
     // === IMAGENS DA INTRO ===
-    this.load.image("capa", "./assets/images/capa.png");
+    this.load.image("capa", "./assets/images/cnh-popular.png");
     this.load.image("logo", "./assets/images/iris-logo-marca.png");
 
     // === IMAGENS PARA TELA DE SELEÇÃO ===
@@ -340,24 +340,25 @@ export default class GameScene extends Phaser.Scene {
       dialogs: [
         "CNH Popular Ceará - Inscrições Abertas!",
         "O programa oferece a 1ª via da Carteira Nacional de Habilitação de forma gratuita para pessoas de baixa renda.",
+        "Também serão disponibilizadas vagas do programa para estudantes de graduação e ensino técnico",
         "Para se inscrever, você precisa ter entre 18 e 65 anos e morar no estado do Ceará há pelo menos 2 anos.",
         "O processo tem as etapas de coleta de documentos, inscrição, exame médico, aulas teóricas e práticas e avaliações.",
         "Primeiro, vamos verificar se você tem todos os documentos necessários: RG, CPF, comprovante de residência e de renda.",
         "Encontre seus documentos para começar o processo!",
       ],
       onInteract: () => {
-      if (!this.playerState.docsMissionCompleted) {
-        this.playerState.hasMission = true;
-        this.ui.showMessage(
-          "Encontre RG, CPF, comprovante de residência e de renda na sua casa!"
-        );
-        
-        if (this.reminderTimer) {
-          this.reminderTimer.remove();
-          this.reminderTimer = null;
+        if (!this.playerState.docsMissionCompleted) {
+          this.playerState.hasMission = true;
+          this.ui.showMessage(
+            "Encontre RG, CPF, comprovante de residência e de renda na sua casa!"
+          );
+
+          if (this.reminderTimer) {
+            this.reminderTimer.remove();
+            this.reminderTimer = null;
+          }
         }
-      }
-    },
+      },
       hintText: "Pressione a tecla E para interagir",
       hintTexture: "button_action",
       scale: 0.35,
@@ -453,9 +454,15 @@ export default class GameScene extends Phaser.Scene {
     }
 
     const scheduleReminder = () => {
-      if (!this.playerState.docsMissionCompleted && !this.playerState.hasMission) {
+      if (
+        !this.playerState.docsMissionCompleted &&
+        !this.playerState.hasMission
+      ) {
         this.reminderTimer = this.time.delayedCall(20000, () => {
-          if (!this.playerState.docsMissionCompleted && !this.playerState.hasMission) {
+          if (
+            !this.playerState.docsMissionCompleted &&
+            !this.playerState.hasMission
+          ) {
             this.ui.showMessage(
               "Interaja com o computador para começar sua jornada!"
             );

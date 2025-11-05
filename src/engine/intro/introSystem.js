@@ -52,32 +52,14 @@ export class IntroSystem {
 
     this.scene.textures
       .get("capa")
-      .setFilter(Phaser.Textures.FilterMode.NEAREST);
-    this.scene.textures
-      .get("logo")
       .setFilter(Phaser.Textures.FilterMode.LINEAR);
-
-    this.overlayImage = this.scene.add
-      .image(width / 2, height / 3 - 120, "logo")
-      .setScale(0.5)
-      .setDepth(1);
-
-    this.titleText = this.scene.add
-      .text(width / 2, height / 3 + 170, "CNH POPULAR - O JOGO", {
-        fontFamily: '"Silkscreen", monospace',
-        fontSize: "48px",
-        color: "#ffffff",
-        fontStyle: "bold",
-      })
-      .setOrigin(0.5)
-      .setDepth(2);
 
     this.progressText = pressKeyIcon(
       this.scene,
       "Pressione",
       "ou clique na tela para continuar",
       width / 2,
-      height - 80,
+      height - 180,
       "button_action_2",
       0.15
     );

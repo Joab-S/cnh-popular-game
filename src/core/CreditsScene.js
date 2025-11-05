@@ -1,155 +1,156 @@
 import Phaser from "phaser";
 import { resetPlayerState } from "../engine/player/playerState";
+import { CONFIG_SONG } from "./config";
 
 export default class CreditsScene extends Phaser.Scene {
   constructor() {
     super("CreditsScene");
   }
 
+  preload() {
+    this.load.audio("credits-song", "./assets/sounds/credits-song.mp3");
+
+    this.load.image("logo", "./assets/images/iris-logo-marca.png");
+
+    this.load.image("logo-detran", "./assets/images/logo-detran.png");
+  }
+
   create() {
+    this.sound.stopAll();
+
+    this.sound.play("credits-song", CONFIG_SONG);
+
     const { width, height } = this.scale;
 
-    // Fundo preto
     this.add.rectangle(0, 0, width * 2, height * 2, 0x000000).setOrigin(0);
 
-    // Introdução inicial
-    const intro1 = this.add
-      .text(width / 2, height / 2, "Há não muito tempo,", {
-        fontSize: "22px",
-        color: "#00bfff",
+    const detranButton = this.add
+      .text(150, height - 50, "SAIBA MAIS", {
+        fontSize: "18px",
+        color: "#00ffff",
         fontFamily: '"Silkscreen", monospace',
+        backgroundColor: "#00000055",
+        padding: { x: 10, y: 5 },
       })
-      .setOrigin(0.5);
+      .setOrigin(1, 0)
+      .setInteractive({ useHandCursor: true });
 
-    const intro2 = this.add
-      .text(width / 2, height / 2 + 35, "Em um laboratório não muito distante", {
-        fontSize: "22px",
-        color: "#00bfff",
-        fontFamily: '"Silkscreen", monospace',
-      })
-      .setOrigin(0.5);
-
-    this.tweens.add({
-      targets: [intro1, intro2],
-      alpha: { from: 1, to: 0 },
-      duration: 4000,
-      delay: 2500,
-      onComplete: () => {
-        intro1.destroy();
-        intro2.destroy();
-        this.showMainCredits();
-      },
+    detranButton.on("pointerover", () => detranButton.setColor("#ffff00"));
+    detranButton.on("pointerout", () => detranButton.setColor("#00ffff"));
+    detranButton.on("pointerdown", () => {
+      window.open("https://www.detran.ce.gov.br/", "_blank");
     });
+
+    this.showMainCredits();
   }
 
   showMainCredits() {
     const { width, height } = this.scale;
 
-    const lines = [
-      "CNH POPULAR - O JOGO",
-      "",
-      "DESENVOLVIDO POR",
-      "Laboratório Íris",
-      "",
-      "PROGRAMAÇÃO",
-      "Vinicius Secundino",
-      "Mariana Castro",
-      "Joab Rocha",
-      "",
-      "ARTE E DESIGN",
-      "Vinicius Secundino",
-      "Mariana Castro",
-      "Joab Rocha",
-      "",
-      "HISTÓRIA",
-      "Vinicius Secundino",
-      "Mariana Castro",
-      "Joab Rocha",
-      "",
-      "MÚSICAS",
-      "HeatleyBros",
+    const container = this.add.container(width / 2, height);
+
+    const title = this.add
+      .text(0, 0, "CNH POPULAR - O JOGO", {
+        fontSize: "40px",
+        color: "#ffff00",
+        fontFamily: '"Silkscreen", monospace',
+        align: "center",
+      })
+      .setOrigin(0.5);
+    container.add(title);
+
+    const sections = [
+      {
+        title: "DESENVOLVIDO POR",
+        names: ["Laboratório Íris"],
+      },
+      {
+        title: "PROGRAMAÇÃO",
+        names: ["Vinicius Secundino", "Mariana Castro", "Joab Rocha"],
+      },
+      {
+        title: "ARTE E DESIGN",
+        names: [
+          "Vinicius Secundino",
+          "Mariana Castro",
+          "Joab Rocha",
+          "Isac Bernardo",
+        ],
+      },
+      {
+        title: "HISTÓRIA",
+        names: ["Vinicius Secundino", "Mariana Castro", "Joab Rocha"],
+      },
+      {
+        title: "MÚSICAS",
+        names: ["HeatleyBros", "Kevin MacLeod"],
+      },
     ];
 
-    // Cria textos individuais
-    const texts = [];
-    const startY = height + 250;
-    const baseLineSpacing = 50;
+    let currentY = 80;
 
-    
-    lines.forEach((line, i) => {
-      const size = line === "CNH POPULAR - O JOGO" ? 50 : 28;
+    sections.forEach((section) => {
+      const sectionTitle = this.add
+        .text(0, currentY, section.title, {
+          fontSize: "28px",
+          color: "#00ffff",
+          fontFamily: '"Silkscreen", monospace',
+          align: "center",
+        })
+        .setOrigin(0.5);
+      container.add(sectionTitle);
+      currentY += 40;
 
-      const indexProgramacao = lines.indexOf("PROGRAMAÇÃO");
-
-      let color;
-
-      if (i < indexProgramacao) {
-        color = "#ffff00";
-      } else {
-        const isUpperCase = line === line.toUpperCase() && line.trim() !== "";
-        color = isUpperCase ? "#00ffff" : "#ffff00";
-      }
-      const text = this.add.text(width / 2, startY + i * baseLineSpacing, line, {
-        fontSize: `${size}px`,
-        color: color,
-        fontFamily: '"Silkscreen", monospace',
+      section.names.forEach((name) => {
+        const nameText = this.add
+          .text(0, currentY, name, {
+            fontSize: "24px",
+            color: "#ffff00",
+            fontFamily: '"Silkscreen", monospace',
+            align: "center",
+          })
+          .setOrigin(0.5);
+        container.add(nameText);
+        currentY += 30;
       });
-      text.setOrigin(0.5);
-      texts.push(text);
+
+      currentY += 50;
     });
 
-    let elapsed = 0;
-    const duration = 30000;
-    const startOffset = height + 250;
-    const endOffset = -height * 0.8;
-    const fadeHeight = height * 0.25;
+    const ad = this.add
+      .text(0, currentY, "Acesse o site do DETRAN para mais informações", {
+        fontSize: "20px",
+        color: "#ffff00",
+        fontFamily: '"Silkscreen", monospace',
+        align: "center",
+      })
+      .setOrigin(0.5);
+    container.add(ad);
 
-    this.time.addEvent({
-      delay: 10,
-      loop: true,
-      callback: () => {
-        elapsed += 16;
-        const t = Phaser.Math.Easing.Quadratic.Out(elapsed / duration);
-        const baseY = Phaser.Math.Interpolation.Linear([startOffset, endOffset], t);
+    const logos = this.add.image(-80, currentY + 100, "logo");
 
-        // Acúmulo de altura visual ajustado conforme escala
-        let accumulatedY = baseY * 0.6;
+    logos.setScale(0.5);
 
-        texts.forEach((text, i) => {
-          const distance = height - accumulatedY;
-          const depthFactor = Phaser.Math.Clamp(distance / height, 0, 1);
+    const logoDetran = this.add.image(200, currentY + 100, "logo-detran");
 
-          // Escalas mais perceptíveis
-          const scale = Phaser.Math.Interpolation.SmoothStep(depthFactor, 2.0, 0.25);
-          const squash = Phaser.Math.Interpolation.SmoothStep(depthFactor, 1.2, 0.05);
-          text.setScale(scale, squash);
+    logoDetran.setScale(0.1);
 
-          // Mantém espaçamento aparente constante
-          const visualSpacing = baseLineSpacing * scale * 0.6;
-          text.y = accumulatedY;
-          accumulatedY += visualSpacing;
+    container.add(logos);
 
-          // Fade in/out
-          if (text.y < fadeHeight) {
-            text.alpha = Phaser.Math.Clamp(text.y / fadeHeight, 0, 1);
-          } else if (text.y > height - 120) {
-            text.alpha = Phaser.Math.Clamp((height - text.y) / 120, 0, 1);
-          } else {
-            text.alpha = 1;
-          }
+    container.add(logoDetran);
 
-          if (text.y < -80) text.destroy();
-        });
-
-        if (elapsed >= duration) {
-          this.restartCnhGame();
-        }
+    this.tweens.add({
+      targets: container,
+      y: -currentY + 100,
+      duration: 30000,
+      ease: "Linear",
+      onComplete: () => {
+        this.restartCnhGame();
       },
     });
 
-    // Botão Pular
     const skipText = this.add
-      .text(width - 20, height - 20, "PULAR >>", {
+      .text(width - 20, height - 20, "Pular >>", {
         fontSize: "22px",
         color: "#00ffff",
         fontFamily: '"Silkscreen", monospace',
@@ -159,10 +160,13 @@ export default class CreditsScene extends Phaser.Scene {
 
     skipText.on("pointerover", () => skipText.setColor("#ffff00"));
     skipText.on("pointerout", () => skipText.setColor("#00ffff"));
-    skipText.on("pointerdown", () => this.restartCnhGame());
+    skipText.on("pointerdown", () => {
+      this.restartCnhGame();
+    });
   }
 
   restartCnhGame() {
+    this.sound.stopAll();
     resetPlayerState();
     this.scene.start("GameScene", { restart: true });
   }
