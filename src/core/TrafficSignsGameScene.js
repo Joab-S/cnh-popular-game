@@ -1,4 +1,4 @@
-import { CONFIG_EFFECT, CONFIG_SONG } from "./config";
+import { CONFIG_EFFECT, CONFIG_SONG, PHYSICS_DEBUG } from "./config";
 
 export default class TrafficSignsGameScene extends Phaser.Scene {
   constructor() {
@@ -228,7 +228,9 @@ export default class TrafficSignsGameScene extends Phaser.Scene {
 
     const position = this.findNonOverlappingPosition();
     if (!position) {
-      console.log("Não foi possível encontrar posição livre para nova placa");
+      if (PHYSICS_DEBUG) {
+        console.log("Não foi possível encontrar posição livre para nova placa");
+      }
       return;
     }
 

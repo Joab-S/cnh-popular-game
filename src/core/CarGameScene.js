@@ -194,7 +194,6 @@ export default class CarGameScene extends Phaser.Scene {
 
           if (other.label === "destination") {
             this.sound.play("goal_complete");
-            console.log("Parabéns! Você chegou ao destino!");
             this.scene.start("EndScene", { victory: true });
           }
 

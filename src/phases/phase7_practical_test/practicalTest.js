@@ -99,7 +99,6 @@ export function updatePhase7(scene) {
 
 function startMiniGame(scene) {
   const { width, height } = scene.scale;
-  console.log("Iniciando o minigame de direção prática...");
 
   // impede movimento do jogador
   scene.playerState.canMove = false;
@@ -125,8 +124,6 @@ function startMiniGame(scene) {
   // inicia o minigame
   scene.scene.launch(scene.miniGameKey);
   scene.scene.bringToTop(scene.miniGameKey);
-
-  console.log("Minigame lançado.");
 
   scene.time.delayedCall(100, () => {
     const miniGame = scene.scene.get(scene.miniGameKey);

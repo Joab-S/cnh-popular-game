@@ -223,9 +223,7 @@ function createCharacterOption(scene, x, y, textureKey, keyType, onClick) {
 /**
  * Processa a seleção do personagem
  */
-function selectCharacter(scene, character, callback) {
-    console.log('Personagem selecionado:', character);
-    
+function selectCharacter(scene, character, callback) {    
     scene.cameras.main.flash(200, 255, 255, 255);
     scene.cameras.main.shake(200, 0.01);
     

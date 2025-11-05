@@ -1,3 +1,5 @@
+import { PHYSICS_DEBUG } from "../../core/config";
+
 export function enableDebug(scene, { initialOn = false } = {}) {
   if (!scene?.physics?.world) {
     console.warn("[DEBUG] Cena ou mundo de física inválidos.");
@@ -20,7 +22,9 @@ export function enableDebug(scene, { initialOn = false } = {}) {
     if (!world.drawDebug) g.clear();
   }
 
-  console.log(`[DEBUG] Arcade Physics: ${world.drawDebug ? "ON" : "OFF"} (initial)`);
+  if(PHYSICS_DEBUG) {
+    console.log(`[DEBUG] Arcade Physics: ${world.drawDebug ? "ON" : "OFF"} (initial)`);
+  }
 }
 
 export function setupDebugToggle(scene, key = "P") {
@@ -45,14 +49,12 @@ export function setupDebugToggle(scene, key = "P") {
         g.setVisible(true);
         g.setDepth(9999);
       }
-      console.log(`[DEBUG] ON via tecla ${key}`);
     } else {
       world.drawDebug = false;
       if (g) {
         g.clear();
         g.setVisible(false);
       }
-      console.log(`[DEBUG] OFF via tecla ${key}`);
     }
   });
 }

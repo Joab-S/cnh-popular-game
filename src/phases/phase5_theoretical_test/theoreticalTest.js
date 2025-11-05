@@ -72,10 +72,8 @@ export function startPhase5(scene) {
       'Vamos iniciar sua prova agora. Boa sorte!'
     ],
     onInteract: () => {
-      console.log('Interagindo com DETRAN');
       if (scene.playerState.quizActive) return;
       if (!scene.playerState.phase5Completed) {
-        console.log('Iniciando minigame...');
         startMiniGame(scene);
       }
     },

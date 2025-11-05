@@ -98,7 +98,6 @@ export function updatePhase3(scene) {
 
 function startMiniGame(scene) {
   const { width, height } = scene.scale;
-  console.log("Iniciando o minigame do psicotécnico...");
 
   // impede movimento do jogador
   scene.playerState.canMove = false;

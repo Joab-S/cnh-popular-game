@@ -371,7 +371,6 @@ export default class GameScene extends Phaser.Scene {
         },
       });
     }
-    console.log(this.playerState);
     const bedY = this.scale.height - 130;
     this.bed = this.add
       .rectangle(152, bedY, 180, 10, 0x9966ff)

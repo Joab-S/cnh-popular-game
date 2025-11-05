@@ -261,9 +261,6 @@ export function startPhase8(scene) {
   scene.player.setPosition(30, height - 305);
   scene.player.setVelocity(0);
 
-  console.log("Fase 8 iniciada. PlayerState:", scene.playerState);
-  console.log("UI disponível:", !!scene.ui);
-
   function scheduleReminder() {
     if (!scene.playerState.phase8Completed) {
       scene.phase8ReminderTimer = scene.time.delayedCall(20000, () => {

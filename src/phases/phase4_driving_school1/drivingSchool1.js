@@ -79,7 +79,6 @@ export function startPhase4(scene) {
     dialogs: dialogs,
     onInteract: () => {
         if (!scene.playerState.phase4Completed) {
-          console.log('Iniciando aulas teóricas...');
           scene.ui.showMessage(`Siga em frente para sua próxima missão!`);
           scene.playerState.phase4Completed = true;
 

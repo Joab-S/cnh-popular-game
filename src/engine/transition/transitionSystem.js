@@ -158,8 +158,6 @@ export function goToArea(scene, area, options = {}) {
       state.transitionCooldown = true;
       state.canMove = true;
 
-      console.log(state);
-
       // === cooldown pra evitar loop de entradas rápidas ===
       scene.time.delayedCall(1000, () => {
         state.transitionCooldown = false;
