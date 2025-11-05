@@ -112,12 +112,10 @@ export default class GameScene extends Phaser.Scene {
     );
     this.load.image("habilitacao", "./assets/images/habilitacao.png");
     this.load.image("home_bg", "./assets/images/home_bg.png");
-    this.load.image("home_bg_2", "./assets/images/home_bg_2.png");
 
     this.load.image("bg_intro", "./assets/images/intro_bg.png");
 
     this.load.image("city_bg", "./assets/images/city_bg.png");
-    this.load.image("city_bg_2", "./assets/images/city_bg_2.png");
     this.load.image("autoescola", "./assets/images/autoescola.png");
     this.load.image("obstacle_1", "./assets/images/obstaculo_1.png");
     this.load.image("obstacle_2", "./assets/images/obstaculo_2.png");
@@ -128,7 +126,6 @@ export default class GameScene extends Phaser.Scene {
       "./assets/images/instrutor_exame_pratico.png"
     );
     this.load.image("clinic_bg", "./assets/images/clinic_bg.png");
-    this.load.image("clinic_bg_2", "./assets/images/clinic_bg_2.png");
     this.load.image("clinic", "./assets/images/clinica.png");
 
     this.load.image("button_up", "./assets/images/button-up.png");
@@ -139,35 +136,24 @@ export default class GameScene extends Phaser.Scene {
     this.load.image("instructor", "./assets/images/instructor.png");
 
     this.load.image("driving_bg", "./assets/images/driving_bg.png");
-    this.load.image("driving_bg_2", "./assets/images/driving_bg_2.png");
 
     this.load.image("instructor_2", "./assets/images/instructor_2.png");
 
     this.load.image("driving_2_bg", "./assets/images/driving_2_bg.png");
-    this.load.image("driving_2_bg_2", "./assets/images/driving_2_bg_2.png");
 
     this.load.image("detran", "./assets/images/detran.png");
     this.load.image(
       "detran_theoretical_bg",
       "./assets/images/detran_theoretical_bg.png"
     );
-    this.load.image(
-      "detran_theoretical_bg_2",
-      "./assets/images/detran_theoretical_bg_2.png"
-    );
 
     this.load.image(
       "detran_practical_bg",
       "./assets/images/detran_practical_bg.png"
     );
-    this.load.image(
-      "detran_practical_bg_2",
-      "./assets/images/detran_practical_bg_2.png"
-    );
 
     this.load.audio("boing", "./assets/sounds/boing.wav");
     this.load.image("final_bg", "./assets/images/final_bg.png");
-    this.load.image("final_bg_2", "./assets/images/final_bg_2.png");
     this.load.image("mail", "./assets/images/correio.png");
     this.load.image("car_final", "./assets/images/carro_final.png");
     this.load.image("mother", "./assets/images/mae.png");
@@ -324,17 +310,14 @@ export default class GameScene extends Phaser.Scene {
 
     this.homeBg1 = this.add
       .image(width / 2, height / 2, "home_bg")
+      .setOrigin(0.33, 0.5)
       .setDepth(-2)
-      .setScale(0.48);
-
-    this.homeBg2 = this.add
-      .image(width / 2 + 600, height / 2, "home_bg_2")
-      .setDepth(-2)
+      .setScrollFactor(1)
       .setScale(0.48);
 
     const pc = new InteractiveObject(this, {
       key: "pc",
-      x: width - 234,
+      x: width - 227,
       y: height - 160,
       texture: "pc",
       label: "",
@@ -367,7 +350,7 @@ export default class GameScene extends Phaser.Scene {
 
     this.physics.add.collider(pc, this.ground.ground);
 
-    this.player = setupPlayer(this, 60, height - 305, this.playerTexture);
+    this.player = setupPlayer(this, 60, height - 275, this.playerTexture);
 
     this.physics.add.collider(this.player, this.ground.ground);
 

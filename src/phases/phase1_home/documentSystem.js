@@ -30,17 +30,17 @@ export function setupDocuments(scene) {
     {
       id: 'Documento de Identidade',
       key: 'doc_rg',
-      x: 455,
-      spawnY: 120,
-      targetY: scene.scale.height - 240,
+      x: 460,
+      spawnY: 105,
+      targetY: scene.scale.height - 235,
       desc: 'Documento de identidade, necessário para se identificar.'
     },
     {
       id: 'CPF',
       key: 'doc_cpf',
-      x: 943,
-      spawnY: 150,
-      targetY: scene.scale.height - 270,
+      x: 990,
+      spawnY: 140,
+      targetY: scene.scale.height - 265,
       desc: 'Cadastro de Pessoa Física, usado em cadastros e registros.'
     },
     {
@@ -54,9 +54,9 @@ export function setupDocuments(scene) {
     {
       id: 'Comprovante de Renda',
       key: 'doc_comprovante_renda',
-      x: 660,
+      x: 665,
       spawnY: 80,
-      targetY: scene.scale.height - 185,
+      targetY: scene.scale.height - 181,
       desc: 'Comprovante de renda, usado para confirmar sua renda mensal.'
     }
   ];
