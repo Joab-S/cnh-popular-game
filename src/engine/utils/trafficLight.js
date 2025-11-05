@@ -1,26 +1,31 @@
 import Phaser from "phaser";
 
 export default class TrafficLight {
+  preload() {
+    this.load.image("traffic-go", "./assets/images/traffic-go.png");
+    this.load.image("traffic-wait", "./assets/images/traffic-wait.png");
+    this.load.image("traffic-stop", "./assets/images/traffic-stop.png");
+  }
+
   constructor(scene, x, y, width, height) {
     this.scene = scene;
     this.x = x;
     this.y = y;
-
     this.state = "red";
 
-    this.box = scene.add.rectangle(x + 170, y, 40, 90, 0x444444)
-    this.redLight = scene.add.circle(x + 170, y - 30, 10, 0xff0000);
-    this.yellowLight = scene.add.circle(x + 170, y, 10, 0x555500);
-    this.greenLight = scene.add.circle(x + 170, y + 30, 10, 0x005500);
+    this.redLight = scene.add.image(x - 100, y, "traffic-stop").setVisible(true);
+    this.yellowLight = scene.add.image(x - 100, y, "traffic-wait").setVisible(false);
+    this.greenLight = scene.add.image(x - 100, y, "traffic-go").setVisible(false);
+
+    this.redLight.setScale(0.3);
+    this.yellowLight.setScale(0.3);
+    this.greenLight.setScale(0.3);
 
     this.sensor = scene.matter.add.rectangle(x, y, width, height, {
       isStatic: true,
       isSensor: true,
       label: "trafficSensor",
     });
-
-    this.crosswalk = scene.add.graphics();
-    this.drawCrosswalk(x, y, width, height);
 
     scene.time.addEvent({
       delay: 4000,
@@ -31,29 +36,10 @@ export default class TrafficLight {
     this.updateLights();
   }
 
-  drawCrosswalk(x, y, width, height) {
-    const stripeCount = 6;
-    const stripeWidth = width / stripeCount;
-    const stripeHeight = height;
-
-    this.crosswalk.fillStyle(0xffffff);
-
-    for (let i = 0; i < stripeCount; i += 2) {
-      this.crosswalk.fillRect(
-        x - width / 2 + i * stripeWidth,
-        y - height / 2,
-        stripeWidth,
-        stripeHeight
-      );
-    }
-  }
-
   updateLights() {
-    this.redLight.setFillStyle(this.state === "red" ? 0xff0000 : 0x550000);
-    this.yellowLight.setFillStyle(
-      this.state === "yellow" ? 0xffff00 : 0x555500
-    );
-    this.greenLight.setFillStyle(this.state === "green" ? 0x00ff00 : 0x005500);
+    this.redLight.setVisible(this.state === "red");
+    this.yellowLight.setVisible(this.state === "yellow");
+    this.greenLight.setVisible(this.state === "green");
   }
 
   changeState() {

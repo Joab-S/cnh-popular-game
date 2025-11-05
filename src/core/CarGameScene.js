@@ -21,7 +21,7 @@ export default class CarGameScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("soil", "./assets/images/cidade.png");
+    this.load.image("soil", "./assets/images/cenario.png");
     this.load.image("car", "./assets/images/carro.png");
     this.load.image("tire-mark", "./assets/images/tire_mark.png");
     this.load.image("button_gas", "./assets/images/pedal-gas.png");
@@ -34,6 +34,10 @@ export default class CarGameScene extends Phaser.Scene {
     this.load.image("arrow-right", "./assets/images/seta-direita.png");
     this.load.image("arrow-left", "./assets/images/seta-esquerda.png");
     this.load.image("arrow-down", "./assets/images/seta-baixo.png");
+
+    this.load.image("traffic-go", "./assets/images/traffic-go.png");
+    this.load.image("traffic-wait", "./assets/images/traffic-wait.png");
+    this.load.image("traffic-stop", "./assets/images/traffic-stop.png");
 
     this.load.audio("fail", "./assets/sounds/fail.wav");
     this.load.audio("goal_complete", "./assets/sounds/goal_complete.wav");
@@ -58,7 +62,6 @@ export default class CarGameScene extends Phaser.Scene {
       action: false,
     };
 
-    this.trafficLight = new TrafficLight(this, 140, 330, 270, 100);
     this.matter.add
       .image(3715, 500, "finish-line", 0, {
         label: "destination",
@@ -68,7 +71,7 @@ export default class CarGameScene extends Phaser.Scene {
       .setScale(1.2);
 
     this.driftLayer = this.add.layer();
-    this.car = new Racecar(this, 100, 460, "car");
+    this.car = new Racecar(this, 200, 460, "car");
     this.keys = this.input.keyboard.addKeys({
       W: Phaser.Input.Keyboard.KeyCodes.W,
       A: Phaser.Input.Keyboard.KeyCodes.A,
@@ -80,6 +83,10 @@ export default class CarGameScene extends Phaser.Scene {
       RIGHT: Phaser.Input.Keyboard.KeyCodes.RIGHT,
       DOWN: Phaser.Input.Keyboard.KeyCodes.DOWN,
     });
+
+    this.trafficLight = new TrafficLight(this, 1720, 140, 100, 270);
+
+    this.trafficLight = new TrafficLight(this, 2745, 140, 100, 270);
 
     const cam = this.cameras.main;
     const w = cam.width;
@@ -155,6 +162,12 @@ export default class CarGameScene extends Phaser.Scene {
         width: blockWidth,
         height: blockHeight,
       },
+      {
+        x: 1900,
+        y: 400,
+        width: 300,
+        height: 200,
+      }
     ];
 
     boxes.forEach((b) => {
