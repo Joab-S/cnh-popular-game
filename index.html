@@ -103,7 +103,6 @@
 
           let finalWidth, finalHeight;
 
-          // Calcula proporção mantendo a escala exata
           if (screenRatio > gameRatio) {
             finalHeight = screenHeight;
             finalWidth = finalHeight * gameRatio;
@@ -112,7 +111,6 @@
             finalHeight = finalWidth / gameRatio;
           }
 
-          // 🔸 Ajusta o pivô e preenche toda a área de view
           Object.assign(el.style, {
             width: `${finalWidth}px`,
             height: `${finalHeight}px`,

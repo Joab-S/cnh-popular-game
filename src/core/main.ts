@@ -16,3 +16,5 @@ const config = {
     // OrientationOverlay,
   ],
 };
+
+window.GAME = new Phaser.Game(config);
