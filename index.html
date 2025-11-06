@@ -70,6 +70,7 @@
         const { width: vw, height: vh } = getViewport();
         const isPortrait = vh > vw;
 
+        let rotation = 0;
         // Reset do estilo
         Object.assign(el.style, {
           position: "fixed",
@@ -79,9 +80,11 @@
           height: "100%",
           transform: "none",
           background: "#ffffff",
+          overflow: "hidden",
         });
         
         if (isMobile && isPortrait) {
+          rotation = 90;
           const { width: vw, height: vh } = getViewport();
           const screenWidth = vh;
           const screenHeight = vw;
@@ -93,7 +96,6 @@
           const screenRatio = screenWidth / screenHeight;
 
           let finalWidth, finalHeight;
-
           if (screenRatio > gameRatio) {
             finalHeight = screenHeight;
             finalWidth = finalHeight * gameRatio;
@@ -107,14 +109,13 @@
           el.style.left = "50%";
           el.style.width = `${finalWidth}px`;
           el.style.height = `${finalHeight}px`;
-          el.style.transformOrigin = "center center";
+          el.style.transformOrigin = "center";
           el.style.transform = `
             translate(-50%, -50%)
             rotate(90deg)
-            scale(1)
           `;
-          el.style.background = "#000";
-
+          el.style.background = "#fff";
+          el.style.transform += `scale(${screenRatio * 0.75})`;
           const game = window.GAME;
           if (game && game.scale) {
           }
