@@ -54,15 +54,78 @@
     <!-- Nosso jogo -->
     <script type="module" src="./src/core/main.js"></script>
     <script>
-      const angle = 90;
-      const canvas = document.querySelector("#game");
-
-      if (canvas) {
-        console.log("canvas");
-        canvas.style.transition = "transform 0.3s ease";
-        canvas.style.transformOrigin = "center center";
-        canvas.style.transform = `rotate(${angle * -1}deg)`;
+      function getViewport() {
+        const vv = window.visualViewport;
+        return {
+          width: vv ? vv.width : window.innerWidth,
+          height: vv ? vv.height : window.innerHeight,
+        };
       }
+
+      function adjustOrientation() {
+        const el = document.getElementById("game");
+        if (!el) return;
+
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const { width: vw, height: vh } = getViewport();
+        const isPortrait = vh > vw;
+
+        // Reset do estilo
+        Object.assign(el.style, {
+          position: "fixed",
+          top: "0",
+          left: "0",
+          width: "100%",
+          height: "100%",
+          transform: "none",
+          background: "#ffffff",
+        });
+        
+        if (isMobile && isPortrait) {
+          const { width: vw, height: vh } = getViewport();
+          const screenWidth = vh;
+          const screenHeight = vw;
+
+          const GAME_WIDTH = 800;
+          const GAME_HEIGHT = 450;
+
+          const gameRatio = GAME_WIDTH / GAME_HEIGHT;
+          const screenRatio = screenWidth / screenHeight;
+
+          let finalWidth, finalHeight;
+
+          if (screenRatio > gameRatio) {
+            finalHeight = screenHeight;
+            finalWidth = finalHeight * gameRatio;
+          } else {
+            finalWidth = screenWidth;
+            finalHeight = finalWidth / gameRatio;
+          }
+
+          el.style.position = "fixed";
+          el.style.top = "50%";
+          el.style.left = "50%";
+          el.style.width = `${finalWidth}px`;
+          el.style.height = `${finalHeight}px`;
+          el.style.transformOrigin = "center center";
+          el.style.transform = `
+            translate(-50%, -50%)
+            rotate(90deg)
+            scale(1)
+          `;
+          el.style.background = "#000";
+
+          const game = window.GAME;
+          if (game && game.scale) {
+          }
+        }
+      }
+
+      window.addEventListener("load", adjustOrientation);
+      window.addEventListener("resize", adjustOrientation);
+      window.addEventListener("orientationchange", adjustOrientation);
+      window.visualViewport &&
+        window.visualViewport.addEventListener("resize", adjustOrientation);
     </script>
   </body>
 </html>
