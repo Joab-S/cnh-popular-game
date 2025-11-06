@@ -58,10 +58,11 @@
     <script>
       function getViewport() {
         const vv = window.visualViewport;
-        return {
-          width: vv ? vv.width : window.innerWidth,
-          height: vv ? vv.height : window.innerHeight,
-        };
+        if (vv) {
+          return { width: vv.width, height: vv.height };
+        } else {
+          return { width: window.innerWidth, height: window.innerHeight };
+        }
       }
 
       function adjustOrientation() {
